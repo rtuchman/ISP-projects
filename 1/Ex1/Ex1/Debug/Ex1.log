@@ -1,1 +1,9 @@
-﻿  Ex1.vcxproj -> C:\Users\rtuchman\Documents\Studies\Year E\Semester A\מבוא לתכנות מערכות\תרגילים\1\Ex1\Debug\ex1.exe
+﻿  airplane_db.c
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\1\ex1\ex1\airplane_db.c(6): warning C4047: 'initializing': 'char' differs in levels of indirection from 'void *'
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\1\ex1\ex1\airplane_db.c(7): warning C4047: 'initializing': 'char' differs in levels of indirection from 'void *'
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\1\ex1\ex1\airplane_db.c(12): warning C4013: 'strcmp' undefined; assuming extern returning int
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\1\ex1\ex1\airplane_db.c(22): warning C4552: '<': result of expression not used
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\1\ex1\ex1\airplane_db.c(38): warning C4047: 'initializing': 'char' differs in levels of indirection from 'void *'
+  main.c
+  Generating Code...
+  Ex1.vcxproj -> C:\Users\rtuchman\Documents\Studies\Year E\Semester A\מבוא לתכנות מערכות\ISP-projects\1\Ex1\Debug\ex1.exe
