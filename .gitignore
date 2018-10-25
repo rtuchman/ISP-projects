@@ -42,6 +42,10 @@
 *.idb
 *.pdb
 
+# Pdf and Zip file
+*.zip
+*.pdf
+
 # Kernel Module Compile Results
 *.mod*
 *.cmd
