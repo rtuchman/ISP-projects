@@ -17,6 +17,7 @@ typedef struct airplane {
 	struct airplane* next_airplane;
 } airplane;
 
+
 int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** return_model);
 int DestinationInArray(char destination[MAX_LENGTH_CITY_NAME], char destinations_array[MAX_NUM_OF_CITIES][MAX_LENGTH_CITY_NAME]);
 int CreateAirplaneList(airplane* first_airplane);
