@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <float.h>
 #include "airplane_db.h"
 
-airplane_model airplane_models[4] = { {"737", {"Larnaca", "Athens", "Budapest", "Zurich",
-"London", "Paris", "Rome", NULL}}, {"747", {"London", "New York","Bangkok", NULL}}, {"787", {"London",
-"New York", "Los Angeles", "Hong Kong", "Miami", NULL}} };
+airplane_model airplane_models[3] = { {"737", {"Larnaca", "Athens", "Budapest", "Zurich","London", "Paris", "Rome", NULL}},
+									  {"747", {"London", "New York","Bangkok", NULL}},
+									  {"787", {"London", "New York", "Los Angeles", "Hong Kong", "Miami", NULL}}
+									};
 
 int DestinationInArray(char destination[MAX_LENGTH_CITY_NAME], char destinations_array[MAX_NUM_OF_CITIES][MAX_LENGTH_CITY_NAME]) {
 	while (destinations_array != NULL) {
@@ -19,7 +21,7 @@ int DestinationInArray(char destination[MAX_LENGTH_CITY_NAME], char destinations
 int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** return_model) {
 	*return_model = airplane_models;
 	if (destination == NULL) return -1;
-	for (int city_num = 0; (*return_model)++, city_num++; city_num < 3) {
+	for (int city_num = 0; city_num < 3; (*return_model)++, city_num++) {
 		if (DestinationInArray(destination, (*return_model)->destinations))
 			return 0;
 	}
@@ -34,14 +36,16 @@ int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** ret
 }
 
 int CreateAirplaneList(airplane* first_airplane) {
-	airplane* curr_airplane = first_airplane;
+	airplane* curr_airplane = (airplane*)malloc(sizeof(airplane));
+	first_airplane->next_airplane = curr_airplane;
 	airplane airplane_array[12] = { {"Beit-Shean", "737", 5}, {"Ashkelon", "737", 10.25},
 	{"Hadera", "737", 3}, {"Kineret", "737", 7.5}, {"Nahariya", "737", 1},
 	{"Tel-Aviv", "747", 20}, {"Haifa", "747", 15}, {"Jerusalem", "737", 17},
-	{"Ashdod", "787", 1}, {"Bat Yam", "787", 1.5}, {"Rehovot", "787", 0.5}, NULL };
-	airplane* airplane_p = airplane_array;
-	ALLOC_MEM_AND_SET_AIRPLANE(curr_airplane);
-	while (airplane_p != NULL) {
+	{"Ashdod", "787", 1}, {"Bat Yam", "787", 1.5}, {"Rehovot", "787", 0.5}, {"NULL"} };
+	airplane* airplane_p = airplane_array;	
+	*curr_airplane = *airplane_p;
+	airplane_p++;
+	while (strcmp(airplane_p->name, "NULL") != 0) {
 		ALLOC_MEM_AND_SET_AIRPLANE(curr_airplane->next_airplane);
 		curr_airplane = curr_airplane->next_airplane;
 	}

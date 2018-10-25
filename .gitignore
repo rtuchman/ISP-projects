@@ -46,6 +46,10 @@
 *.zip
 *.pdf
 
+# Log file
+*.log
+*.tlog
+
 # Kernel Module Compile Results
 *.mod*
 *.cmd
