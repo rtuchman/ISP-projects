@@ -29,22 +29,21 @@ int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** ret
 }
 
 #define ALLOC_MEM_AND_SET_AIRPLANE(list_airplane_p) {\
-	list_airplane_p = (airplane*)malloc(sizeof(airplane));\
+	if (NULL == list_airplane_p) list_airplane_p = (airplane*)malloc(sizeof(airplane));\
 	if (NULL == list_airplane_p) return -1;\
 	*list_airplane_p = *airplane_p;\
 	airplane_p++;\
 }
 
 int CreateAirplaneList(airplane* first_airplane) {
-	airplane* curr_airplane = (airplane*)malloc(sizeof(airplane));
+	airplane* curr_airplane= (airplane*)malloc(sizeof(airplane));
 	first_airplane->next_airplane = curr_airplane;
 	airplane airplane_array[12] = { {"Beit-Shean", "737", 5}, {"Ashkelon", "737", 10.25},
 	{"Hadera", "737", 3}, {"Kineret", "737", 7.5}, {"Nahariya", "737", 1},
 	{"Tel-Aviv", "747", 20}, {"Haifa", "747", 15}, {"Jerusalem", "737", 17},
 	{"Ashdod", "787", 1}, {"Bat Yam", "787", 1.5}, {"Rehovot", "787", 0.5}, {"NULL"} };
 	airplane* airplane_p = airplane_array;	
-	*curr_airplane = *airplane_p;
-	airplane_p++;
+	ALLOC_MEM_AND_SET_AIRPLANE(curr_airplane);
 	while (strcmp(airplane_p->name, "NULL") != 0) {
 		ALLOC_MEM_AND_SET_AIRPLANE(curr_airplane->next_airplane);
 		curr_airplane = curr_airplane->next_airplane;
@@ -53,15 +52,16 @@ int CreateAirplaneList(airplane* first_airplane) {
 	return 0;
 }
 
-int GetAirplane(char airplane_model[3], airplane* first_airplane, airplane** return_airplane) {
+int GetAirplane(char airplane_model[3], airplane* first_airplane, airplane* return_airplane) {
 	airplane* curr_airplane = first_airplane;
 	float curr_age = FLT_MAX;
 	while (curr_airplane != NULL) {
-		if (strcmp(airplane_model, curr_airplane->model) && (curr_airplane->age < curr_age)) {
+		int x = strcmp(curr_airplane->model, airplane_model);
+		if ((0 == strcmp(airplane_model, curr_airplane->model)) && (curr_airplane->age < curr_age)) {
 			curr_age = curr_airplane->age;
-			*return_airplane = curr_airplane;
+			*return_airplane = *curr_airplane;
 		}
-		curr_airplane++;
+		curr_airplane=curr_airplane->next_airplane;
 	}
 	if ((curr_airplane == first_airplane) && (curr_age == FLT_MAX)) return -1;
 	return 0;

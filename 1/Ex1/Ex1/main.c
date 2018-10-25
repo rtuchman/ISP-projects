@@ -5,10 +5,12 @@
 
 int main()
 {
-	airplane dudu = {.name = "dudu", .model = "ccc", .age = 6};
+	airplane first = {.name = "first", .model = "non", .age = 0};
+	airplane* my_plane = (airplane*)malloc(sizeof(airplane));
 
-	
-	CreateAirplaneList(&dudu);
+	CreateAirplaneList(&first);
+	char model[4] = "737";
+	GetAirplane(model, &first, my_plane);
 
 	printf("dudu_caralho\n");
 
