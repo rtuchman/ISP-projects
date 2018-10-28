@@ -70,27 +70,30 @@ int GetAirplane(char airplane_model[3], airplane* first_airplane, airplane* retu
 int CompareAirplanes(airplane* airplane1, airplane* airplane2) {
 	if (airplane1 == NULL || airplane2 == NULL)      return 0;
 	if (airplane1->age != airplane2->age)            return 0;
-	if (!strcmp(airplane1->model, airplane2->model)) return 0;
-	if (!strcmp(airplane1->name, airplane2->name))   return 0;
+	if (strcmp(airplane1->model, airplane2->model) != 0) return 0;
+	if (strcmp(airplane1->name, airplane2->name) != 0)   return 0;
 	return 1;
 }
 
 void DeleteAirplane(airplane* airplane_to_delete, airplane** first_airplane) {
 	airplane* curr_airplane = *first_airplane;
 	airplane* match_airplane = NULL;
-	if (curr_airplane == NULL) return;
+	if (NULL == curr_airplane) return;
 	if (CompareAirplanes(curr_airplane, airplane_to_delete)) {
 		*first_airplane = (*first_airplane)->next_airplane;
 		free(curr_airplane);
+		return;
 	}
 	while (curr_airplane->next_airplane != NULL) {
 		if (CompareAirplanes(curr_airplane->next_airplane, airplane_to_delete)) {
 			match_airplane = curr_airplane->next_airplane;
 			curr_airplane->next_airplane = match_airplane->next_airplane;
 			free(match_airplane);
+			return;
 		}
 		curr_airplane = curr_airplane->next_airplane;
 	}
+	return;
 }
 
 void ClearAirplaneList(airplane* airplane_list) {
