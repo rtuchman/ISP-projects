@@ -12,6 +12,7 @@ typedef struct pilot {
 } pilot;
 
 int dicompose(char *s, char *seperators, char **words);
+int GetPilots(char *path, pilot* first_pilot);
 
 
 

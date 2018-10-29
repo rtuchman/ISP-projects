@@ -44,12 +44,12 @@ int GetPilots(char *path, pilot* first_pilot) {
 	char line[100];
 	char *pilot_fields[4];
 	pilot tmp_pilot;
-	FILE *fptr;
-	if (NULL == (fptr = fopen(path, 'r'))) return -1;
+	FILE *fp = NULL;
+	if (NULL == (fopen_s(fp, path, 'r'))) return -1;
 
 	
 
-	while (fgets(line, 100, fptr) != NULL) {
+	while (fgets(line, 100, fp) != NULL) {
 		dicompose(line, ", ", pilot_fields);
 		strcpy(tmp_pilot.name, pilot_fields[0]);
 		strcpy(tmp_pilot.airplane, pilot_fields[1]);

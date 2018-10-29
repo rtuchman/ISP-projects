@@ -6,7 +6,7 @@
 
 
 
-int main()
+int main(int argc, char *argv[])
 {
 	airplane* first_plane = (airplane*)malloc(sizeof(airplane));
 	airplane temp = {.name = "first", .model = "non", .age = 0};
@@ -28,6 +28,11 @@ int main()
 	DeleteAirplane(to_delete, &first_plane);
 
 	ClearAirplaneList(first_plane);
+
+	pilot *tmp_pilot = (pilot*)malloc(sizeof(pilot));
+
+	GetPilots(argv[1], tmp_pilot);
+
 
 	
 
