@@ -7,25 +7,29 @@
 
 int main()
 {
-	airplane first = {.name = "first", .model = "non", .age = 0};
-	airplane* first_ptr;
+	airplane* first_plane = (airplane*)malloc(sizeof(airplane));
+	airplane temp = {.name = "first", .model = "non", .age = 0};
+
+	*first_plane = temp;
+
+
 	airplane* my_plane = (airplane*)malloc(sizeof(airplane));
 
-	first_ptr = &first;
-	   
-	CreateAirplaneList(first_ptr);
-	char model[4] = "737";
-	GetAirplane(model, first_ptr, my_plane);
 
-	airplane* to_delete = first.next_airplane;
+	CreateAirplaneList(first_plane);
+	char model[4] = "737";
+	GetAirplane(model, first_plane, my_plane);
+
+	airplane* to_delete = first_plane->next_airplane;
 
 	to_delete = (((((to_delete->next_airplane)->next_airplane)->next_airplane)->next_airplane)->next_airplane);
 
+	DeleteAirplane(to_delete, &first_plane);
 
-	DeleteAirplane(to_delete, &first_ptr);
+	ClearAirplaneList(first_plane);
 
-	ClearAirplaneList(first_ptr);
 
-	printf("dudu_caralho\n");
+
+	printf("hola mundo\n");
 
 }
