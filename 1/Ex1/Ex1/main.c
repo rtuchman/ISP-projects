@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "airplane_db.h"
 #include "pilots.h"
 #include <stdio.h>
@@ -31,10 +32,7 @@ int main(int argc, char *argv[])
 
 	pilot *tmp_pilot = (pilot*)malloc(sizeof(pilot));
 
-	GetPilots(argv[1], tmp_pilot);
-
-
-	
+	GetPilots(argv[1], tmp_pilot);	
 
 	printf("hola mundo\n");
 

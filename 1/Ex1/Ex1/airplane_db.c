@@ -38,7 +38,6 @@ int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** ret
 int CreateAirplaneList(airplane* first_airplane) {
 	airplane* curr_airplane= (airplane*)malloc(sizeof(airplane));
 	first_airplane->next_airplane = curr_airplane;
-	airplane* null_plane = NULL;
 	airplane airplane_array[12] = { {"Beit-Shean", "737", 5}, {"Ashkelon", "737", 10.25},
 	{"Hadera", "737", 3}, {"Kineret", "737", 7.5}, {"Nahariya", "737", 1},
 	{"Tel-Aviv", "747", 20}, {"Haifa", "747", 15}, {"Jerusalem", "737", 17},

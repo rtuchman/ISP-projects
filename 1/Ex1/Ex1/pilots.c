@@ -4,7 +4,7 @@
 #include <string.h>
 #include "pilots.h"
 
-int dicompose(char *s, char *seperators, char **words)
+int break_line(char *s, char *seperators, char **words)
 {
 	int n = 0;
 	int flag = 0;
@@ -43,24 +43,28 @@ int dicompose(char *s, char *seperators, char **words)
 int GetPilots(char *path, pilot* first_pilot) {
 	char line[100];
 	char *pilot_fields[4];
-	pilot tmp_pilot;
-	FILE *fp = NULL;
-	if (NULL == (fopen_s(fp, path, 'r'))) return -1;
+	FILE *pilots_file;
+	pilot *curr_pilot = (pilot*)malloc(sizeof(pilot));
 
+	first_pilot->next_pilot = curr_pilot;
+
+	if (NULL == (pilots_file = fopen(path, "r")))
+		return -1;		
 	
+	while (fgets(line, 100, pilots_file) != NULL) {
+		break_line(line, ",\n", pilot_fields);
+		strcpy(curr_pilot->name, pilot_fields[0]);
+		strcpy(curr_pilot->airplane, pilot_fields[1]);
+		curr_pilot->hours_flown = atoi(pilot_fields[2]);
+		strcpy(curr_pilot->rank, pilot_fields[3]);
 
-	while (fgets(line, 100, fp) != NULL) {
-		dicompose(line, ", ", pilot_fields);
-		strcpy(tmp_pilot.name, pilot_fields[0]);
-		strcpy(tmp_pilot.airplane, pilot_fields[1]);
-		tmp_pilot.hours_flown, atoi(pilot_fields[2]);
-		strcpy(tmp_pilot.rank, pilot_fields[3]);
+		curr_pilot->next_pilot = (pilot*)malloc(sizeof(pilot));
+		curr_pilot = curr_pilot->next_pilot;
 
-		pilot *curr_pilot = (pilot*)malloc(sizeof(pilot) + sizeof(char) * strlen(tmp_pilot.name));
+				
 
-		curr_pilot = curr_pilot->next_pilot;	
+		}
 
 	}
 
 
-}
