@@ -64,6 +64,7 @@ int GetPilots(char *path, pilot* first_pilot) {
 				
 
 		}
+	fclose(pilots_file);
 	curr_pilot->next_pilot = NULL;
 	return 0;
 
