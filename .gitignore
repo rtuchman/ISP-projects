@@ -50,6 +50,7 @@
 *.sou
 *.db
 *.ipch
+*.opendb
 
 # Log file
 *.log

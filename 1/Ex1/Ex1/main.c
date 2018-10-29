@@ -5,11 +5,6 @@
 
 
 
-
-
-
-
-
 int main()
 {
 	airplane first = {.name = "first", .model = "non", .age = 0};
@@ -17,12 +12,7 @@ int main()
 	airplane* my_plane = (airplane*)malloc(sizeof(airplane));
 
 	first_ptr = &first;
-
-
-
-
-
-
+	   
 	CreateAirplaneList(first_ptr);
 	char model[4] = "737";
 	GetAirplane(model, first_ptr, my_plane);
