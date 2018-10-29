@@ -52,9 +52,11 @@
 *.ipch
 *.opendb
 
-# Log file
+# Log file and txt
 *.log
 *.tlog
+*.txt
+
 
 # Kernel Module Compile Results
 *.mod*

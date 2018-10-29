@@ -118,9 +118,11 @@
   <ItemGroup>
     <ClCompile Include="airplane_db.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="pilots.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="airplane_db.h" />
+    <ClInclude Include="pilots.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
