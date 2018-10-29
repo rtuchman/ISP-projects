@@ -46,6 +46,11 @@
 *.zip
 *.pdf
 
+#Debug and build
+*.sou
+*.db
+*.ipch
+
 # Log file
 *.log
 *.tlog
