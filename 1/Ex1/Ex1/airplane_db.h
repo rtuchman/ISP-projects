@@ -14,7 +14,7 @@ typedef struct airplane {
 	char name[MAX_LENGTH_AIRPLANE_NAME];
 	char model[4];
 	float age;
-	struct airplane* next_airplane;
+	struct airplane* next_pilot;
 } airplane;
 
 

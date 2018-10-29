@@ -64,7 +64,36 @@ int GetPilots(char *path, pilot* first_pilot) {
 				
 
 		}
+	return 0;
 
 	}
 
+int ComparePilots(pilot* pilot1, pilot* pilot2) {
+	if (pilot1 == NULL || pilot2 == NULL)      return 0;
+	if (pilot1->hours_flown != pilot2->hours_flown)            return 0;
+	if (strcmp(pilot1->airplane, pilot2->airplane) != 0) return 0;
+	if (strcmp(pilot1->name, pilot2->name) != 0)   return 0;
+	if (strcmp(pilot1->rank, pilot2->rank) != 0)   return 0;
+	return 1;
+}
 
+void DeletePilots(pilot* pilot_to_delete, pilot** first_pilot) {
+	pilot* curr_pilot = *first_pilot;
+	pilot* match_pilot = NULL;
+	if (NULL == curr_pilot) return;
+	if (CompareAirplanes(curr_pilot, pilot_to_delete)) {
+		*first_pilot = (*first_pilot)->next_pilot;
+		free(curr_pilot);
+		return;
+	}
+	while (curr_pilot->next_pilot != NULL) {
+		if (CompareAirplanes(curr_pilot->next_pilot, pilot_to_delete)) {
+			match_pilot = curr_pilot->next_pilot;
+			curr_pilot->next_pilot = match_pilot->next_pilot;
+			free(match_pilot);
+			return;
+		}
+		curr_pilot = curr_pilot->next_pilot;
+	}
+	return;
+}

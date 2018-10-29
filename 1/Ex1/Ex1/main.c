@@ -22,9 +22,9 @@ int main(int argc, char *argv[])
 	char model[4] = "737";
 	GetAirplane(model, first_plane, my_plane);
 
-	airplane* to_delete = first_plane->next_airplane;
+	airplane* to_delete = first_plane->next_pilot;
 
-	to_delete = (((((to_delete->next_airplane)->next_airplane)->next_airplane)->next_airplane)->next_airplane);
+	to_delete = (((((to_delete->next_pilot)->next_pilot)->next_pilot)->next_pilot)->next_pilot);
 
 	DeleteAirplane(to_delete, &first_plane);
 
@@ -33,6 +33,10 @@ int main(int argc, char *argv[])
 	pilot *tmp_pilot = (pilot*)malloc(sizeof(pilot));
 
 	GetPilots(argv[1], tmp_pilot);	
+
+	pilot* delete_pilot = tmp_pilot;
+
+	DeletePilots(delete_pilot, &tmp_pilot);
 
 	printf("hola mundo\n");
 

@@ -1,7 +1,7 @@
 #ifndef _PILOTS_H_
 #define _PILOTS_H_
 
-#define MAX_PILOT_NAME_LENGTH 128
+#define MAX_PILOT_NAME_LENGTH 40
 
 typedef struct pilot {
 	char name[MAX_PILOT_NAME_LENGTH]; 
@@ -15,6 +15,7 @@ typedef struct pilot {
 
 int break_line(char *s, char *seperators, char **words);
 int GetPilots(char *path, pilot* first_pilot);
+void DeletePilots(pilot* pilot_to_delete, pilot** first_pilot);
 
 
 
