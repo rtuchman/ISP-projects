@@ -64,6 +64,7 @@ int GetPilots(char *path, pilot* first_pilot) {
 				
 
 		}
+	curr_pilot->next_pilot = NULL;
 	return 0;
 
 	}
@@ -96,4 +97,14 @@ void DeletePilots(pilot* pilot_to_delete, pilot** first_pilot) {
 		curr_pilot = curr_pilot->next_pilot;
 	}
 	return;
+}
+
+void ClearPilotList(pilot* pilot_list) {
+	pilot* pilot_to_delete = pilot_list;
+	pilot* curr_pilot = pilot_list;
+	while (curr_pilot != NULL) {
+		curr_pilot = curr_pilot->next_pilot;
+		free(pilot_to_delete);
+		pilot_to_delete = curr_pilot;
+	}
 }

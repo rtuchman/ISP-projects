@@ -38,6 +38,8 @@ int main(int argc, char *argv[])
 
 	DeletePilots(delete_pilot, &tmp_pilot);
 
+	ClearPilotList(tmp_pilot);
+
 	printf("hola mundo\n");
 
 }
