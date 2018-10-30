@@ -9,8 +9,6 @@ typedef struct pilot {
 	unsigned int hours_flown;
 	char rank[14];
 	struct pilot* next_pilot;
-	
-
 } pilot;
 
 int break_line(char *s, char *seperators, char **words);

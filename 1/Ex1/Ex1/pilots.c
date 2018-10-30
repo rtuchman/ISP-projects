@@ -10,33 +10,27 @@ int break_line(char *s, char *seperators, char **words)
 	int flag = 0;
 	while (*s != '\0')
 	{
-		while (strchr(seperators, *s))
-		{
+		while (strchr(seperators, *s)) {
 			++s;
 			flag = 1;
 		}
-		if (flag == 1)
-		{
+		if (flag == 1) {
 			++s;
 			flag = 0;
 		}
 		if (*s == '\0')
 			return n;
-
 		words[n++] = s;
-
 		while ((*s != '\0') && (strchr(seperators, *s) == NULL))
 			++s;
 		if (*s == '\0')
 			return n;
-
 		if (*(s - 1) == ' ')
 			*(s - 1) = '\0';
 		else
 			*s = '\0';
 		*s++;
 	}
-
 	return n;
 }
 
