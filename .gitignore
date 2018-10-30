@@ -7,6 +7,7 @@
 *.ko
 *.obj
 *.elf
+*.idb
 
 # Linker output
 *.ilk
@@ -52,6 +53,8 @@
 *.db
 *.ipch
 *.opendb
+*.vcxproj.filters
+*.vcxproj
 
 # Log file and txt
 *.log
