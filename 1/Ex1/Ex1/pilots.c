@@ -48,9 +48,9 @@ int GetPilots(char *path, pilot* first_pilot) {
 	while (fgets(line, 100, pilots_file) != NULL) {
 		break_line(line, ",\n", pilot_fields);
 		strcpy(curr_pilot->name, pilot_fields[0]);
-		strcpy(curr_pilot->airplane, pilot_fields[1]);
+		strcpy(curr_pilot->airplane, pilot_fields[1]+1);
 		curr_pilot->hours_flown = atoi(pilot_fields[2]);
-		strcpy(curr_pilot->rank, pilot_fields[3]);
+		strcpy(curr_pilot->rank, pilot_fields[3]+1);
 
 		curr_pilot->next_pilot = (pilot*)malloc(sizeof(pilot));
 		curr_pilot = curr_pilot->next_pilot;
@@ -60,10 +60,12 @@ int GetPilots(char *path, pilot* first_pilot) {
 	return 0;
 }
 
-int FindBestPilot(pilot* first_pilot, pilot* return_pilot, char airplane, char rank) {
+int FindBestPilot(pilot* first_pilot, pilot* return_pilot, char *airplane, char* rank) {
 	pilot* curr_pilot = first_pilot;
 	int hours_count = INT_MAX;
 	while (curr_pilot != NULL) {
+		int x =  strcmp(airplane, curr_pilot->airplane);
+		int y = strcmp(rank, curr_pilot->rank);
 		if ((0 == strcmp(airplane, curr_pilot->airplane)) && (curr_pilot->hours_flown < hours_count) && (0 == strcmp(rank, curr_pilot->rank))) {
 			hours_count = curr_pilot->hours_flown;
 			*return_pilot = *curr_pilot;
@@ -87,13 +89,13 @@ void DeletePilots(pilot* pilot_to_delete, pilot** first_pilot) {
 	pilot* curr_pilot = *first_pilot;
 	pilot* match_pilot = NULL;
 	if (NULL == curr_pilot) return;
-	if (CompareAirplanes(curr_pilot, pilot_to_delete)) {
+	if (ComparePilots(curr_pilot, pilot_to_delete)) {
 		*first_pilot = (*first_pilot)->next_pilot;
 		free(curr_pilot);
 		return;
 	}
 	while (curr_pilot->next_pilot != NULL) {
-		if (CompareAirplanes(curr_pilot->next_pilot, pilot_to_delete)) {
+		if (ComparePilots(curr_pilot->next_pilot, pilot_to_delete)) {
 			match_pilot = curr_pilot->next_pilot;
 			curr_pilot->next_pilot = match_pilot->next_pilot;
 			free(match_pilot);

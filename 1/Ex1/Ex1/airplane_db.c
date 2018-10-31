@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,14 +19,11 @@ int DestinationInArray(char destination[MAX_LENGTH_CITY_NAME], char *destination
 	return 0;
 }
 
-int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** return_model) {
-	static int index = 0;
+int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** return_model, int index) {
 	*return_model = airplane_models + index;
 	if (destination == NULL) return -1;
 	for (int city_num = 0; city_num < 3; (*return_model)++, city_num++) {
 		if (DestinationInArray(destination, (*return_model)->destinations)) {
-			index += 1;
-			if (3 == index) index = 0;
 			return 0;
 		}
 	}
@@ -41,7 +39,7 @@ int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** ret
 
 int CreateAirplaneList(airplane* first_airplane) {
 	airplane* curr_airplane= (airplane*)malloc(sizeof(airplane));
-	first_airplane->next_pilot = curr_airplane;
+	first_airplane->next_airplane = curr_airplane;
 	airplane airplane_array[12] = { {"Beit-Shean", "737", 5}, {"Ashkelon", "737", 10.25},
 	{"Hadera", "737", 3}, {"Kineret", "737", 7.5}, {"Nahariya", "737", 1},
 	{"Tel-Aviv", "747", 20}, {"Haifa", "747", 15}, {"Jerusalem", "737", 17},
@@ -49,14 +47,14 @@ int CreateAirplaneList(airplane* first_airplane) {
 	airplane* airplane_p = airplane_array;	
 	ALLOC_MEM_AND_SET_AIRPLANE(curr_airplane);
 	while (strcmp(airplane_p->name, "NULL") != 0) {
-		ALLOC_MEM_AND_SET_AIRPLANE(curr_airplane->next_pilot);
-		curr_airplane = curr_airplane->next_pilot;
+		ALLOC_MEM_AND_SET_AIRPLANE(curr_airplane->next_airplane);
+		curr_airplane = curr_airplane->next_airplane;
 	}
-	curr_airplane->next_pilot = NULL;
+	curr_airplane->next_airplane = NULL;
 	return 0;
 }
 
-int GetAirplane(char airplane_model[3], airplane* first_airplane, airplane* return_airplane) {
+int GetAirplane(char airplane_model[4], airplane* first_airplane, airplane* return_airplane) {
 	airplane* curr_airplane = first_airplane;
 	float curr_age = FLT_MAX;
 	while (curr_airplane != NULL) {
@@ -64,7 +62,7 @@ int GetAirplane(char airplane_model[3], airplane* first_airplane, airplane* retu
 			curr_age = curr_airplane->age;
 			*return_airplane = *curr_airplane;
 		}
-		curr_airplane=curr_airplane->next_pilot;
+		curr_airplane=curr_airplane->next_airplane;
 	}
 	if ((curr_airplane == first_airplane) && (curr_age == FLT_MAX)) return -1;
 	return 0;
@@ -79,22 +77,22 @@ int CompareAirplanes(airplane* airplane1, airplane* airplane2) {
 }
 
 void DeleteAirplane(airplane* airplane_to_delete, airplane** first_airplane) {
-	airplane* curr_airplane = *first_airplane;
+	airplane* curr_airplane = first_airplane;
 	airplane* match_airplane = NULL;
 	if (NULL == curr_airplane) return;
 	if (CompareAirplanes(curr_airplane, airplane_to_delete)) {
-		*first_airplane = (*first_airplane)->next_pilot;
+		*first_airplane = (*first_airplane)->next_airplane;
 		free(curr_airplane);
 		return;
 	}
-	while (curr_airplane->next_pilot != NULL) {
-		if (CompareAirplanes(curr_airplane->next_pilot, airplane_to_delete)) {
-			match_airplane = curr_airplane->next_pilot;
-			curr_airplane->next_pilot = match_airplane->next_pilot;
-			free(match_airplane);
+	while (curr_airplane->next_airplane != NULL) {
+		if (CompareAirplanes(curr_airplane->next_airplane, airplane_to_delete)) {
+			match_airplane = curr_airplane->next_airplane;
+			curr_airplane->next_airplane = match_airplane->next_airplane;
+			free(airplane_to_delete);
 			return;
 		}
-		curr_airplane = curr_airplane->next_pilot;
+		curr_airplane = curr_airplane->next_airplane;
 	}
 	return;
 }
@@ -103,7 +101,7 @@ void ClearAirplaneList(airplane* airplane_list) {
 	airplane* airplane_to_delete = airplane_list;
 	airplane* curr_airplane = airplane_list;
 	while (curr_airplane != NULL) {
-		curr_airplane = curr_airplane->next_pilot;
+		curr_airplane = curr_airplane->next_airplane;
 		free(airplane_to_delete);
 		airplane_to_delete = curr_airplane;
 	}
@@ -114,12 +112,15 @@ int GetYoungestPlane(char destination[MAX_LENGTH_CITY_NAME], airplane* first_air
 	airplane_model *tmp_airplane_model = NULL;
 	airplane *tmp_airplane = (airplane*)malloc(sizeof(airplane));
 
-	for (int model = 0; model<3; model++){
-		GetAirplaneType(destination, &tmp_airplane_model);
+	for (int i = 0; i<3; i++){
+		GetAirplaneType(destination, &tmp_airplane_model, i);
 		GetAirplane(tmp_airplane_model->type, first_airplane, tmp_airplane);
-		if (tmp_airplane->age < youngest_plane)
+		if (tmp_airplane->age < youngest_plane) {
 			youngest_plane = tmp_airplane->age;
-			*return_airplane = *tmp_airplane;
+			return_airplane->age = tmp_airplane->age;
+			strcpy(return_airplane->model, tmp_airplane->model);
+			strcpy(return_airplane->name, tmp_airplane->name);
+		}
 	}
 	free(tmp_airplane);
 	return 0;

@@ -14,14 +14,14 @@ typedef struct airplane {
 	char name[MAX_LENGTH_AIRPLANE_NAME];
 	char model[4];
 	float age;
-	struct airplane* next_pilot;
+	struct airplane* next_airplane;
 } airplane;
 
 
-int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** return_model);
+int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** return_model, int index);
 int DestinationInArray(char destination[MAX_LENGTH_CITY_NAME], char *destinations_array);
 int CreateAirplaneList(airplane* first_airplane);
-int GetAirplane(char airplane_model[3], airplane* first_airplane, airplane* return_airplane);
+int GetAirplane(char airplane_model[4], airplane* first_airplane, airplane* return_airplane);
 int CompareAirplanes(airplane* airplane1, airplane* airplane2);
 void DeleteAirplane(airplane* airplane_to_delete, airplane** first_airplane);
 void ClearAirplaneList(airplane* airplane_list);
