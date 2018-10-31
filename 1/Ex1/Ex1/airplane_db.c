@@ -19,11 +19,15 @@ int DestinationInArray(char destination[MAX_LENGTH_CITY_NAME], char *destination
 }
 
 int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** return_model) {
-	*return_model = airplane_models;
+	static int index = 0;
+	*return_model = airplane_models + index;
 	if (destination == NULL) return -1;
 	for (int city_num = 0; city_num < 3; (*return_model)++, city_num++) {
-		if (DestinationInArray(destination, (*return_model)->destinations))
+		if (DestinationInArray(destination, (*return_model)->destinations)) {
+			index += 1;
+			if (3 == index) index = 0;
 			return 0;
+		}
 	}
 	return -1;
 }
@@ -103,5 +107,21 @@ void ClearAirplaneList(airplane* airplane_list) {
 		free(airplane_to_delete);
 		airplane_to_delete = curr_airplane;
 	}
+}
+
+int GetYoungestPlane(char destination[MAX_LENGTH_CITY_NAME], airplane* first_airplane, airplane* return_airplane) {
+	float youngest_plane = FLT_MAX;
+	airplane_model *tmp_airplane_model = NULL;
+	airplane *tmp_airplane = (airplane*)malloc(sizeof(airplane));
+
+	for (int model = 0; model<3; model++){
+		GetAirplaneType(destination, &tmp_airplane_model);
+		GetAirplane(tmp_airplane_model->type, first_airplane, tmp_airplane);
+		if (tmp_airplane->age < youngest_plane)
+			youngest_plane = tmp_airplane->age;
+			*return_airplane = *tmp_airplane;
+	}
+	free(tmp_airplane);
+	return 0;
 }
 

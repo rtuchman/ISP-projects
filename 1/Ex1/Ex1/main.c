@@ -7,29 +7,30 @@
 
 int main(int argc, char *argv[])
 {
-	FILE *plan_file = fopen(argv[3], "r");
+	FILE *dest_file = NULL;
 	char line[MAX_LENGTH_CITY_NAME];
-	
-	airplane* first_plane = (airplane*)malloc(sizeof(airplane));
-	airplane* youngest_plane = NULL;
-	airplane_model *dudu = NULL;
+	airplane *first_plane = (airplane*)malloc(sizeof(airplane));
+	airplane *tmp_plane = (airplane*)malloc(sizeof(airplane));
+	pilot *first_pilot = (pilot*)malloc(sizeof(pilot));
+	pilot *tmp_pilot = (pilot*)malloc(sizeof(pilot));
+
+	airplane_model *dudu;
+
 	CreateAirplaneList(first_plane);
+	GetPilots(argv[1], first_pilot);
 
-	GetAirplaneType("Miami", &dudu);
+	GetYoungestPlane("New York", first_plane, tmp_plane);
 
-	
 
-	//while (fgets(line, 100, plan_file) != NULL) {
+	//if (NULL == (dest_file = fopen(argv[3], "r")))
+	//	return -1;
+	//
+	//while (fgets(line, 100, dest_file) != NULL) {
 	//
 	//	GetAirplane()
 	//
 	//}
-
-
-	
-
-
-	
+	//fclose(dest_file);	
 
 }
 /*
