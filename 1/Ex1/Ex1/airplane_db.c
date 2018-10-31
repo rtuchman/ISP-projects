@@ -56,7 +56,6 @@ int GetAirplane(char airplane_model[3], airplane* first_airplane, airplane* retu
 	airplane* curr_airplane = first_airplane;
 	float curr_age = FLT_MAX;
 	while (curr_airplane != NULL) {
-		int x = strcmp(curr_airplane->model, airplane_model);
 		if ((0 == strcmp(airplane_model, curr_airplane->model)) && (curr_airplane->age < curr_age)) {
 			curr_age = curr_airplane->age;
 			*return_airplane = *curr_airplane;

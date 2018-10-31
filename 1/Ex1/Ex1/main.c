@@ -12,15 +12,18 @@ int main(int argc, char *argv[])
 	
 	airplane* first_plane = (airplane*)malloc(sizeof(airplane));
 	airplane* youngest_plane = NULL;
+	airplane_model *dudu = NULL;
 	CreateAirplaneList(first_plane);
+
+	GetAirplaneType("Miami", &dudu);
 
 	
 
-	while (fgets(line, 100, plan_file) != NULL) {
-
-		GetAirplane()
-
-	}
+	//while (fgets(line, 100, plan_file) != NULL) {
+	//
+	//	GetAirplane()
+	//
+	//}
 
 
 	

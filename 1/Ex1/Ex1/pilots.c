@@ -60,6 +60,20 @@ int GetPilots(char *path, pilot* first_pilot) {
 	return 0;
 }
 
+int FindBestPilot(pilot* first_pilot, pilot* return_pilot, char airplane, char rank) {
+	pilot* curr_pilot = first_pilot;
+	int hours_count = INT_MAX;
+	while (curr_pilot != NULL) {
+		if ((0 == strcmp(airplane, curr_pilot->airplane)) && (curr_pilot->hours_flown < hours_count) && (0 == strcmp(rank, curr_pilot->rank))) {
+			hours_count = curr_pilot->hours_flown;
+			*return_pilot = *curr_pilot;
+		}
+		curr_pilot = curr_pilot->next_pilot;
+	}
+	if ((curr_pilot == first_pilot) && (hours_count == INT_MAX)) return -1;
+	return 0;
+}
+
 int ComparePilots(pilot* pilot1, pilot* pilot2) {
 	if (pilot1 == NULL || pilot2 == NULL)      return 0;
 	if (pilot1->hours_flown != pilot2->hours_flown)            return 0;

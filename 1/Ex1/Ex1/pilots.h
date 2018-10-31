@@ -13,6 +13,8 @@ typedef struct pilot {
 
 int break_line(char *s, char *seperators, char **words);
 int GetPilots(char *path, pilot* first_pilot);
+int FindBestPilot(pilot* first_pilot, pilot* return_pilot, char airplane, char rank);
+int ComparePilots(pilot* pilot1, pilot* pilot2);
 void DeletePilots(pilot* pilot_to_delete, pilot** first_pilot);
 void ClearPilotList(pilot* airplane_list);
 
