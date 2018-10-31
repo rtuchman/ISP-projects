@@ -9,9 +9,9 @@ airplane_model airplane_models[3] = { {"737", {"Larnaca", "Athens", "Budapest", 
 									  {"787", {"London", "New York", "Los Angeles", "Hong Kong", "Miami", NULL}}
 									};
 
-int DestinationInArray(char destination[MAX_LENGTH_CITY_NAME], char destinations_array[MAX_NUM_OF_CITIES][MAX_LENGTH_CITY_NAME]) {
-	while (destinations_array != NULL) {
-		if (strcmp(destination, destinations_array))
+int DestinationInArray(char destination[MAX_LENGTH_CITY_NAME], char *destinations_array) {
+	while (*destinations_array != NULL) {
+		if (0 == strcmp(destination, destinations_array))
 			return 1;
 		destinations_array += MAX_LENGTH_CITY_NAME;
 	}

@@ -1,7 +1,7 @@
 #ifndef _PILOTS_H_
 #define _PILOTS_H_
 
-#define MAX_PILOT_NAME_LENGTH 40
+#define MAX_PILOT_NAME_LENGTH 50
 
 typedef struct pilot {
 	char name[MAX_PILOT_NAME_LENGTH]; 

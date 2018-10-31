@@ -54,15 +54,11 @@ int GetPilots(char *path, pilot* first_pilot) {
 
 		curr_pilot->next_pilot = (pilot*)malloc(sizeof(pilot));
 		curr_pilot = curr_pilot->next_pilot;
-
-				
-
-		}
+	}
 	fclose(pilots_file);
 	curr_pilot->next_pilot = NULL;
 	return 0;
-
-	}
+}
 
 int ComparePilots(pilot* pilot1, pilot* pilot2) {
 	if (pilot1 == NULL || pilot2 == NULL)      return 0;
