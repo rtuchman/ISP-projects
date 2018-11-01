@@ -1,13 +1,11 @@
 # Prerequisites
 *.d
-*.user
 
 # Object files
 *.o
 *.ko
 *.obj
 *.elf
-*.idb
 
 # Linker output
 *.ilk
@@ -44,24 +42,6 @@
 *.idb
 *.pdb
 
-# Pdf and Zip file
-*.zip
-*.pdf
-
-#Debug and build
-*.suo
-*.db
-*.ipch
-*.opendb
-*.vcxproj.filters
-*.vcxproj
-
-# Log file and txt
-*.log
-*.tlog
-*.txt
-
-
 # Kernel Module Compile Results
 *.mod*
 *.cmd
@@ -70,3 +50,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+#pdf
+*.pdf
