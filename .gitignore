@@ -48,13 +48,6 @@
 *.zip
 *.pdf
 
-#Debug and build
-*.suo
-*.db
-*.ipch
-*.opendb
-*.vcxproj.filters
-*.vcxproj
 
 # Log file and txt
 *.log
