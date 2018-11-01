@@ -51,7 +51,6 @@ int GetPilots(char *path, pilot* first_pilot) {
 		strcpy(curr_pilot->airplane, pilot_fields[1]+1);
 		curr_pilot->hours_flown = atoi(pilot_fields[2]);
 		strcpy(curr_pilot->rank, pilot_fields[3]+1);
-
 		curr_pilot->next_pilot = (pilot*)malloc(sizeof(pilot));
 		curr_pilot = curr_pilot->next_pilot;
 	}
@@ -60,7 +59,7 @@ int GetPilots(char *path, pilot* first_pilot) {
 	return 0;
 }
 
-int FindBestPilot(pilot* first_pilot, pilot* return_pilot, char *airplane, char* rank) {
+int FindBestPilot(pilot* first_pilot, pilot** return_pilot, char *airplane, char* rank) {
 	pilot* curr_pilot = first_pilot;
 	int hours_count = INT_MAX;
 	while (curr_pilot != NULL) {
@@ -68,11 +67,11 @@ int FindBestPilot(pilot* first_pilot, pilot* return_pilot, char *airplane, char*
 		int y = strcmp(rank, curr_pilot->rank);
 		if ((0 == strcmp(airplane, curr_pilot->airplane)) && (curr_pilot->hours_flown < hours_count) && (0 == strcmp(rank, curr_pilot->rank))) {
 			hours_count = curr_pilot->hours_flown;
-			*return_pilot = *curr_pilot;
+			*return_pilot = curr_pilot;
 		}
 		curr_pilot = curr_pilot->next_pilot;
 	}
-	if ((curr_pilot == first_pilot) && (hours_count == INT_MAX)) return -1;
+	if ((curr_pilot == first_pilot) || (hours_count == INT_MAX)) return -1;
 	return 0;
 }
 

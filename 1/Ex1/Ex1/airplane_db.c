@@ -54,13 +54,13 @@ int CreateAirplaneList(airplane* first_airplane) {
 	return 0;
 }
 
-int GetAirplane(char airplane_model[4], airplane* first_airplane, airplane* return_airplane) {
+int GetAirplane(char airplane_model[4], airplane* first_airplane, airplane** return_airplane) {
 	airplane* curr_airplane = first_airplane;
 	float curr_age = FLT_MAX;
 	while (curr_airplane != NULL) {
 		if ((0 == strcmp(airplane_model, curr_airplane->model)) && (curr_airplane->age < curr_age)) {
 			curr_age = curr_airplane->age;
-			*return_airplane = *curr_airplane;
+			*return_airplane = curr_airplane;
 		}
 		curr_airplane=curr_airplane->next_airplane;
 	}
@@ -77,7 +77,7 @@ int CompareAirplanes(airplane* airplane1, airplane* airplane2) {
 }
 
 void DeleteAirplane(airplane* airplane_to_delete, airplane** first_airplane) {
-	airplane* curr_airplane = first_airplane;
+	airplane* curr_airplane = *first_airplane;
 	airplane* match_airplane = NULL;
 	if (NULL == curr_airplane) return;
 	if (CompareAirplanes(curr_airplane, airplane_to_delete)) {
@@ -107,22 +107,18 @@ void ClearAirplaneList(airplane* airplane_list) {
 	}
 }
 
-int GetYoungestPlane(char destination[MAX_LENGTH_CITY_NAME], airplane* first_airplane, airplane* return_airplane) {
+int GetYoungestPlane(char destination[MAX_LENGTH_CITY_NAME], airplane* first_airplane, airplane** return_airplane) {
 	float youngest_plane = FLT_MAX;
 	airplane_model *tmp_airplane_model = NULL;
-	airplane *tmp_airplane = (airplane*)malloc(sizeof(airplane));
 
 	for (int i = 0; i<3; i++){
 		GetAirplaneType(destination, &tmp_airplane_model, i);
-		GetAirplane(tmp_airplane_model->type, first_airplane, tmp_airplane);
-		if (tmp_airplane->age < youngest_plane) {
-			youngest_plane = tmp_airplane->age;
-			return_airplane->age = tmp_airplane->age;
-			strcpy(return_airplane->model, tmp_airplane->model);
-			strcpy(return_airplane->name, tmp_airplane->name);
+		GetAirplane(tmp_airplane_model->type, first_airplane, return_airplane);
+		if ((*return_airplane)->age < youngest_plane) {
+			youngest_plane = (*return_airplane)->age;
+
 		}
 	}
-	free(tmp_airplane);
 	return 0;
 }
 
