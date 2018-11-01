@@ -98,8 +98,8 @@ void DeleteAirplane(airplane* airplane_to_delete, airplane** first_airplane) {
 }
 
 void ClearAirplaneList(airplane* airplane_list) {
-	airplane* airplane_to_delete = airplane_list;
-	airplane* curr_airplane = airplane_list;
+	airplane* airplane_to_delete = airplane_list->next_airplane;
+	airplane* curr_airplane = airplane_list->next_airplane;
 	while (curr_airplane != NULL) {
 		curr_airplane = curr_airplane->next_airplane;
 		free(airplane_to_delete);
@@ -116,7 +116,6 @@ int GetYoungestPlane(char destination[MAX_LENGTH_CITY_NAME], airplane* first_air
 		GetAirplane(tmp_airplane_model->type, first_airplane, return_airplane);
 		if ((*return_airplane)->age < youngest_plane) {
 			youngest_plane = (*return_airplane)->age;
-
 		}
 	}
 	return 0;

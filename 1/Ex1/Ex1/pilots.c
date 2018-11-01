@@ -106,8 +106,8 @@ void DeletePilots(pilot* pilot_to_delete, pilot** first_pilot) {
 }
 
 void ClearPilotList(pilot* pilot_list) {
-	pilot* pilot_to_delete = pilot_list;
-	pilot* curr_pilot = pilot_list;
+	pilot* pilot_to_delete = pilot_list->next_pilot;
+	pilot* curr_pilot = pilot_list->next_pilot;
 	while (curr_pilot != NULL) {
 		curr_pilot = curr_pilot->next_pilot;
 		free(pilot_to_delete);

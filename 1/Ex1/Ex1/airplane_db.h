@@ -21,10 +21,9 @@ typedef struct airplane {
 int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** return_model, int index);
 int DestinationInArray(char destination[MAX_LENGTH_CITY_NAME], char *destinations_array);
 int CreateAirplaneList(airplane* first_airplane);
-int GetAirplane(char airplane_model[4], airplane* first_airplane, airplane* return_airplane);
+int GetAirplane(char airplane_model[4], airplane* first_airplane, airplane** return_airplane);
 int CompareAirplanes(airplane* airplane1, airplane* airplane2);
 void DeleteAirplane(airplane* airplane_to_delete, airplane** first_airplane);
 void ClearAirplaneList(airplane* airplane_list);
-int GetYoungestPlane(char destination[MAX_LENGTH_CITY_NAME], airplane* first_airplane, airplane* return_airplane);
-
+int GetYoungestPlane(char destination[MAX_LENGTH_CITY_NAME], airplane* first_airplane, airplane** return_airplane);
 #endif _AIRPLANE_DB_H_
