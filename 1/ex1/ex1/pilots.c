@@ -4,7 +4,7 @@
 #include <string.h>
 #include "pilots.h"
 
-int break_line(char *s, char *seperators, char **words)
+int breakLine(char *s, char *seperators, char **words)
 {
 	int n = 0;
 	int flag = 0;
@@ -39,18 +39,19 @@ int GetPilots(char *path, pilot* first_pilot) {
 	char *pilot_fields[4];
 	FILE *pilots_file;
 	pilot *curr_pilot = (pilot*)malloc(sizeof(pilot));
+	if (curr_pilot == NULL) { return -1; }
 
 	first_pilot->next_pilot = curr_pilot;
 
 	if (NULL == (pilots_file = fopen(path, "r")))
-		return -1;		
-	
+		return -1;
+
 	while (fgets(line, 100, pilots_file) != NULL) {
-		break_line(line, ",\n", pilot_fields);
+		breakLine(line, ",\n", pilot_fields);
 		strcpy(curr_pilot->name, pilot_fields[0]);
-		strcpy(curr_pilot->airplane, pilot_fields[1]+1);
+		strcpy(curr_pilot->airplane, pilot_fields[1] + 1);
 		curr_pilot->hours_flown = atoi(pilot_fields[2]);
-		strcpy(curr_pilot->rank, pilot_fields[3]+1);
+		strcpy(curr_pilot->rank, pilot_fields[3] + 1);
 		curr_pilot->next_pilot = (pilot*)malloc(sizeof(pilot));
 		curr_pilot = curr_pilot->next_pilot;
 	}
@@ -63,7 +64,7 @@ int FindBestPilot(pilot* first_pilot, pilot** return_pilot, char *airplane, char
 	pilot* curr_pilot = first_pilot;
 	int hours_count = INT_MAX;
 	while (curr_pilot != NULL) {
-		int x =  strcmp(airplane, curr_pilot->airplane);
+		int x = strcmp(airplane, curr_pilot->airplane);
 		int y = strcmp(rank, curr_pilot->rank);
 		if ((0 == strcmp(airplane, curr_pilot->airplane)) && (curr_pilot->hours_flown < hours_count) && (0 == strcmp(rank, curr_pilot->rank))) {
 			hours_count = curr_pilot->hours_flown;
@@ -76,11 +77,11 @@ int FindBestPilot(pilot* first_pilot, pilot** return_pilot, char *airplane, char
 }
 
 int ComparePilots(pilot* pilot1, pilot* pilot2) {
-	if (pilot1 == NULL || pilot2 == NULL)      return 0;
-	if (pilot1->hours_flown != pilot2->hours_flown)            return 0;
+	if (pilot1 == NULL || pilot2 == NULL)                return 0;
+	if (pilot1->hours_flown != pilot2->hours_flown)      return 0;
 	if (strcmp(pilot1->airplane, pilot2->airplane) != 0) return 0;
-	if (strcmp(pilot1->name, pilot2->name) != 0)   return 0;
-	if (strcmp(pilot1->rank, pilot2->rank) != 0)   return 0;
+	if (strcmp(pilot1->name, pilot2->name) != 0)         return 0;
+	if (strcmp(pilot1->rank, pilot2->rank) != 0)         return 0;
 	return 1;
 }
 

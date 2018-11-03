@@ -5,10 +5,17 @@
 #include <float.h>
 #include "airplane_db.h"
 
+#define ALLOC_MEM_AND_SET_AIRPLANE(list_airplane_p) {\
+	if (NULL == list_airplane_p) list_airplane_p = (airplane*)malloc(sizeof(airplane));\
+	if (NULL == list_airplane_p) return -1;\
+	*list_airplane_p = *airplane_p;\
+	airplane_p++;\
+}
+
 airplane_model airplane_models[3] = { {"737", {"Larnaca", "Athens", "Budapest", "Zurich","London", "Paris", "Rome", NULL}},
 									  {"747", {"London", "New York","Bangkok", NULL}},
 									  {"787", {"London", "New York", "Los Angeles", "Hong Kong", "Miami", NULL}}
-									};
+};
 
 int DestinationInArray(char destination[MAX_LENGTH_CITY_NAME], char *destinations_array) {
 	while (*destinations_array != NULL) {
@@ -30,21 +37,15 @@ int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** ret
 	return -1;
 }
 
-#define ALLOC_MEM_AND_SET_AIRPLANE(list_airplane_p) {\
-	if (NULL == list_airplane_p) list_airplane_p = (airplane*)malloc(sizeof(airplane));\
-	if (NULL == list_airplane_p) return -1;\
-	*list_airplane_p = *airplane_p;\
-	airplane_p++;\
-}
-
 int CreateAirplaneList(airplane* first_airplane) {
-	airplane* curr_airplane= (airplane*)malloc(sizeof(airplane));
+	airplane* curr_airplane = (airplane*)malloc(sizeof(airplane));
+	if (curr_airplane == NULL) { return -1; }
 	first_airplane->next_airplane = curr_airplane;
 	airplane airplane_array[12] = { {"Beit-Shean", "737", 5}, {"Ashkelon", "737", 10.25},
 	{"Hadera", "737", 3}, {"Kineret", "737", 7.5}, {"Nahariya", "737", 1},
 	{"Tel-Aviv", "747", 20}, {"Haifa", "747", 15}, {"Jerusalem", "737", 17},
 	{"Ashdod", "787", 1}, {"Bat Yam", "787", 1.5}, {"Rehovot", "787", 0.5}, {"NULL"} };
-	airplane* airplane_p = airplane_array;	
+	airplane* airplane_p = airplane_array;
 	ALLOC_MEM_AND_SET_AIRPLANE(curr_airplane);
 	while (strcmp(airplane_p->name, "NULL") != 0) {
 		ALLOC_MEM_AND_SET_AIRPLANE(curr_airplane->next_airplane);
@@ -62,15 +63,15 @@ int GetAirplane(char airplane_model[4], airplane* first_airplane, airplane** ret
 			curr_age = curr_airplane->age;
 			*return_airplane = curr_airplane;
 		}
-		curr_airplane=curr_airplane->next_airplane;
+		curr_airplane = curr_airplane->next_airplane;
 	}
 	if ((curr_airplane == first_airplane) && (curr_age == FLT_MAX)) return -1;
 	return 0;
 }
 
 int CompareAirplanes(airplane* airplane1, airplane* airplane2) {
-	if (airplane1 == NULL || airplane2 == NULL)      return 0;
-	if (airplane1->age != airplane2->age)            return 0;
+	if (airplane1 == NULL || airplane2 == NULL)          return 0;
+	if (airplane1->age != airplane2->age)                return 0;
 	if (strcmp(airplane1->model, airplane2->model) != 0) return 0;
 	if (strcmp(airplane1->name, airplane2->name) != 0)   return 0;
 	return 1;
@@ -111,13 +112,13 @@ int GetYoungestPlane(char destination[MAX_LENGTH_CITY_NAME], airplane* first_air
 	float youngest_plane = FLT_MAX;
 	airplane_model *tmp_airplane_model = NULL;
 
-	for (int i = 0; i<3; i++){
+	for (int i = 0; i < 3; i++) {
 		GetAirplaneType(destination, &tmp_airplane_model, i);
 		GetAirplane(tmp_airplane_model->type, first_airplane, return_airplane);
 		if ((*return_airplane)->age < youngest_plane) {
 			youngest_plane = (*return_airplane)->age;
 		}
 	}
+	if (youngest_plane == FLT_MAX) return -1;
 	return 0;
 }
-

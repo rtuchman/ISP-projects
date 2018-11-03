@@ -1,3 +1,6 @@
+//Authors- Ran Tuchman (201631678) & Adi Ben-Avraham (204058697)
+//Project- ex1
+
 #define _CRT_SECURE_NO_WARNINGS
 #include "airplane_db.h"
 #include "pilots.h"
@@ -26,16 +29,16 @@ int main(int argc, char *argv[])
 	CreateAirplaneList(first_plane_p);
 	GetPilots(argv[1], first_pilot_p);
 
-	if (NULL == (dest_file_p = fopen(argv[2], "r")))
-		return -1;
-	
+	if (NULL == (dest_file_p = fopen(argv[2], "r"))) return -1;
+	if (NULL == (plan_file_p = fopen(argv[3], "w"))) return -1;
+
 	while (fgets(line, MAX_LENGTH_CITY_NAME, dest_file_p) != NULL) {
-		int get_young=-1, find_best1=-1, find_best2=-1;
-		break_line(line, "\n", striped_line);
+		int get_young = -1, find_best1 = -1, find_best2 = -1;
+		breakLine(line, "\n", striped_line);
 		get_young = GetYoungestPlane(striped_line[0], first_plane_p, &chosen_plane_p);
 		find_best1 = FindBestPilot(first_pilot_p, &chosen_pilot1_p, chosen_plane_p->model, "Captain");
 		find_best2 = FindBestPilot(first_pilot_p, &chosen_pilot2_p, chosen_plane_p->model, "First Officer");
-		
+
 
 		if (NULL == (plan_file_p = fopen(argv[3], "a")))
 			return -1;
@@ -52,11 +55,11 @@ int main(int argc, char *argv[])
 			fprintf(plan_file_p, "An error occurred during execution, couldn’t complete the task!\n");
 			fclose(plan_file_p);
 			break;
-		}			
+		}
 	}
 	ClearAirplaneList(first_plane_p);
 	ClearPilotList(first_pilot_p);
-	fclose(dest_file_p);	
+	fclose(dest_file_p);
 	return 0;
 
 }
