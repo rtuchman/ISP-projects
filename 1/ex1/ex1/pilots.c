@@ -4,6 +4,13 @@
 #include <string.h>
 #include "pilots.h"
 
+//////////////////////////////////////////////////////////////////////
+// Function: breakLine
+// input: s - a pointer to a string, seperators - a pointer to a seperators string.
+// output: words - a pointer to a list of strings.
+// Funtionality: Goes over the string a returns a list of the line broken by the seperators.
+////////////////////////////////////////////////////////////////////////
+
 int breakLine(char *s, char *seperators, char **words)
 {
 	int n = 0;
@@ -34,6 +41,13 @@ int breakLine(char *s, char *seperators, char **words)
 	return n;
 }
 
+//////////////////////////////////////////////////////////////////////
+// Function: GetPilots
+// input: path - a pointer to a string of the Pilots.txt path.
+// output: first_pilot - a pointer to the head of the pilots linked list, returns -1 if a problem occured, 0 otherwise.
+// Funtionality: Goes over the list of pilots from the file and creates a linked list of type pilot.
+////////////////////////////////////////////////////////////////////////
+
 int GetPilots(char *path, pilot* first_pilot) {
 	char line[100];
 	char *pilot_fields[4];
@@ -60,6 +74,15 @@ int GetPilots(char *path, pilot* first_pilot) {
 	return 0;
 }
 
+
+//////////////////////////////////////////////////////////////////////
+// Function: FindBestPilot
+// input: first_pilot - pointer to the first pilot in the pilots linked list, airplane - pointer that points to a string that holds the youngest airplane model,
+//						rank - pointer that points to a string that holds the rank.
+// output: return_pilot - pointer to pointer which will eventually point to the best pilot, returns -1 if a problem occured, 0 otherwise.
+// Funtionality: Finds the pilot with the lowest number of flight hours according to its rank, and the youngest airplane.
+////////////////////////////////////////////////////////////////////////
+
 int FindBestPilot(pilot* first_pilot, pilot** return_pilot, char *airplane, char* rank) {
 	pilot* curr_pilot = first_pilot;
 	int hours_count = INT_MAX;
@@ -84,6 +107,13 @@ int ComparePilots(pilot* pilot1, pilot* pilot2) {
 	if (strcmp(pilot1->rank, pilot2->rank) != 0)         return 0;
 	return 1;
 }
+
+//////////////////////////////////////////////////////////////////////
+// Function: DeletePilots
+// input: first_pilot - a pointer to a pointer to the head of the linked list, pilot_to_delete - a pointer to the pilot we want to delete.
+// output:first_pilot - a pointer to a pointer to the head of the linked list.
+// Funtionality: Deletes the desired pilot from the linked list. 
+////////////////////////////////////////////////////////////////////////
 
 void DeletePilots(pilot* pilot_to_delete, pilot** first_pilot) {
 	pilot* curr_pilot = *first_pilot;

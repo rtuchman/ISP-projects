@@ -26,6 +26,13 @@ int DestinationInArray(char destination[MAX_LENGTH_CITY_NAME], char *destination
 	return 0;
 }
 
+//////////////////////////////////////////////////////////////////////
+// Function: GetAirplaneType
+// input: destination - the name of the desired detination, index - an index that indicates where to look for the destination.
+// output: return_model - a pointer to the airplane_model that can fly to the destination, returns -1 if a problem occured, 0 otherwise.
+// Funtionality: Goes over the airplane_models array and finds airplane_model that flies to the destination we look for. 
+////////////////////////////////////////////////////////////////////////
+
 int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** return_model, int index) {
 	*return_model = airplane_models + index;
 	if (destination == NULL) return -1;
@@ -36,6 +43,13 @@ int GetAirplaneType(char destination[MAX_LENGTH_CITY_NAME], airplane_model** ret
 	}
 	return -1;
 }
+
+//////////////////////////////////////////////////////////////////////
+// Function: CreateAirplaneList
+// input: first_airplane - a pointer of type airplane.
+// output: first_airplane - a pointer to the head of the airplanes linked list.
+// Funtionality: Creates a linked list of all the airplanes. 
+////////////////////////////////////////////////////////////////////////
 
 int CreateAirplaneList(airplane* first_airplane) {
 	airplane* curr_airplane = (airplane*)malloc(sizeof(airplane));
@@ -54,6 +68,13 @@ int CreateAirplaneList(airplane* first_airplane) {
 	curr_airplane->next_airplane = NULL;
 	return 0;
 }
+
+//////////////////////////////////////////////////////////////////////
+// Function: GetAirplane
+// input: airplane_model - and airplane_model, first_airplane - a pointer to the head of the airplanes linked list.
+// output: return_airplane - a pointer to a plane in the linked list, returns -1 if a problem occured, 0 otherwise.
+// Funtionality: Finds the youngest airplane in the list that is of the same airplane_model we want. 
+////////////////////////////////////////////////////////////////////////
 
 int GetAirplane(char airplane_model[4], airplane* first_airplane, airplane** return_airplane) {
 	airplane* curr_airplane = first_airplane;
@@ -76,6 +97,13 @@ int CompareAirplanes(airplane* airplane1, airplane* airplane2) {
 	if (strcmp(airplane1->name, airplane2->name) != 0)   return 0;
 	return 1;
 }
+
+//////////////////////////////////////////////////////////////////////
+// Function: DeleteAirplane
+// input: first_airplane - a pointer to a pointer to the head of the linked list, airplane_to_delete - a pointer to the airplane we want to delete.
+// output:first_airplane - a pointer to a pointer to the head of the linked list.
+// Funtionality: Deletes the desired airplane from the linked list. 
+////////////////////////////////////////////////////////////////////////
 
 void DeleteAirplane(airplane* airplane_to_delete, airplane** first_airplane) {
 	airplane* curr_airplane = *first_airplane;
@@ -107,6 +135,13 @@ void ClearAirplaneList(airplane* airplane_list) {
 		airplane_to_delete = curr_airplane;
 	}
 }
+
+//////////////////////////////////////////////////////////////////////
+// Function: GetYoungestPlane
+// input: destination - the desired destination, first_airplane -  a pointer to the head of the linked list.
+// output: return_airplane - a pointer to a pointer to the youngest plane available in the list, returns -1 if a problem occured, 0 otherwise.
+// Funtionality: Finds the youngest airplane in the list which flies to destination. 
+////////////////////////////////////////////////////////////////////////
 
 int GetYoungestPlane(char destination[MAX_LENGTH_CITY_NAME], airplane* first_airplane, airplane** return_airplane) {
 	float youngest_plane = FLT_MAX;

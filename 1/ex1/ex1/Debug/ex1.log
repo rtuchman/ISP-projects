@@ -3,10 +3,10 @@ c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מע
 c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\1\ex1\ex1\airplane_db.c(16): warning C4047: 'initializing': 'char' differs in levels of indirection from 'void *'
 c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\1\ex1\ex1\airplane_db.c(17): warning C4047: 'initializing': 'char' differs in levels of indirection from 'void *'
 c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\1\ex1\ex1\airplane_db.c(21): warning C4047: '!=': 'int' differs in levels of indirection from 'void *'
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\1\ex1\ex1\airplane_db.c(33): warning C4047: 'function': 'char *' differs in levels of indirection from 'char [8][12]'
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\1\ex1\ex1\airplane_db.c(33): warning C4024: 'DestinationInArray': different types for formal and actual parameter 2
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\1\ex1\ex1\airplane_db.c(40): warning C4047: 'function': 'char *' differs in levels of indirection from 'char [8][12]'
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\1\ex1\ex1\airplane_db.c(40): warning C4024: 'DestinationInArray': different types for formal and actual parameter 2
   main.c
   pilots.c
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\1\ex1\ex1\pilots.c(69): warning C4018: '<': signed/unsigned mismatch
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\1\ex1\ex1\pilots.c(92): warning C4018: '<': signed/unsigned mismatch
   Generating Code...
   ex1.vcxproj -> C:\Users\rtuchman\Documents\Studies\Year E\Semester A\מבוא לתכנות מערכות\ISP-projects\1\ex1\Debug\ex1.exe
