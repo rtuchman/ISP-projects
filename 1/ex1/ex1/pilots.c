@@ -145,6 +145,3 @@ void ClearPilotList(pilot* pilot_list) {
 		pilot_to_delete = curr_pilot;
 	}
 }
-
-
-#check
