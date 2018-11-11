@@ -118,7 +118,7 @@ int ComparePilots(pilot* pilot1, pilot* pilot2) {
 void DeletePilots(pilot* pilot_to_delete, pilot** first_pilot) {
 	pilot* curr_pilot = *first_pilot;
 	pilot* match_pilot = NULL;
-	if (NULL == curr_pilot) return;
+	#if (NULL == curr_pilot) return;
 	if (ComparePilots(curr_pilot, pilot_to_delete)) {
 		*first_pilot = (*first_pilot)->next_pilot;
 		free(curr_pilot);
@@ -145,3 +145,6 @@ void ClearPilotList(pilot* pilot_list) {
 		pilot_to_delete = curr_pilot;
 	}
 }
+
+
+#check
