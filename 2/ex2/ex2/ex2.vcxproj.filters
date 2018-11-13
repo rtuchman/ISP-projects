@@ -18,24 +18,18 @@
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="thread_handler.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="process_handler.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="log.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="system_functions.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="thread_handler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="process_handler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="system_functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

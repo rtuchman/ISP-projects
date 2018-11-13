@@ -117,13 +117,11 @@
   <ItemGroup>
     <ClCompile Include="log.c" />
     <ClCompile Include="main.c" />
-    <ClCompile Include="process_handler.c" />
-    <ClCompile Include="thread_handler.c" />
+    <ClCompile Include="system_functions.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="log.h" />
-    <ClInclude Include="process_handler.h" />
-    <ClInclude Include="thread_handler.h" />
+    <ClInclude Include="system_functions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
