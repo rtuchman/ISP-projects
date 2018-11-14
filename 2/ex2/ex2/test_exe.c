@@ -57,5 +57,6 @@ DWORD WINAPI test_exe(LPVOID lpParam)
 	if (exitcodeprocess == 0) { // ping succeded
 		return exitcodeprocess;
 	}
-
+	free(command);
+	
 }

@@ -29,7 +29,7 @@ void main(int argc, char *argv)
 		return -1;
 	}
 
-	while (fgets(line, MAX_LINE_LENGTH, p_tests_file) != NULL) {
+	while (fgets(line, MAX_LINE_LENGTH, p_tests_file) != NULL) { // count the number of tests
 		num_of_tests++;
 	}
 

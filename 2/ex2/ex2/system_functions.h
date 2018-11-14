@@ -1,5 +1,4 @@
-#ifndef _SYSTEM_FUNCTIONS_H_
-#define _SYSTEM_FUNCTIONS_H_
+#pragma once
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -15,7 +14,3 @@
 
 BOOL CreateProcessSimple(LPTSTR CommandLine, PROCESS_INFORMATION *ProcessInfoPtr);
 HANDLE CreateThreadSimple(LPTHREAD_START_ROUTINE p_start_routine, LPDWORD p_thread_id);
-
-
-
-#endif _SYSTEM_FUNCTIONS_H_
