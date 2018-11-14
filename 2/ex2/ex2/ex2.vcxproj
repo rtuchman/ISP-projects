@@ -115,14 +115,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="handle_strings.c" />
     <ClCompile Include="log.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="system_functions.c" />
     <ClCompile Include="test_exe.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="handle_strings.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="system_functions.h" />

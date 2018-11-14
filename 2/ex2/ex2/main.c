@@ -8,7 +8,6 @@
 #include "log.h"
 #include "system_functions.h"
 #include "test_exe.h"
-#include "handle_strings.h"
 
 
 
