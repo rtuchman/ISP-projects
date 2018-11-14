@@ -118,10 +118,13 @@
     <ClCompile Include="log.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="system_functions.c" />
+    <ClCompile Include="test_exe.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="log.h" />
+    <ClInclude Include="main.h" />
     <ClInclude Include="system_functions.h" />
+    <ClInclude Include="test_exe.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

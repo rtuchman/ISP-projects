@@ -1,12 +1,11 @@
 //Authors- Adi Ben-Avraham (204058697) &  Ran Tuchman (201631678)
 //Project- ex2
 
-#define _CRT_SECURE_NO_WARNINGS
+#include "main.h"
 #include "log.h"
 #include "system_functions.h"
 #include "test_exe.h"
-
-#define MAX_LINE_LENGTH 100
+#include "handle_strings.h"
 
 
 void main(int argc, char *argv)
@@ -16,23 +15,20 @@ void main(int argc, char *argv)
 	DWORD *p_thread_ids = NULL; // Array that get from WINAPI ids for threads that were created. 
 	HANDLE *p_thread_handles = NULL; // pointers for threads
 	DWORD exitCodeforthread; // exitcode for ping command. '0' is reachble and '1' is unreachble.
-	FILE *p_tests_file = NULL;
 	int num_of_tests = 0;
 	char line[MAX_LINE_LENGTH];
 
-	if (NULL == (p_tests_file = fopen(argv[1], "r")))
+	if (NULL == (p_test_file = fopen(argv[1], "r")))
 	{
 		printf("Open tests file failed\n");
 		return -1;
 	}
 
-	while (fgets(line, MAX_LINE_LENGTH, p_tests_file) != NULL) {
+	while (fgets(line, MAX_LINE_LENGTH, p_test_file) != NULL) {
 		num_of_tests++;
 	}
-	fclose(p_tests_file);
 
 	// Allocate memory :
-
 	p_thread_ids = (DWORD*)malloc((num_of_tests) * sizeof(DWORD));
 	if (p_thread_ids == NULL)
 	{
@@ -49,10 +45,9 @@ void main(int argc, char *argv)
 
 
 	//Create thread and store it handle in array of handles.
-
+	rewind(p_test_file);
 	for (int i = 0; i < num_of_tests; i++)
 	{
-
 		p_thread_handles[i] = CreateThreadSimple(test_exe, &p_thread_ids[i]);
 
 		if (NULL == p_thread_handles[i])
@@ -62,6 +57,7 @@ void main(int argc, char *argv)
 		}
 
 	}
+	fclose(p_test_file)
 
 	Wait_Status = WaitForMultipleObjects(argc - 1, p_thread_handles, 1, INFINITE); // Waits for all threads to finish thier work. 
 
@@ -72,7 +68,7 @@ void main(int argc, char *argv)
 
 	//Printing ping check results for all addresses : 
 
-	for (i = 0; i < argc - 1; i++)
+	for (int i = 0; i < argc - 1; i++)
 	{
 		GetExitCodeThread(p_thread_handles[i], &exitCodeforthread); // Get ping results for every site in the array. 
 
