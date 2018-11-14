@@ -17,8 +17,7 @@ void main(int argc, char *argv)
 	DWORD Wait_Status;
 	DWORD *p_thread_ids = NULL; // Array that get from WINAPI ids for threads that were created. 
 	HANDLE *p_thread_handles = NULL; // pointers for threads
-	DWORD exitCodeforthread; // exitcode for ping command. '0' is reachble and '1' is unreachble.
-	int num_of_tests = 0;
+	DWORD exitCodeforthread; 
 	char line[MAX_LINE_LENGTH];
 
 
