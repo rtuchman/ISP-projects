@@ -17,7 +17,8 @@ void main(int argc, char *argv)
 	DWORD Wait_Status;
 	DWORD *p_thread_ids = NULL; // Array that get from WINAPI ids for threads that were created. 
 	HANDLE *p_thread_handles = NULL; // pointers for threads
-	DWORD exitCodeforthread; 
+	DWORD exitCodeforthread;
+	int num_of_tests = 0;
 	char line[MAX_LINE_LENGTH];
 
 
