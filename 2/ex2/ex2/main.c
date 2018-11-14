@@ -1,11 +1,15 @@
 //Authors- Adi Ben-Avraham (204058697) &  Ran Tuchman (201631678)
 //Project- ex2
 
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
 #include "main.h"
 #include "log.h"
 #include "system_functions.h"
 #include "test_exe.h"
 #include "handle_strings.h"
+
 
 
 void main(int argc, char *argv)
@@ -18,13 +22,14 @@ void main(int argc, char *argv)
 	int num_of_tests = 0;
 	char line[MAX_LINE_LENGTH];
 
-	if (NULL == (p_test_file = fopen(argv[1], "r")))
+
+	if (NULL == (p_tests_file = fopen(argv[1], "r")))
 	{
 		printf("Open tests file failed\n");
 		return -1;
 	}
 
-	while (fgets(line, MAX_LINE_LENGTH, p_test_file) != NULL) {
+	while (fgets(line, MAX_LINE_LENGTH, p_tests_file) != NULL) {
 		num_of_tests++;
 	}
 
@@ -45,7 +50,7 @@ void main(int argc, char *argv)
 
 
 	//Create thread and store it handle in array of handles.
-	rewind(p_test_file);
+	rewind(p_tests_file);
 	for (int i = 0; i < num_of_tests; i++)
 	{
 		p_thread_handles[i] = CreateThreadSimple(test_exe, &p_thread_ids[i]);
@@ -57,35 +62,18 @@ void main(int argc, char *argv)
 		}
 
 	}
-	fclose(p_test_file)
+	fclose(p_tests_file);
 
-	Wait_Status = WaitForMultipleObjects(argc - 1, p_thread_handles, 1, INFINITE); // Waits for all threads to finish thier work. 
+	Wait_Status = WaitForMultipleObjects(num_of_tests, p_thread_handles, 1, INFINITE); // Waits for all threads to finish thier work. 
 
 	if (WAIT_OBJECT_0 != Wait_Status) {
 		printf("Error While waiting for threads\n");
 		return -1;
 	}
+	// printing to results file
 
-	//Printing ping check results for all addresses : 
 
-	for (int i = 0; i < argc - 1; i++)
-	{
-		GetExitCodeThread(p_thread_handles[i], &exitCodeforthread); // Get ping results for every site in the array. 
 
-		if (exitCodeforthread) // Check if succeded or not 
-		{
-			printf("%s Unreachable\n", NameOfSiteArray[i]);
-		}
-		else
-		{
-			printf("%s Reachable\n", NameOfSiteArray[i]);
-		}
-		CloseHandle(p_thread_handles[i]); // Close all threads after finisih priniting
-	}
-
-	//Free memory : 
-
-	free(NameOfSiteArray);
 	free(p_thread_ids);
 	free(p_thread_handles);
 	return 1;

@@ -1,6 +1,8 @@
-#pragma once
+#ifndef _MAIN_H_
+#define _MAIN_H_
 
-#define _CRT_SECURE_NO_WARNINGS
 #define MAX_LINE_LENGTH 100
 
-extern FILE *p_test_file;
+FILE *p_tests_file;
+
+#endif _MAIN_H_

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _SYSTEM_FUNCTIONS_H_
+#define _SYSTEM_FUNCTIONS_H_
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <windows.h>
@@ -16,3 +18,4 @@ HANDLE CreateThreadSimple(LPTHREAD_START_ROUTINE p_start_routine, LPDWORD p_thre
 
 
 
+#endif _SYSTEM_FUNCTIONS_H_

@@ -1,3 +1,6 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
 #include "main.h"
 #include "system_functions.h"
 #include "test_exe.h"
@@ -18,11 +21,10 @@ DWORD WINAPI test_exe(LPVOID lpParam)
 	char *striped_line[MAX_LINE_LENGTH];
 	char *p_first_space;
 	int first_space_index = 0;
-	char *command = NULL;
 	const char space = ' ';
 
 
-	if (NULL == fgets(line, MAX_LINE_LENGTH, p_test_file)) {
+	if (NULL == fgets(line, MAX_LINE_LENGTH, p_tests_file)) {
 		printf("Read tests file failed\n");
 		return -1;
 	}

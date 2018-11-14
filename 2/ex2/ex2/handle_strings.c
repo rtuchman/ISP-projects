@@ -1,5 +1,7 @@
-#pragma once
+#ifndef _HANDLE_STRINGS_H_
+#define _HANDLE_STRINGS_H_
 
+#include "handle_strings.h"
 #include <string.h>
 
 //////////////////////////////////////////////////////////////////////
@@ -83,4 +85,6 @@ char *str_replace(char *orig, char *rep, char *with) {
 	strcpy(tmp, orig);
 	return result;
 }
+
+#endif _HANDLE_STRINGS_H_
 
