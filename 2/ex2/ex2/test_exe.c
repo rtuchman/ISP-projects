@@ -91,7 +91,7 @@ DWORD WINAPI test_exe(LPVOID lpParam)
 	CloseHandle(process_Info.hProcess);
 	CloseHandle(process_Info.hThread);
 
-	if (exitcodeprocess == 0) { // ping succeded
+	if (exitcodeprocess == 0) {
 		return exitcodeprocess;
 	}
 	free(command_line);
