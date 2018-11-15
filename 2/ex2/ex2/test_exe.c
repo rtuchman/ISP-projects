@@ -1,10 +1,20 @@
 #define _CRT_SECURE_NO_WARNINGS
+// Includes --------------------------------------------------------------------
 #include <stdio.h>
 #include <stdlib.h>
 #include "main.h"
 #include "system_functions.h"
 #include "test_exe.h"
 
+
+// Function Definitions --------------------------------------------------------
+
+//////////////////////////////////////////////////////////////////////
+// Function: test_exe 
+// input:
+// output:       
+// Funtionality:
+////////////////////////////////////////////////////////////////////////
 
 DWORD WINAPI test_exe(LPVOID lpParam) 
 {
@@ -13,7 +23,6 @@ DWORD WINAPI test_exe(LPVOID lpParam)
 	DWORD waitcodeprocess;
 	DWORD exitcodeprocess;
 	BOOL retValprocess;
-	char *threadname = (char*)lpParam;
 	char line[MAX_LINE_LENGTH];
 	char first_token[MAX_LINE_LENGTH];
 	char second_token[MAX_LINE_LENGTH];

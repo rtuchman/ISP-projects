@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
-//#include <limits.h>
 
+// Function Declarations -------------------------------------------------------
 
 DWORD WINAPI test_exe(LPVOID lpParam);

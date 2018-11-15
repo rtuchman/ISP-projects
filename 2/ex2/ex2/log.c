@@ -1,7 +1,3 @@
-#pragma once
-
-// log.c
-
 // Includes --------------------------------------------------------------------
 #include <stdarg.h>
 #include <stdio.h>
@@ -10,6 +6,14 @@
 
 
 // Function Definitions --------------------------------------------------------
+
+//////////////////////////////////////////////////////////////////////
+// Function: LOG_FORMATTED_MESSAGE from log.h
+// input: P_LOG_FILE_PATH - pointer to the file we wish to write to ; format - pointer string with the desired format ;
+// #__VA_ARGS__ - args of formatted string
+// output: LOG__STATUS_CODE_SUCCESS (0) on success or LOG__STATUS_CODE_FAILURE (-1) on failure.
+// Funtionality: Writes a formatted string to a desired file.
+////////////////////////////////////////////////////////////////////////
 
 int LOG_WriteMessageToLog(const char *P_LOG_FILE_PATH, const char *format, ...)
 {

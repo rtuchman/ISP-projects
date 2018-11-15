@@ -1,3 +1,11 @@
-﻿  test_exe.c
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\test_exe.c(94): warning C4715: 'test_exe': not all control paths return a value
+﻿  log.c
+  main.c
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\main.c(30): warning C4098: 'main': 'void' function returning a value
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\main.c(42): warning C4098: 'main': 'void' function returning a value
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\main.c(49): warning C4098: 'main': 'void' function returning a value
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\main.c(63): warning C4098: 'main': 'void' function returning a value
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\main.c(73): warning C4098: 'main': 'void' function returning a value
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\main.c(81): warning C4098: 'main': 'void' function returning a value
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\main.c(22): warning C4101: 'exitCodeforthread': unreferenced local variable
+  Generating Code...
   ex2.vcxproj -> C:\Users\rtuchman\Documents\Studies\Year E\Semester A\מבוא לתכנות מערכות\ISP-projects\2\ex2\Debug\ex2.exe

@@ -7,6 +7,6 @@
 
 // Function Declarations -------------------------------------------------------
 
-#define LOG_FORMATED_MESSAGE(P_LOG_FILE_PATH, format, ...) LOG_WriteMessageToLog(P_LOG_FILE_PATH, format, ##__VA_ARGS__)
+#define LOG_FORMATTED_MESSAGE(P_LOG_FILE_PATH, format, ...) LOG_WriteMessageToLog(P_LOG_FILE_PATH, format, ##__VA_ARGS__)
 
 int LOG_WriteMessageToLog(const char *P_LOG_FILE_PATH, const char *format, ...);
