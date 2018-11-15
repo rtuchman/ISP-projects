@@ -8,10 +8,6 @@
 
 DWORD WINAPI test_exe(LPVOID lpParam) 
 {
-	if (NULL == lpParam)
-	{
-		return -1;
-	}
 
 	PROCESS_INFORMATION process_Info;
 	DWORD waitcodeprocess;
@@ -23,13 +19,12 @@ DWORD WINAPI test_exe(LPVOID lpParam)
 	char second_token[MAX_LINE_LENGTH];
 
 
-
 	if (NULL == fgets(line, MAX_LINE_LENGTH, p_tests_file)) {
 		printf("Read tests file failed\n");
 		return -1;
 	}
 
-	char *command_line = (char*)malloc(sizeof(char)*(strlen(line) + 5)); // +5 for the extra / and "
+	char *command_line = (char*)malloc(sizeof(char)*(strlen(line) + 5)); // +5 for the extra \ and "
 	if (command_line == NULL)
 	{
 		printf("Memory Allocation Failed\n");
@@ -42,26 +37,26 @@ DWORD WINAPI test_exe(LPVOID lpParam)
 	char *first_space = strstr(line, " ");
 	strncpy(first_token, line, first_space - line);
 	char *dest_file = strstr(line, "expected_results");
-	strncpy(second_token, first_space + 1, dest_file - first_space - 2);
-	sprintf(command_line, "\"%s\" %s", first_token, second_token);
-
-
-	TCHAR command[] = { _T(command_line) };
-
-	if (!CreateProcessSimple(command, &process_Info)) { // CreateProcessSimple return '0' for failure 
-
-		printf("CreateProcess failed, Error: %d", GetLastError());
+	if ((dest_file - first_space) > 1) { 
+		strncpy(second_token, first_space + 1, dest_file - first_space - 2);
+		sprintf(command_line, "\"%s\" %s", first_token, second_token);
 	}
+	else
+		sprintf(command_line, "\"%s\"", first_token); // for when there are no arguments for the .exe
+
+
+	TCHAR *command = { _T(command_line) };
+
 	retValprocess = CreateProcessSimple(command, &process_Info);
 	if (0 == retValprocess)
 	{
-		printf("Process Creation Failed!\n");
+		printf("CreateProcess failed, Error: %d\n", GetLastError());
 		return -1;
 	}
 
 	waitcodeprocess = WaitForSingleObject(
 		process_Info.hProcess,
-		TIMEOUT_IN_MILLISECONDS); /* Waiting 5 secs for the process to end */
+		TIMEOUT_IN_MILLISECONDS); /* Waiting 10 secs for the process to end */
 
 	printf("WaitForSingleObject output: ");
 	switch (waitcodeprocess)
@@ -76,24 +71,16 @@ DWORD WINAPI test_exe(LPVOID lpParam)
 
 	if (waitcodeprocess == WAIT_TIMEOUT) /* Process is still alive */
 	{
-		printf("Process was not terminated before timeout!\n"
-			"Terminating brutally!\n");
-		TerminateProcess(
-			process_Info.hProcess,
-			BRUTAL_TERMINATION_CODE); /* Terminating process with an exit code of 55h */
-		Sleep(10); /* Waiting a few milliseconds for the process to terminate */
+		printf("Process was not terminated before timeout!\n");
 	}	
 	
 	GetExitCodeProcess(process_Info.hProcess, &exitcodeprocess);
-
-
-
+	   
 	CloseHandle(process_Info.hProcess);
 	CloseHandle(process_Info.hThread);
 
 	if (exitcodeprocess == 0) {
 		return exitcodeprocess;
 	}
-	free(command_line);
-	
+	free(command_line);	
 }

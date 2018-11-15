@@ -11,7 +11,9 @@
 
 
 
-void main(int argc, char *argv)
+FILE *p_tests_file;
+
+void main(int argc, char *argv[])
 {
 
 	DWORD Wait_Status;
@@ -50,6 +52,7 @@ void main(int argc, char *argv)
 
 	//Create thread and store it handle in array of handles.
 	rewind(p_tests_file);
+
 	for (int i = 0; i < num_of_tests; i++)
 	{
 		p_thread_handles[i] = CreateThreadSimple(test_exe, &p_thread_ids[i]);
@@ -61,7 +64,7 @@ void main(int argc, char *argv)
 		}
 
 	}
-	fclose(p_tests_file);
+	
 
 	Wait_Status = WaitForMultipleObjects(num_of_tests, p_thread_handles, 1, INFINITE); // Waits for all threads to finish thier work. 
 
@@ -72,7 +75,7 @@ void main(int argc, char *argv)
 	// printing to results file
 
 
-
+	fclose(p_tests_file);
 	free(p_thread_ids);
 	free(p_thread_handles);
 	return 1;
