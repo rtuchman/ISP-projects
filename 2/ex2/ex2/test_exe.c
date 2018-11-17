@@ -1,4 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
+#define ZERO_IN_ASCII 48
+
 // Includes --------------------------------------------------------------------
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,14 +8,16 @@
 #include "system_functions.h"
 #include "test_exe.h"
 
+extern TestInfo* test_info_array;
 
 // Function Definitions --------------------------------------------------------
 
 //////////////////////////////////////////////////////////////////////
-// Function: test_exe 
-// input:
+// Function:     test_exe 
+// input:        LPVOID lpParam
 // output:       
-// Funtionality:
+// Funtionality: For every thread-creats a process that executes the test, checks its result and
+//               store the result in the right place of test_info_array
 ////////////////////////////////////////////////////////////////////////
 
 DWORD WINAPI test_exe(LPVOID lpParam) 
@@ -45,20 +49,21 @@ DWORD WINAPI test_exe(LPVOID lpParam)
 	memset(second_token, '\0', sizeof(second_token));
 	char *first_space = strstr(line, " ");
 	strncpy(first_token, line, first_space - line);
-	char *dest_file = strstr(line, "expected_results");
+	char* dest_file = line;
+	FindLastSpace(&dest_file);
 	if ((dest_file - first_space) > 1) { 
 		strncpy(second_token, first_space + 1, dest_file - first_space - 2);
 		sprintf(command_line, "\"%s\" %s", first_token, second_token);
 	}
 	else
 		sprintf(command_line, "\"%s\"", first_token); // for when there are no arguments for the .exe
-
+	*(strchr(dest_file, '\n')) = '\0';
+	int test_num = ReturnTestNum(first_token);
 
 	TCHAR *command = { _T(command_line) };
 
 	retValprocess = CreateProcessSimple(command, &process_Info);
-	if (0 == retValprocess)
-	{
+	if (0 == retValprocess) {
 		printf("CreateProcess failed, Error: %d\n", GetLastError());
 		return -1;
 	}
@@ -67,29 +72,95 @@ DWORD WINAPI test_exe(LPVOID lpParam)
 		process_Info.hProcess,
 		TIMEOUT_IN_MILLISECONDS); /* Waiting 10 secs for the process to end */
 
+	//Get the return value and store it in the right place of the array
+	GetExitCodeProcess(process_Info.hProcess, &exitcodeprocess);
+	test_info_array[test_num-1].ret_value = (int)exitcodeprocess;
+
 	printf("WaitForSingleObject output: ");
 	switch (waitcodeprocess)
 	{
-	case WAIT_TIMEOUT:
-		printf("WAIT_TIMEOUT\n"); break;
-	case WAIT_OBJECT_0:
-		printf("WAIT_OBJECT_0\n"); break;
+	case WAIT_TIMEOUT: {
+		printf("WAIT_TIMEOUT\n"); /*Process is still alive*/ 
+		strcpy(test_info_array[test_num-1].result, "Timed Out\n");
+		break;
+	}
+	case WAIT_OBJECT_0: {
+		printf("WAIT_OBJECT_0\n");
+		if (exitcodeprocess) { strcpy(test_info_array[test_num-1].result, "Crashed"); }
+		else {
+			ExeToTxt(first_token);
+			if (compareTwoFiles(dest_file, strstr(first_token, "test"))) {
+				   strcpy(test_info_array[test_num - 1].result, "Succeeded\n");
+			} 
+			else { strcpy(test_info_array[test_num - 1].result, "Failed\n"); }
+		}
+		break;
+	}
 	default:
 		printf("0x%x\n", waitcodeprocess);
 	}
-
-	if (waitcodeprocess == WAIT_TIMEOUT) /* Process is still alive */
-	{
-		printf("Process was not terminated before timeout!\n");
-	}	
-	
-	GetExitCodeProcess(process_Info.hProcess, &exitcodeprocess);
-	   
 	CloseHandle(process_Info.hProcess);
 	CloseHandle(process_Info.hThread);
 
-	if (exitcodeprocess == 0) {
-		return exitcodeprocess;
-	}
 	free(command_line);	
+	printf("test num: %d, result: %s\n", test_num, test_info_array[test_num-1].result);
+
+}
+
+BOOL compareTwoFiles(char* file_path1, char* file_path2) {
+	FILE* fp1 = NULL;
+	FILE* fp2 = NULL;
+	int open_file_value1 = fopen_s(&fp1, file_path1, "r");
+	int open_file_value2 = fopen_s(&fp2, file_path2, "r");
+	if (open_file_value1 || open_file_value2) {
+		printf("Open tests file failed\n");
+		return -1;
+	}
+	char ch1 = getc(fp1);
+	char ch2 = getc(fp2);
+
+	int position = 0, line = 1;
+ 
+	while (ch1 != EOF && ch2 != EOF) {
+		position++;
+		if (ch1 == '\n' && ch2 == '\n') {
+			line++;
+			position = 0;
+		}
+		if (ch1 != ch2) { return false; }
+		ch1 = getc(fp1);
+		ch2 = getc(fp2);
+	}
+	fclose(fp1);
+	fclose(fp2);
+	return true;
+}
+
+void ExeToTxt(char* exeDest) {
+	char txt[4]            = "txt\0";
+	char* exe_beginning    = strstr(exeDest, ".") + 1;
+	strcpy(exe_beginning, txt);
+}
+
+int ReturnTestNum(char* exeDest) {
+	char* exeDestPointer = strstr(exeDest, "test");
+	char* digits_end     = strstr(exeDest, ".") + 1;
+	int num_of_digits    = digits_end - exeDestPointer - 5;
+	char* curr_test_num[10];
+	strncpy(curr_test_num, exeDestPointer + 4, num_of_digits);
+	*(curr_test_num + num_of_digits + 1) = "\0";
+	return atoi(curr_test_num);
+}
+
+void InitTestInfoArray(int largest_test_num) {
+	for (int i = 0; i < largest_test_num; i++) {
+		test_info_array[i].ret_value = 0xffff;
+	}
+}
+
+void FindLastSpace(char** line) {
+	while (1) {
+		if (strstr(*(line), " ") == NULL) break;
+		*(line) = strstr(*(line), " ") + 1;
+	}
 }

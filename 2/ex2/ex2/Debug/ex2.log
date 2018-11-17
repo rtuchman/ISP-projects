@@ -1,11 +1,9 @@
-﻿  log.c
-  main.c
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\main.c(30): warning C4098: 'main': 'void' function returning a value
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\main.c(42): warning C4098: 'main': 'void' function returning a value
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\main.c(49): warning C4098: 'main': 'void' function returning a value
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\main.c(63): warning C4098: 'main': 'void' function returning a value
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\main.c(73): warning C4098: 'main': 'void' function returning a value
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\main.c(81): warning C4098: 'main': 'void' function returning a value
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\2\ex2\ex2\main.c(22): warning C4101: 'exitCodeforthread': unreferenced local variable
-  Generating Code...
-  ex2.vcxproj -> C:\Users\rtuchman\Documents\Studies\Year E\Semester A\מבוא לתכנות מערכות\ISP-projects\2\ex2\Debug\ex2.exe
+﻿  main.c
+c:\users\adi\desktop\git\2\ex2\ex2\main.c(28): warning C4098: 'main': 'void' function returning a value
+c:\users\adi\desktop\git\2\ex2\ex2\main.c(47): warning C4098: 'main': 'void' function returning a value
+c:\users\adi\desktop\git\2\ex2\ex2\main.c(60): warning C4098: 'main': 'void' function returning a value
+c:\users\adi\desktop\git\2\ex2\ex2\main.c(67): warning C4098: 'main': 'void' function returning a value
+c:\users\adi\desktop\git\2\ex2\ex2\main.c(74): warning C4098: 'main': 'void' function returning a value
+c:\users\adi\desktop\git\2\ex2\ex2\main.c(81): warning C4098: 'main': 'void' function returning a value
+c:\users\adi\desktop\git\2\ex2\ex2\main.c(21): warning C4101: 'exitCodeforthread': unreferenced local variable
+  ex2.vcxproj -> C:\Users\Adi\Desktop\Git\2\ex2\Debug\ex2.exe
