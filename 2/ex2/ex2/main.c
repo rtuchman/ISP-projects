@@ -19,7 +19,7 @@ TestInfo* test_info_array = NULL;    //Array that holds the test return value an
 }
 
 //////////////////////////////////////////////////////////////////////
-// Function:     ReturnTestNum
+// Function:     **Main**
 // input:        gets the test file and result file destinations as main arguments 
 // output:       -1 if the program failed, 0 otherwise  
 // Funtionality: open the tests file and allocate memory, open threads in a loop for every
