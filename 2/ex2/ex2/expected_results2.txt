@@ -1,1 +1,0 @@
-This doens't matter, test2.exe will time out.

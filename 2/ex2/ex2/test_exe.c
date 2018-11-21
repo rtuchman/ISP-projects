@@ -15,7 +15,7 @@ extern TestInfo* test_info_array;
 //////////////////////////////////////////////////////////////////////
 // Function:     test_exe 
 // input:        LPVOID lpParam
-// output:       
+// output:       -1 if something failed, 0 otherwise. 
 // Funtionality: For every thread-creats a process that executes the test, checks its result and
 //               store the result in the right place of test_info_array
 ////////////////////////////////////////////////////////////////////////
@@ -107,6 +107,13 @@ DWORD WINAPI test_exe(LPVOID lpParam)
 
 }
 
+//////////////////////////////////////////////////////////////////////
+// Function:     compareTwoFiles
+// input:        file_path1, file_path2 - two file locations of files that we want to compare
+// output:       false if the files are different, true if the files are the same.  
+// Funtionality: Go over every character in the file and compare it to the character on the same position in the other file
+////////////////////////////////////////////////////////////////////////
+
 BOOL compareTwoFiles(char* file_path1, char* file_path2) {
 	FILE* fp1 = NULL;
 	FILE* fp2 = NULL;
@@ -119,14 +126,7 @@ BOOL compareTwoFiles(char* file_path1, char* file_path2) {
 	char ch1 = getc(fp1);
 	char ch2 = getc(fp2);
 
-	int position = 0, line = 1;
- 
 	while (ch1 != EOF && ch2 != EOF) {
-		position++;
-		if (ch1 == '\n' && ch2 == '\n') {
-			line++;
-			position = 0;
-		}
 		if (ch1 != ch2) { return false; }
 		ch1 = getc(fp1);
 		ch2 = getc(fp2);
@@ -141,6 +141,13 @@ void ExeToTxt(char* exeDest) {
 	char* exe_beginning    = strstr(exeDest, ".") + 1;
 	strcpy(exe_beginning, txt);
 }
+
+//////////////////////////////////////////////////////////////////////
+// Function:     ReturnTestNum
+// input:        exeDest- path to the exe file. 
+// output:       test number as an integer.   
+// Funtionality: Copy the test_number from the file name, and use atoi to convert the string into integer  
+////////////////////////////////////////////////////////////////////////
 
 int ReturnTestNum(char* exeDest) {
 	char* exeDestPointer = strstr(exeDest, "test");

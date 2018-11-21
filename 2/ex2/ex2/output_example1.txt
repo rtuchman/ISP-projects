@@ -1,2 +1,0 @@
-test #1 : Succeeded
-test #2 : Timed Out

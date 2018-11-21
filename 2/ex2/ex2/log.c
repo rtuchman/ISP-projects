@@ -12,6 +12,13 @@ extern TestInfo* test_info_array;
 
 // Function Definitions --------------------------------------------------------
 
+//////////////////////////////////////////////////////////////////////
+// Function: WriteToLogFile
+// input: largest_test_num - size of test_info_array , result_file_path - The path to the log file we want to create. 
+// output: -1 if we failed to write to the log, 0 otherwise. 
+// Funtionality: Fills the result log by going over the test_info_array and write every TestInfo that is not initialized.
+////////////////////////////////////////////////////////////////////////
+
 int WriteToLogFile(int largest_test_num, char* result_file_path) {
 	FILE* fp = NULL;
 	int retval = fopen_s(&fp, result_file_path, "w");

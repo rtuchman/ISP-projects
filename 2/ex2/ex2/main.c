@@ -12,6 +12,20 @@
 FILE *p_tests_file        = NULL;
 TestInfo* test_info_array = NULL;    //Array that holds the test return value and result sorted by the test number 
 
+#define DEALLOC_RESOURCES(){\
+	free(p_thread_ids);\
+	free(p_thread_handles);\
+	free(test_info_array);\
+}
+
+//////////////////////////////////////////////////////////////////////
+// Function:     ReturnTestNum
+// input:        gets the test file and result file destinations as main arguments 
+// output:       -1 if the program failed, 0 otherwise  
+// Funtionality: open the tests file and allocate memory, open threads in a loop for every
+//               test and finally write the result log. 
+////////////////////////////////////////////////////////////////////////
+
 void main(int argc, char *argv[])
 {
 
@@ -44,6 +58,7 @@ void main(int argc, char *argv[])
 	if (test_info_array == NULL || p_thread_handles == NULL || p_thread_ids == NULL) 
 	{
 		printf("Memory allocation Failed\n");
+		fclose(p_tests_file);
 		return -1;
 	}
 
@@ -57,6 +72,8 @@ void main(int argc, char *argv[])
 		if (NULL == p_thread_handles[i])
 		{
 			printf("Error while creating the thread\n");
+			fclose(p_tests_file);
+			DEALLOC_RESOURCES();
 			return -1;
 		}
 	}
@@ -64,6 +81,8 @@ void main(int argc, char *argv[])
 	Wait_Status = WaitForMultipleObjects((DWORD)num_of_tests, p_thread_handles, 1, INFINITE); // Waits for all threads to finish thier work. 
 	if (WAIT_OBJECT_0 != Wait_Status) {
 		printf("Error While waiting for threads\n");
+		fclose(p_tests_file);
+		DEALLOC_RESOURCES();
 		return -1;
 	}
 	// printing to results file
@@ -71,12 +90,12 @@ void main(int argc, char *argv[])
 	int ret_write_log = WriteToLogFile(largest_test_num, argv[2]);
 	if (-1 == ret_write_log) {
 		printf("Error while writing to the log file\n");
+		fclose(p_tests_file);
+		DEALLOC_RESOURCES();
 		return -1;
 	}
 
 	fclose(p_tests_file);
-	free(p_thread_ids);
-	free(p_thread_handles);
-	free(test_info_array);
+	DEALLOC_RESOURCES();
 	return 0;
 }
