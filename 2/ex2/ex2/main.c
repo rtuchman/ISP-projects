@@ -10,8 +10,7 @@
 #include "test_exe.h"
 
 
-
-FILE *p_tests_file;
+FILE *p_tests_file; // global 
 
 void main(int argc, char *argv[])
 {
