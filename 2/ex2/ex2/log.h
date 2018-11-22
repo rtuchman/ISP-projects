@@ -1,12 +1,11 @@
-#pragma once
+#pragma once 
 
-// Constants -------------------------------------------------------------------
-
-#define LOG__STATUS_CODE_SUCCESS ((int)(0))
-#define LOG__STATUS_CODE_FAILURE ((int)(-1))
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <windows.h>
 
 // Function Declarations -------------------------------------------------------
 
-#define LOG_FORMATTED_MESSAGE(P_LOG_FILE_PATH, format, ...) LOG_WriteMessageToLog(P_LOG_FILE_PATH, format, ##__VA_ARGS__)
-
-int LOG_WriteMessageToLog(const char *P_LOG_FILE_PATH, const char *format, ...);
+int WriteToLogFile(int num_of_tests, char* result_file_path);
+void WriteTestLine(char *headline, int test_num);

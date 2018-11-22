@@ -1,54 +1,53 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 // Includes --------------------------------------------------------------------
-#include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "log.h"
+#include "main.h"
+#include "system_functions.h"
+#include "test_exe.h"
 
-
+extern TestInfo* test_info_array;
 
 // Function Definitions --------------------------------------------------------
 
 //////////////////////////////////////////////////////////////////////
-// Function: LOG_FORMATTED_MESSAGE from log.h
-// input: P_LOG_FILE_PATH - pointer to the file we wish to write to ; format - pointer string with the desired format ;
-// #__VA_ARGS__ - args of formatted string
-// output: LOG__STATUS_CODE_SUCCESS (0) on success or LOG__STATUS_CODE_FAILURE (-1) on failure.
-// Funtionality: Writes a formatted string to a desired file.
+// Function: WriteToLogFile
+// input: largest_test_num - size of test_info_array , result_file_path - The path to the log file we want to create. 
+// output: -1 if we failed to write to the log, 0 otherwise. 
+// Funtionality: Fills the result log by going over the test_info_array and write every TestInfo that is not initialized.
 ////////////////////////////////////////////////////////////////////////
 
-int LOG_WriteMessageToLog(const char *P_LOG_FILE_PATH, const char *format, ...)
-{
-	errno_t retval;
-	FILE *p_file;
-	va_list args;
-
-	// Open file
-	// Open file in append mode
-	retval = fopen_s(&p_file, P_LOG_FILE_PATH, "a");
-	if (0 != retval)
-	{
+int WriteToLogFile(int largest_test_num, char* result_file_path) {
+	FILE* fp = NULL;
+	int retval = fopen_s(&fp, result_file_path, "w");
+	if (0 != retval) {
 		printf("Failed to open file.\n");
-		return LOG__STATUS_CODE_FAILURE;
+		return -1;
 	}
-
-	va_start(args, format); // Using variadic args
-
-	// Write lines
-	retval = vfprintf(p_file, format, args);
-	if (0 > retval)
-	{
-		printf("Failed to write to file.\n");
-		// Don't return. Try and close the file first.
+	char line[MAX_LINE_LENGTH];
+	for (int i = 0; i < largest_test_num; i++) {
+		if (test_info_array[i].ret_value == 0xffff) continue;
+		WriteTestLine(line, i);
+		fprintf(fp, line);
 	}
+	fclose(fp);
+	return 0;
+}
 
-	va_end(args);
-
-	// Close file
-	retval = fclose(p_file);
-	if (0 != retval)
-	{
-		printf("Failed to close file.\n");
-		return LOG__STATUS_CODE_FAILURE;
+void WriteTestLine(char *headline, int test_num) {
+	char curr_num[MAX_LINE_LENGTH];
+	strcpy(headline, "test #");
+	_itoa(test_num + 1, curr_num, 10);
+	strcat(headline, curr_num);
+	strcat(headline, " : ");
+	strcat(headline, test_info_array[test_num].result);
+	if (!strcmp(test_info_array[test_num].result, "Crashed")) {
+		strcat(headline, " ");
+		BOOL isPossitive = (test_info_array[test_num].ret_value > 0);
+		if (!isPossitive) { strcat(headline, "-"); }
+		_itoa(abs(test_info_array[test_num].ret_value) , curr_num, 10);
+		strcat(headline, curr_num);
 	}
-
-	return LOG__STATUS_CODE_SUCCESS;
 }

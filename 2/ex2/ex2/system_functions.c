@@ -14,9 +14,8 @@
 
 BOOL CreateProcessSimple(LPTSTR CommandLine, PROCESS_INFORMATION *ProcessInfoPtr)
 {
-	STARTUPINFO	startinfo = { sizeof(STARTUPINFO), NULL, 0 }; 										  
-															  
-
+	STARTUPINFO	startinfo = { sizeof(STARTUPINFO), NULL, 0 }; 
+								  
 	return CreateProcess(NULL, 
 		CommandLine,			
 		NULL,					
