@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>example2_tests.txt output2.txt</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>"C:\Users\rtuchman\Documents\Studies\Year E\Semester A\מבוא לתכנות מערכות\ISP-projects\2\ex2\Debug\example2_tests.txt" "C:\Users\rtuchman\Documents\Studies\Year E\Semester A\מבוא לתכנות מערכות\ISP-projects\2\ex2\Debug\output.txt"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
