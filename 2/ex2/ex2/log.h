@@ -8,4 +8,4 @@
 // Function Declarations -------------------------------------------------------
 
 int WriteToLogFile(int num_of_tests, char* result_file_path);
-void WriteTestLine(char *headline, int test_num);
+void WriteTestLine(char *headline, int test_num, int print_index);

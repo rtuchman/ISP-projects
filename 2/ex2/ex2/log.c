@@ -22,6 +22,7 @@ extern TestInfo* test_info_array;
 int WriteToLogFile(int largest_test_num, char* result_file_path) {
 	FILE* fp = NULL;
 	int retval = fopen_s(&fp, result_file_path, "w");
+	int print_index = 1;
 	if (0 != retval) {
 		printf("Failed to open file.\n");
 		return -1;
@@ -29,17 +30,18 @@ int WriteToLogFile(int largest_test_num, char* result_file_path) {
 	char line[MAX_LINE_LENGTH];
 	for (int i = 0; i < largest_test_num; i++) {
 		if (test_info_array[i].ret_value == 0xffff) continue;
-		WriteTestLine(line, i);
+		WriteTestLine(line, i, print_index);
 		fprintf(fp, line);
+		print_index++;
 	}
 	fclose(fp);
 	return 0;
 }
 
-void WriteTestLine(char *headline, int test_num) {
+void WriteTestLine(char *headline, int test_num, int print_index) {
 	char curr_num[MAX_LINE_LENGTH];
 	strcpy(headline, "test #");
-	_itoa(test_num + 1, curr_num, 10);
+	_itoa(print_index, curr_num, 10);
 	strcat(headline, curr_num);
 	strcat(headline, " : ");
 	strcat(headline, test_info_array[test_num].result);
