@@ -89,7 +89,7 @@ DWORD WINAPI test_exe(LPVOID lpParam)
 		if (exitcodeprocess) { strcpy(test_info_array[test_num-1].result, "Crashed"); }
 		else {
 			ExeToTxt(first_token);
-			if (compareTwoFiles(dest_file, first_token)) {
+			if (compareTwoFiles(dest_file, strstr(first_token, "test"))) {
 				   strcpy(test_info_array[test_num - 1].result, "Succeeded\n");
 			} 
 			else { strcpy(test_info_array[test_num - 1].result, "Failed\n"); }
