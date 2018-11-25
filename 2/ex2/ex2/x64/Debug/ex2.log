@@ -1,0 +1,11 @@
+﻿  test_exe.c
+c:\users\adi\desktop\git\2\ex2\ex2\test_exe.c(53): warning C4047: 'function': 'char *' differs in levels of indirection from 'char **'
+c:\users\adi\desktop\git\2\ex2\ex2\test_exe.c(53): warning C4024: 'FindLastSpace': different types for formal and actual parameter 1
+c:\users\adi\desktop\git\2\ex2\ex2\test_exe.c(157): warning C4047: 'function': 'char *' differs in levels of indirection from 'char *[10]'
+c:\users\adi\desktop\git\2\ex2\ex2\test_exe.c(157): warning C4024: 'strncpy': different types for formal and actual parameter 1
+c:\users\adi\desktop\git\2\ex2\ex2\test_exe.c(159): warning C4047: 'function': 'const char *' differs in levels of indirection from 'char *[10]'
+c:\users\adi\desktop\git\2\ex2\ex2\test_exe.c(159): warning C4024: 'atoi': different types for formal and actual parameter 1
+c:\users\adi\desktop\git\2\ex2\ex2\test_exe.c(155): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
+c:\users\adi\desktop\git\2\ex2\ex2\test_exe.c(168): warning C4028: formal parameter 1 different from declaration
+c:\users\adi\desktop\git\2\ex2\ex2\test_exe.c(108): warning C4715: 'test_exe': not all control paths return a value
+  ex2.vcxproj -> C:\Users\Adi\Desktop\Git\2\ex2\x64\Debug\ex2.exe

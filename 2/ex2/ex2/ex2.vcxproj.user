@@ -4,4 +4,8 @@
     <LocalDebuggerCommandArguments>"C:\Users\rtuchman\Documents\Studies\Year E\Semester A\מבוא לתכנות מערכות\ISP-projects\2\ex2\Debug\example2_tests.txt" "C:\Users\rtuchman\Documents\Studies\Year E\Semester A\מבוא לתכנות מערכות\ISP-projects\2\ex2\Debug\output.txt"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LocalDebuggerCommandArguments>example2_tests.txt output2.txt</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
 </Project>
