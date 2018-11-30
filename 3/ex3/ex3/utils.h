@@ -3,9 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
+#include <stdbool.h>
+
+
 
 // Macros and Defenitions ------------------------------------------------------
-typedef struct _PythagoreanTriple {
+typedef struct {
 	int n;
 	int m;
 	PythagoreanTriple *next;

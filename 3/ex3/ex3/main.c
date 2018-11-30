@@ -17,9 +17,13 @@ void main(int argc, char *argv[])
 	DWORD exitCodeforthread;
 	int MAX_NUMBER = atoi(argv[1]);
 	int NUM_OF_COMPUTATION_THREADS = atoi((argv[2]));
+	BOOL *anchors_array = (BOOL*)malloc(MAX_NUMBER * sizeof(BOOL)); // bit flags array so know which anchors are taken
+
+
 
 
 	// Allocate memory :
+	memset(anchors_array, 0, sizeof(anchors_array)); // init all to 0
 	p_thread_ids = (DWORD*)malloc(NUM_OF_COMPUTATION_THREADS * sizeof(DWORD));
 	p_thread_handles = (HANDLE*)malloc(NUM_OF_COMPUTATION_THREADS * sizeof(HANDLE));
 	isNull(p_thread_ids);
