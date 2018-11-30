@@ -6,30 +6,6 @@
 
 
 //////////////////////////////////////////////////////////////////////
-// Function: CreateProcessSimple 
-// input: CommandLine ; ProcessInfoPtr - pointer struct that holds info about the new process
-// output: ProcessInfoPtr
-// Funtionality: From recitation.
-////////////////////////////////////////////////////////////////////////
-
-BOOL CreateProcessSimple(LPTSTR CommandLine, PROCESS_INFORMATION *ProcessInfoPtr)
-{
-	STARTUPINFO	startinfo = { sizeof(STARTUPINFO), NULL, 0 };
-
-	return CreateProcess(NULL,
-		CommandLine,
-		NULL,
-		NULL,
-		FALSE,
-		NORMAL_PRIORITY_CLASS,
-		NULL,
-		NULL,
-		&startinfo,
-		ProcessInfoPtr
-	);
-}
-
-//////////////////////////////////////////////////////////////////////
 // Function: CreateThreadSimple
 // input: p_start_routine - function that we would like to implement in this thread , p_thread_id - array that filled by WINAPI and holds threads id. 
 // output: HANDLE of the thread that were created. 

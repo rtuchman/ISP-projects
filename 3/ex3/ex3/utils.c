@@ -54,7 +54,10 @@ void isNull(void* ptr)
 
 void freeAll()
 {
-	// close handles and free pointers
+	free(p_thread_ids); 
+	free(p_thread_handles); 
+	free(p_anchor_mutex_handles);
+	free(anchors_array);
 }
 
 //////////////////////////////////////////////////////////////////////
