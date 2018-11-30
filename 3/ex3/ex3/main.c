@@ -14,7 +14,9 @@ void main(int argc, char *argv[])
 	DWORD Wait_Status;
 	DWORD exitCodeforthread;
 	int MAX_NUMBER = atoi(argv[1]);
-	int NUM_OF_COMPUTATION_THREADS = atoi((argv[2]));
+	int NUM_OF_COMPUTATION_THREADS = atoi(argv[2]);
+	int OUTPUT_BUFFER_SIZE = atoi(argv[3]);
+	
 	
 	   
 	// Allocate memory :
@@ -23,6 +25,7 @@ void main(int argc, char *argv[])
 	p_thread_ids = (DWORD*)malloc(NUM_OF_COMPUTATION_THREADS * sizeof(DWORD));
 	p_thread_handles = (HANDLE*)malloc(NUM_OF_COMPUTATION_THREADS * sizeof(HANDLE));
 	p_anchor_mutex_handles = (HANDLE*)malloc(MAX_NUMBER * sizeof(HANDLE));
+	output_buffer = (PythagoreanTriple*)malloc(OUTPUT_BUFFER_SIZE * sizeof(PythagoreanTriple));
 	isNull(p_thread_ids);
 	isNull(p_thread_handles); // check allocation 
 	isNull(p_anchor_mutex_handles); // check allocation 

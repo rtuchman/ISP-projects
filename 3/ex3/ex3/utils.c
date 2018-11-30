@@ -41,7 +41,7 @@ void isNull(void* ptr)
 	if (ptr == NULL)
 	{
 		printf("failed to allocate memory/n");
-		exitGracefull();
+		exitGracefully();
 	}
 }
 
@@ -58,6 +58,7 @@ void freeAll()
 	free(p_thread_handles); 
 	free(p_anchor_mutex_handles);
 	free(anchors_array);
+	free(output_buffer);
 }
 
 //////////////////////////////////////////////////////////////////////
