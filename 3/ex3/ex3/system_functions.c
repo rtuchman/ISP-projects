@@ -61,3 +61,86 @@ void ReportErrorAndEndProgram()
 	printf("Encountered error, ending program. Last Error = 0x%x\n", GetLastError());
 	exit(1);
 }
+
+//////////////////////////////////////////////////////////////////////
+// Function: WaitForAnEmpyPlaceInBuffer
+// input: triplet_to_buffer - a pytagorean triplet we want to add to the bufefr
+// output: does not return anything. 
+// Funtionality: add triplet_to_buffer to output_buffer when there is an available place in it,
+//               update the empty and full semaphores accordingly  
+////////////////////////////////////////////////////////////////////////
+
+void WaitForAnEmptyPlaceAndWriteToBuffer(PythagoreanTriple triplet_to_buffer)
+{
+	DWORD wait_res;
+	BOOL release_res;
+	LONG previous_count;
+
+	Sleep(PRODUCER_WAIT_TIME_IN_MILISECONDS);
+
+	wait_res = WaitForSingleObject(empty, INFINITE);
+	if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
+
+	wait_res = WaitForSingleObject(mutex, INFINITE);
+	if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
+
+	//critical area
+
+	AddToBuffer(triplet_to_buffer);
+
+	//end of critical area
+
+	release_res = ReleaseMutex(mutex);
+	if (release_res == FALSE) ReportErrorAndEndProgram();
+
+	release_res = ReleaseSemaphore(
+		full,
+		1,
+		&previous_count);
+	if (release_res == FALSE) ReportErrorAndEndProgram();
+	printf("Producer inserted one item. Previous count is: %ld\n", previous_count);
+
+	//	return 0;
+}
+
+//////////////////////////////////////////////////////////////////////
+// Function: ConsumeAnItemFromBuffer
+// input:  LPVOID lpParam
+// output: does not return anything. 
+// Funtionality: when a triplet is ready to be written to the sorted list, the function insert it
+//               to the right place and pdate the empty and full semaphores accordingly  
+////////////////////////////////////////////////////////////////////////
+
+DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam)
+{
+	DWORD wait_res;
+	BOOL release_res;
+	LONG previous_count;
+
+	Sleep(CONSUMER_WAIT_TIME_IN_MILISECONDS);
+
+	wait_res = WaitForSingleObject(full, INFINITE);
+	if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
+
+	//*************** need to change that mutex name to a more specific one
+	wait_res = WaitForSingleObject(mutex, INFINITE);
+	if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
+
+	//critical area:
+
+	AddToSortedList();
+
+	//end of critical area
+	release_res = ReleaseMutex(mutex);
+	if (release_res == FALSE) ReportErrorAndEndProgram();
+
+	release_res = ReleaseSemaphore(
+		empty,
+		1,
+		&previous_count);
+	if (release_res == FALSE) ReportErrorAndEndProgram();
+
+	printf("Consumer used one item. Previous count is: %ld\n", previous_count);
+
+	//	return 0;
+}

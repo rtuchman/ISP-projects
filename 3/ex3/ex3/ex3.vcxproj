@@ -115,10 +115,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Log.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="system_functions.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Log.c">
+      <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</PreprocessToFile>
+    </ClCompile>
     <ClCompile Include="utils.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="system_functions.c" />

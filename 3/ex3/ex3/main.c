@@ -6,34 +6,44 @@
 #include "utils.h"
 #include "system_functions.h"
 
-
-
-
 void main(int argc, char *argv[])
 {	
 	DWORD Wait_Status;
 	DWORD exitCodeforthread;
-	int MAX_NUMBER = atoi(argv[1]);
-	int NUM_OF_COMPUTATION_THREADS = atoi(argv[2]);
-	int OUTPUT_BUFFER_SIZE = atoi(argv[3]);
+	MAX_NUMBER = atoi(argv[1]);
+	NUM_OF_COMPUTATION_THREADS = atoi(argv[2]);
+	OUTPUT_BUFFER_SIZE = atoi(argv[3]);
 	
 	
-	   
 	// Allocate memory :
-	anchors_array = (BOOL*)malloc(MAX_NUMBER * sizeof(BOOL));
+	anchors_array          = (BOOL*)malloc(MAX_NUMBER * sizeof(BOOL));
 	memset(anchors_array, 0, sizeof(anchors_array)); // init all to 0
-	p_thread_ids = (DWORD*)malloc(NUM_OF_COMPUTATION_THREADS * sizeof(DWORD));
-	p_thread_handles = (HANDLE*)malloc(NUM_OF_COMPUTATION_THREADS * sizeof(HANDLE));
+	p_thread_ids           = (DWORD*)malloc((NUM_OF_COMPUTATION_THREADS+1) * sizeof(DWORD));
+	p_thread_handles       = (HANDLE*)malloc((NUM_OF_COMPUTATION_THREADS+1) * sizeof(HANDLE));
 	p_anchor_mutex_handles = (HANDLE*)malloc(MAX_NUMBER * sizeof(HANDLE));
-	output_buffer = (PythagoreanTriple*)malloc(OUTPUT_BUFFER_SIZE * sizeof(PythagoreanTriple));
-	isNull(p_thread_ids);
-	isNull(p_thread_handles); // check allocation 
+	output_buffer          = (PythagoreanTriple*)malloc(OUTPUT_BUFFER_SIZE * 
+		                                                sizeof(PythagoreanTriple));
+	isNull(p_thread_ids);           // check allocation
+	isNull(p_thread_handles);       // check allocation 
 	isNull(p_anchor_mutex_handles); // check allocation 
+
+	//create semaphores and mutex:
+
+	//semaphores- empty, full
+	//mutex     - consumer_mutex, producer_mutex, pick_n_index_mutex
 
 
 	for (int i = 0; i < NUM_OF_COMPUTATION_THREADS; ++i) {
-		p_thread_handles[i] = CreateThreadSimple(compute_triple, p_anchor_mutex_handles[i], &p_thread_ids[i]);
+		p_thread_handles[i] = CreateThreadSimple(ComputePytagoreanTriplets, p_anchor_mutex_handles[i],
+			                                     &p_thread_ids[i]);
 		isNull(p_thread_handles[i]);
 	}
-
+	CreateThreadSimple(ConsumeAnItemFromBuffer, p_anchor_mutex_handles[NUM_OF_COMPUTATION_THREADS], &p_thread_ids[NUM_OF_COMPUTATION_THREADS]);
+	
+	Wait_Status = WaitForMultipleObjects((DWORD)(NUM_OF_COMPUTATION_THREADS + 1), p_thread_handles, 1, INFINITE); // Waits for all threads to finish thier work. 
+	if (WAIT_OBJECT_0 != Wait_Status) {
+		printf("Error While waiting for threads\n");
+		exitGracefully();
+	}
+	WriteToLogFile(argv[4]);
 }

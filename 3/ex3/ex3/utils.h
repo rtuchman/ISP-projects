@@ -14,7 +14,7 @@ typedef struct _PythagoreanTriple {
 	int a;
 	int b;
 	int c;
-	struct PythagoreanTriple *next;
+	struct _PythagoreanTriple *next;
 } PythagoreanTriple;
 
 // Globals ---------------------------------------------------------------------
@@ -23,10 +23,15 @@ HANDLE *p_thread_handles; // pointers for threads
 HANDLE *p_anchor_mutex_handles; // pointers for mutexes
 BOOL *anchors_array; // bit flags array to know which anchors are taken
 PythagoreanTriple *output_buffer;
+int MAX_NUMBER;
+int NUM_OF_COMPUTATION_THREADS;
+int OUTPUT_BUFFER_SIZE;
 
 // Function Declarations -------------------------------------------------------
 int gcd(int a, int b);
 void isNull(void* ptr);
 void freeAll();
 void exitGracefully();
-DWORD WINAPI compute_triple(LPVOID lpParam);
+DWORD WINAPI ComputePytagoreanTriplets(LPVOID lpParam);
+void CopmuteTriplets(int n_index);
+void AddToBuffer(PythagoreanTriple triplet);
