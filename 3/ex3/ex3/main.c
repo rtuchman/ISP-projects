@@ -29,9 +29,15 @@ void main(int argc, char *argv[])
 
 	//create semaphores and mutex:
 
-	//semaphores- empty, full
-	//mutex     - consumer_mutex, producer_mutex, pick_n_index_mutex
+	pick_n_mutex            = CreateMutex(NULL, FALSE, NULL);	
+	isNull(pick_n_mutex);
+	producer_consumer_mutex = CreateMutex(NULL, FALSE, NULL);
+	isNull(producer_consumer_mutex);
 
+	empty                   = CreateSemaphore(NULL, OUTPUT_BUFFER_SIZE, OUTPUT_BUFFER_SIZE, NULL);
+	isNull(empty);
+	full                    = CreateSemaphore(NULL, 0, OUTPUT_BUFFER_SIZE, NULL);
+	isNull(full);
 
 	for (int i = 0; i < NUM_OF_COMPUTATION_THREADS; ++i) {
 		p_thread_handles[i] = CreateThreadSimple(ComputePytagoreanTriplets, p_anchor_mutex_handles[i],
@@ -46,4 +52,6 @@ void main(int argc, char *argv[])
 		exitGracefully();
 	}
 	WriteToLogFile(argv[4]);
+
+	//************ close resources, close handlers
 }

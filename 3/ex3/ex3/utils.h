@@ -26,6 +26,7 @@ PythagoreanTriple *output_buffer;
 int MAX_NUMBER;
 int NUM_OF_COMPUTATION_THREADS;
 int OUTPUT_BUFFER_SIZE;
+static HANDLE pick_n_mutex = NULL;
 
 // Function Declarations -------------------------------------------------------
 int gcd(int a, int b);

@@ -1,10 +1,5 @@
-﻿  main.c
-c:\users\adi\desktop\git2\isp-projects\3\ex3\ex3\main.c(48): warning C4013: 'WriteToLogFile' undefined; assuming extern returning int
-c:\users\adi\desktop\git2\isp-projects\3\ex3\ex3\main.c(12): warning C4101: 'exitCodeforthread': unreferenced local variable
-  system_functions.c
-c:\users\adi\desktop\git2\isp-projects\3\ex3\ex3\system_functions.c(131): warning C4013: 'AddToSortedList' undefined; assuming extern returning int
-  utils.c
-c:\users\adi\desktop\git2\isp-projects\3\ex3\ex3\utils.c(120): warning C4013: 'WaitForAnEmptyPlaceAndWriteToBuffer' undefined; assuming extern returning int
-  Generating Code...
-c:\users\adi\desktop\git2\isp-projects\3\ex3\ex3\system_functions.c(146): warning C4716: 'ConsumeAnItemFromBuffer': must return a value
-  ex3.vcxproj -> C:\Users\Adi\Desktop\Git2\ISP-projects\3\ex3\Debug\ex3.exe
+﻿  utils.c
+c:\users\adi\desktop\git2\isp-projects\3\ex3\ex3\utils.c(108): warning C4013: 'ComputeTriplets' undefined; assuming extern returning int
+c:\users\adi\desktop\git2\isp-projects\3\ex3\ex3\utils.c(132): warning C4013: 'WaitForAnEmptyPlaceAndWriteToBuffer' undefined; assuming extern returning int
+utils.obj : error LNK2019: unresolved external symbol _ComputeTriplets referenced in function _ComputePytagoreanTriplets@4
+C:\Users\Adi\Desktop\Git2\ISP-projects\3\ex3\Debug\ex3.exe : fatal error LNK1120: 1 unresolved externals

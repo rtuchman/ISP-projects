@@ -23,7 +23,8 @@ static const int N = 10;
 
 static HANDLE empty;
 static HANDLE full;
-static HANDLE mutex;
+static HANDLE producer_consumer_mutex = NULL;
+
 
 
 // Function Declarations -------------------------------------------------------

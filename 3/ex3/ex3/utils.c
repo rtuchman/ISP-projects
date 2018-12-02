@@ -85,15 +85,27 @@ void exitGracefully()
 
 DWORD WINAPI ComputePytagoreanTriplets(LPVOID lpParam)
 {
+	DWORD wait_code;
 	while (1) {
-		//mutex for finding the current index
+		wait_code = WaitForSingleObject(pick_n_mutex, INFINITE);
+		if (WAIT_OBJECT_0 != wait_code)
+		{
+			printf("Error when waiting for mutex\n");
+			exitGracefully();
+		}
+		//start critical region:
 		int anchor_index = 0;
 		while (anchors_array[anchor_index] && anchor_index < MAX_NUMBER) {
 			anchors_array[anchor_index] = true;
 			anchor_index++;
 		}
-		//end mutex
-		if (anchor_index != MAX_NUMBER) { /*ComputeTriplets(anchor_index + 1);*/ }
+		//end critical region
+		if (FALSE == ReleaseMutex(pick_n_mutex))
+		{
+			printf("Error when releasing\n");
+			exitGracefully();
+		}
+		if (anchor_index != MAX_NUMBER) { ComputeTriplets(anchor_index + 1); }
 		else { return 0; }
 	}
 }
@@ -119,7 +131,7 @@ void CopmuteTriplets(int n_index) {
 		//Add the triplet to the buffer:
 		WaitForAnEmptyPlaceAndWriteToBuffer(current_triplet);
 
-		//need to add a check if fail
+		//***************need to add a check if fail
 	}
 }
 

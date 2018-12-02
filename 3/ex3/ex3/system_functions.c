@@ -81,7 +81,7 @@ void WaitForAnEmptyPlaceAndWriteToBuffer(PythagoreanTriple triplet_to_buffer)
 	wait_res = WaitForSingleObject(empty, INFINITE);
 	if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
 
-	wait_res = WaitForSingleObject(mutex, INFINITE);
+	wait_res = WaitForSingleObject(producer_consumer_mutex, INFINITE);
 	if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
 
 	//critical area
@@ -90,7 +90,7 @@ void WaitForAnEmptyPlaceAndWriteToBuffer(PythagoreanTriple triplet_to_buffer)
 
 	//end of critical area
 
-	release_res = ReleaseMutex(mutex);
+	release_res = ReleaseMutex(producer_consumer_mutex);
 	if (release_res == FALSE) ReportErrorAndEndProgram();
 
 	release_res = ReleaseSemaphore(
@@ -122,8 +122,7 @@ DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam)
 	wait_res = WaitForSingleObject(full, INFINITE);
 	if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
 
-	//*************** need to change that mutex name to a more specific one
-	wait_res = WaitForSingleObject(mutex, INFINITE);
+	wait_res = WaitForSingleObject(producer_consumer_mutex, INFINITE);
 	if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
 
 	//critical area:
@@ -131,7 +130,7 @@ DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam)
 	AddToSortedList();
 
 	//end of critical area
-	release_res = ReleaseMutex(mutex);
+	release_res = ReleaseMutex(producer_consumer_mutex);
 	if (release_res == FALSE) ReportErrorAndEndProgram();
 
 	release_res = ReleaseSemaphore(
