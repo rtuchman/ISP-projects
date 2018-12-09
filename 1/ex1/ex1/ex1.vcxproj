@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{0C321D38-C79C-48A2-BF6F-7F49B031EE26}</ProjectGuid>
+    <ProjectGuid>{0018F916-C9EB-457C-B49F-ED0567EEFE5A}</ProjectGuid>
     <RootNamespace>ex1</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -115,13 +115,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="airplane_db.h" />
-    <ClInclude Include="pilots.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="airplane_db.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="pilots.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="airplane_db.h" />
+    <ClInclude Include="pilots.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
