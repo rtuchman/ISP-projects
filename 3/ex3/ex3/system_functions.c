@@ -76,8 +76,6 @@ void WaitForAnEmptyPlaceAndWriteToBuffer(PythagoreanTriple triplet_to_buffer)
 	BOOL release_res;
 	LONG previous_count;
 
-	Sleep(PRODUCER_WAIT_TIME_IN_MILISECONDS);
-
 	wait_res = WaitForSingleObject(empty, INFINITE);
 	if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
 
@@ -123,8 +121,6 @@ DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam)
 		DWORD wait_res;
 		BOOL release_res;
 		LONG previous_count;
-
-		Sleep(CONSUMER_WAIT_TIME_IN_MILISECONDS);
 
 		wait_res = WaitForSingleObject(full, TIMEOUT_IN_MILLISECONDS);
 		if (wait_res == WAIT_TIMEOUT)  break;

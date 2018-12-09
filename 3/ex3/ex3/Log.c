@@ -25,6 +25,7 @@ void AddToList() {
 	for (i = 0; i < OUTPUT_BUFFER_SIZE; i++) { if (output_buffer[i].n) break; }
 	if (!output_buffer[i].n) { return; }
 	*triplet_to_add          = output_buffer[i];
+	output_buffer[i].n = 0;
 	if (first_of_list == NULL) {
 		first_of_list = triplet_to_add;
 		last_of_list = first_of_list->next;
