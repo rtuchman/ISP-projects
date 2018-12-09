@@ -26,7 +26,6 @@ PythagoreanTriple *output_buffer;
 int MAX_NUMBER;
 int NUM_OF_COMPUTATION_THREADS;
 int OUTPUT_BUFFER_SIZE;
-static HANDLE pick_n_mutex = NULL;
 
 // Function Declarations -------------------------------------------------------
 int gcd(int a, int b);
@@ -34,5 +33,6 @@ void isNull(void* ptr);
 void freeAll();
 void exitGracefully();
 DWORD WINAPI ComputePytagoreanTriplets(LPVOID lpParam);
-void CopmuteTriplets(int n_index);
+void ComputeTriplets(int n_index);
 void AddToBuffer(PythagoreanTriple triplet);
+void ClearPythagoreanList(PythagoreanTriple* pythagorean_list);

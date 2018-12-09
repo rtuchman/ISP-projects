@@ -1,6 +1,8 @@
 // Includes --------------------------------------------------------------------
 #define _CRT_SECURE_NO_WARNING
 #include "utils.h"
+#include "system_functions.h"
+#include "Log.h"
 
 
 // Function Definitions --------------------------------------------------------
@@ -54,12 +56,28 @@ void isNull(void* ptr)
 
 void freeAll()
 {
-	free(p_thread_ids); 
-	free(p_thread_handles); 
-	free(p_anchor_mutex_handles);
-	free(anchors_array);
-	free(output_buffer);
-	//*******free for the sorted list
+	for (int i = 0; i < MAX_NUMBER; ++i) {
+		free((anchors_array + i));
+		CloseHandle(*(p_anchor_mutex_handles + i));
+	}
+	for (int j = 0; j < NUM_OF_COMPUTATION_THREADS; ++j) {
+		free(*(p_thread_ids + j));
+		CloseHandle(*(p_thread_handles + j));
+	}
+	for (int k = 0; k < OUTPUT_BUFFER_SIZE; ++k) {
+		free((output_buffer+k));
+	}
+	ClearPythagoreanList(first_of_list);
+}
+
+void ClearPythagoreanList(PythagoreanTriple* pythagorean_list) {
+	PythagoreanTriple* pythagorean_to_delete = pythagorean_list->next;
+	PythagoreanTriple* curr_pythagorean = pythagorean_list->next;
+	while (curr_pythagorean != NULL) {
+		curr_pythagorean = curr_pythagorean->next;
+		free(pythagorean_to_delete);
+		pythagorean_to_delete = curr_pythagorean;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -72,7 +90,7 @@ void freeAll()
 void exitGracefully() 
 {
 	freeAll();
-	exit(1);
+	return ERROR_CODE;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -85,27 +103,32 @@ void exitGracefully()
 
 DWORD WINAPI ComputePytagoreanTriplets(LPVOID lpParam)
 {
+	int *p_param_index;
 	DWORD wait_code;
+	if (NULL == lpParam)
+	{
+		exitGracefully;
+	}
+	p_param_index = (int*)lpParam;
 	while (1) {
-		wait_code = WaitForSingleObject(pick_n_mutex, INFINITE);
+		wait_code = WaitForSingleObject(p_anchor_mutex_handles[*p_param_index], INFINITE);
 		if (WAIT_OBJECT_0 != wait_code)
 		{
 			printf("Error when waiting for mutex\n");
 			exitGracefully();
 		}
 		//start critical region:
-		int anchor_index = 0;
-		while (anchors_array[anchor_index] && anchor_index < MAX_NUMBER) {
-			anchors_array[anchor_index] = true;
-			anchor_index++;
-		}
+		//while (anchors_array[anchor_index] && anchor_index < MAX_NUMBER) {anchor_index++;}
+		anchors_array[*p_param_index] = TRUE;
+		int current_index = *p_param_index;
+		*p_param_index +=1;
 		//end critical region
-		if (FALSE == ReleaseMutex(pick_n_mutex))
+		if (FALSE == ReleaseMutex(p_anchor_mutex_handles[*p_param_index-1]))
 		{
 			printf("Error when releasing\n");
 			exitGracefully();
 		}
-		if (anchor_index != MAX_NUMBER) { ComputeTriplets(anchor_index + 1); }
+		if (*p_param_index != MAX_NUMBER) { ComputeTriplets(current_index+1); }
 		else { return 0; }
 	}
 }
@@ -117,13 +140,14 @@ DWORD WINAPI ComputePytagoreanTriplets(LPVOID lpParam)
 // Funtionality: Find every primitive pytagorean triplets with n as n_index
 ////////////////////////////////////////////////////////////////////////
 
-void CopmuteTriplets(int n_index) {
+void ComputeTriplets(int n_index) {  
 	for (int m_index = n_index + 1; m_index <= MAX_NUMBER; m_index += 2) {
 		if (gcd(m_index, n_index) > 1) { continue; }
 		PythagoreanTriple current_triplet;
 		int m_index_square = m_index * m_index;
 		int n_index_square = n_index * n_index;
-		current_triplet.n, current_triplet.m = n_index, m_index;
+		current_triplet.n  = n_index;
+		current_triplet.m = m_index;
 		current_triplet.a = m_index_square - n_index_square;
 		current_triplet.b = 2 * m_index * n_index;
 		current_triplet.c = m_index_square + n_index_square;
@@ -150,6 +174,7 @@ void AddToBuffer(PythagoreanTriple triplet) {
 	if ((buffer_index == OUTPUT_BUFFER_SIZE - 1) && output_buffer[buffer_index].n) {/*error*/ }
 	output_buffer[buffer_index] = triplet;
 }
+
 
 
 

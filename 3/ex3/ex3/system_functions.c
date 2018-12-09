@@ -113,6 +113,12 @@ void WaitForAnEmptyPlaceAndWriteToBuffer(PythagoreanTriple triplet_to_buffer)
 
 DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam)
 {
+	HANDLE *p_param_producer_consumer_mutex;
+	if (NULL == lpParam)
+	{
+		exitGracefully;
+	}
+	p_param_producer_consumer_mutex = (HANDLE*)lpParam;
 	while (1) {
 		DWORD wait_res;
 		BOOL release_res;
@@ -124,15 +130,15 @@ DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam)
 		if (wait_res == WAIT_TIMEOUT)  break;
 		if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
 
-		wait_res = WaitForSingleObject(producer_consumer_mutex, INFINITE);
+		wait_res = WaitForSingleObject(p_param_producer_consumer_mutex, INFINITE);
 		if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
 
 		//critical area:
 
-		AddToSortedList();
+		AddToList();
 
 		//end of critical area
-		release_res = ReleaseMutex(producer_consumer_mutex);
+		release_res = ReleaseMutex(p_param_producer_consumer_mutex);
 		if (release_res == FALSE) ReportErrorAndEndProgram();
 
 		release_res = ReleaseSemaphore(

@@ -9,7 +9,7 @@
 
 // Constants -------------------------------------------------------------------
 
-#define TIMEOUT_IN_MILLISECONDS 10000
+#define TIMEOUT_IN_MILLISECONDS INFINITE
 #define BRUTAL_TERMINATION_CODE 0x55
 #define ERROR_CODE ((int)(-1))
 #define SUCCESS_CODE ((int)(0))
@@ -21,9 +21,9 @@ static const int PRODUCER_WAIT_TIME_IN_MILISECONDS = 250;
 static const int CONSUMER_WAIT_TIME_IN_MILISECONDS = 500; /* Unequal wait times make the demonstration clearer */
 static const int N = 10;
 
-static HANDLE empty;
-static HANDLE full;
-static HANDLE producer_consumer_mutex = NULL;
+HANDLE *empty;
+HANDLE *full;
+HANDLE *producer_consumer_mutex;
 
 
 
