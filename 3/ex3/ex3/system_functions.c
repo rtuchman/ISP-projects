@@ -131,7 +131,7 @@ DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam)
 
 		//critical area:
 
-		AddToList();
+		AddToSortedList();
 
 		//end of critical area
 		release_res = ReleaseMutex(p_param_producer_consumer_mutex);

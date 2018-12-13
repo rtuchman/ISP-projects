@@ -79,7 +79,7 @@ void freeAll()
 	CloseHandle(*p_thread_handles);
 	
 	free(output_buffer);
-	ClearPythagoreanList(first_of_list);
+	ClearPythagoreanList(first_of_sorted_list);
 }
 
 void ClearPythagoreanList(PythagoreanTriple* pythagorean_list) {

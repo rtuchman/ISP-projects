@@ -7,9 +7,9 @@
 #include "utils.h"
 
 // Globals ---------------------------------------------------------------------
-PythagoreanTriple *first_of_list;
+PythagoreanTriple *first_of_sorted_list;
 PythagoreanTriple *last_of_list;
 
 // Function Declarations -------------------------------------------------------
-void AddToList();
+void AddToSortedList();
 void WriteToLogFile(char* triplets_file_path);

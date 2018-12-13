@@ -6,6 +6,7 @@
 
 #include "utils.h"
 #include "system_functions.h"
+#include "Log.h"
 
 void main(int argc, char *argv[])
 {	
