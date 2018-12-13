@@ -44,7 +44,7 @@ void main(int argc, char *argv[])
 	isNull(full);
 
 	for (int threads_index = 0; threads_index < NUM_OF_COMPUTATION_THREADS; ++threads_index) {
-		p_thread_handles[threads_index] = CreateThreadSimple(ComputePytagoreanTriplets, p_anchor_index, &(p_thread_ids[threads_index]));
+		p_thread_handles[threads_index] = CreateThreadSimple(ComputePytagoreanTriplets, p_anchor_index, &p_thread_ids[threads_index]);
 		isNull(p_thread_handles[threads_index]);
 	}
 	p_thread_handles[NUM_OF_COMPUTATION_THREADS] = CreateThreadSimple(ConsumeAnItemFromBuffer, producer_consumer_mutex, &(p_thread_ids[NUM_OF_COMPUTATION_THREADS]));

@@ -1,5 +1,1 @@
-﻿  utils.c
-c:\users\adi\desktop\git3\isp-projects\3\ex3\ex3\utils.c(64): warning C4022: 'free': pointer mismatch for actual parameter 1
-c:\users\adi\desktop\git3\isp-projects\3\ex3\ex3\utils.c(93): warning C4098: 'exitGracefully': 'void' function returning a value
-c:\users\adi\desktop\git3\isp-projects\3\ex3\ex3\utils.c(110): warning C4550: expression evaluates to a function which is missing an argument list
-  ex3.vcxproj -> C:\Users\Adi\Desktop\Git3\ISP-projects\3\ex3\Debug\ex3.exe
+﻿  ex3.vcxproj -> C:\Users\rtuchman\Documents\Studies\Year E\Semester A\מבוא לתכנות מערכות\ISP-projects\3\ex3\Debug\ex3.exe
