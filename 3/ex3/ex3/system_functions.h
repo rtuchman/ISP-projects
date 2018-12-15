@@ -5,15 +5,8 @@
 #include <windows.h>
 #include <stdlib.h>
 #include "utils.h"
-//#include <tchar.h> 
 
 // Constants -------------------------------------------------------------------
-
-#define TIMEOUT_IN_MILLISECONDS 10000
-#define BRUTAL_TERMINATION_CODE 0x55
-#define ERROR_CODE ((int)(-1))
-#define SUCCESS_CODE ((int)(0))
-
 
 // Variables -------------------------------------------------------------------
 

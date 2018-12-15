@@ -96,9 +96,6 @@ void WaitForAnEmptyPlaceAndWriteToBuffer(PythagoreanTriple triplet_to_buffer)
 		1,
 		&previous_count);
 	if (release_res == FALSE) ReportErrorAndEndProgram();
-	printf("Producer inserted one item. Previous count is: %ld\n", previous_count);
-
-	//	return 0;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -131,7 +128,7 @@ DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam)
 
 		//critical area:
 
-		AddToSortedList();
+		AddToList();
 
 		//end of critical area
 		release_res = ReleaseMutex(p_param_producer_consumer_mutex);
@@ -142,9 +139,5 @@ DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam)
 			1,
 			&previous_count);
 		if (release_res == FALSE) ReportErrorAndEndProgram();
-
-		printf("Consumer used one item. Previous count is: %ld\n", previous_count);
-
-		//	return 0;
 	}
 }

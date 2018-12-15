@@ -17,6 +17,11 @@ void main(int argc, char *argv[])
 	OUTPUT_BUFFER_SIZE = atoi(argv[3]);
 	int anchor_index = 0;
 	int *p_anchor_index = &anchor_index;
+
+	if (MAX_NUMBER == 1) {
+		printf("MAX_NUMBER 1 is not valid.\n");
+		exitGracefully();
+	}
 	
 	// Allocate memory :
 	anchors_array          = (BOOL*)malloc(MAX_NUMBER * sizeof(BOOL));
@@ -25,6 +30,7 @@ void main(int argc, char *argv[])
 	p_thread_handles       = (HANDLE*)malloc((NUM_OF_COMPUTATION_THREADS+1) * sizeof(HANDLE));
 	p_anchor_mutex_handles = (HANDLE*)malloc(MAX_MAX_NUMBER * sizeof(HANDLE));
 	output_buffer          = (PythagoreanTriple*)malloc(OUTPUT_BUFFER_SIZE * sizeof(PythagoreanTriple));
+	for (int i = 0; i < MAX_NUMBER; i++) { anchors_array[i] = FALSE; }
 	for (int i = 0; i < OUTPUT_BUFFER_SIZE; i++) { output_buffer[i].n = 0; }
 	isNull(p_thread_ids);           // check allocation
 	isNull(p_thread_handles);       // check allocation 
@@ -55,6 +61,7 @@ void main(int argc, char *argv[])
 		printf("Error While waiting for threads\n");
 		exitGracefully();
 	}
+	sortList();
 	WriteToLogFile(argv[4]);
 
 	freeAll();
