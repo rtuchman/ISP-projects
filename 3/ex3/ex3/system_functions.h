@@ -10,10 +10,6 @@
 
 // Variables -------------------------------------------------------------------
 
-static const int PRODUCER_WAIT_TIME_IN_MILISECONDS = 250;
-static const int CONSUMER_WAIT_TIME_IN_MILISECONDS = 500; /* Unequal wait times make the demonstration clearer */
-static const int N = 10;
-
 HANDLE *empty;
 HANDLE *full;
 HANDLE *producer_consumer_mutex;
@@ -27,3 +23,4 @@ HANDLE CreateMutexSimple(LPCTSTR MutexName);
 void ReportErrorAndEndProgram();
 void WaitForAnEmptyPlaceAndWriteToBuffer(PythagoreanTriple triplet_to_buffer);
 DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam);
+extern void AddToList();

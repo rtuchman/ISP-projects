@@ -2,7 +2,7 @@
 //Project- ex3
 
 #define _CRT_SECURE_NO_WARNINGS
-#define MAX_MAX_NUMBER 1000
+#define MAX_MAX_NUMBER 1070
 
 #include "utils.h"
 #include "system_functions.h"
@@ -25,15 +25,18 @@ void main(int argc, char *argv[])
 	
 	// Allocate memory :
 	anchors_array          = (BOOL*)malloc(MAX_NUMBER * sizeof(BOOL));
+	isNull(anchors_array);           // check allocation
 	memset(anchors_array, 0, sizeof(anchors_array)); // init all to 0
 	p_thread_ids           = (DWORD*)malloc((NUM_OF_COMPUTATION_THREADS+1) * sizeof(DWORD));
+	isNull(p_thread_ids);            // check allocation
 	p_thread_handles       = (HANDLE*)malloc((NUM_OF_COMPUTATION_THREADS+1) * sizeof(HANDLE));
+	isNull(p_thread_handles);        // check allocation 
 	p_anchor_mutex_handles = (HANDLE*)malloc(MAX_MAX_NUMBER * sizeof(HANDLE));
+	isNull(p_anchor_mutex_handles);  // check allocation
 	output_buffer          = (PythagoreanTriple*)malloc(OUTPUT_BUFFER_SIZE * sizeof(PythagoreanTriple));
+	isNull(output_buffer);           // check allocation
 	for (int i = 0; i < MAX_NUMBER; i++) { anchors_array[i] = FALSE; }
 	for (int i = 0; i < OUTPUT_BUFFER_SIZE; i++) { output_buffer[i].n = 0; }
-	isNull(p_thread_ids);           // check allocation
-	isNull(p_thread_handles);       // check allocation 
 
 
 	//create semaphores and mutex:
@@ -61,7 +64,6 @@ void main(int argc, char *argv[])
 		printf("Error While waiting for threads\n");
 		exitGracefully();
 	}
-	sortList();
 	WriteToLogFile(argv[4]);
 
 	freeAll();

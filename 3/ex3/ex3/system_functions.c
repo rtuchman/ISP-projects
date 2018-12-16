@@ -111,7 +111,7 @@ DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam)
 	HANDLE *p_param_producer_consumer_mutex;
 	if (NULL == lpParam)
 	{
-		exitGracefully;
+		exitGracefully();
 	}
 	p_param_producer_consumer_mutex = (HANDLE*)lpParam;
 	while (1) {
@@ -119,7 +119,10 @@ DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam)
 		BOOL release_res;
 		LONG previous_count;
 
-		wait_res = WaitForSingleObject(full, TIMEOUT_IN_MILLISECONDS);
+		if      (MAX_NUMBER <= 500)  { wait_res = WaitForSingleObject(full, TIMEOUT_IN_MILLISECONDS_10S); }
+		else if (MAX_NUMBER <= 900)  { wait_res = WaitForSingleObject(full, TIMEOUT_IN_MILLISECONDS_30S); }
+		else if (MAX_NUMBER <= 1000) { wait_res = WaitForSingleObject(full, TIMEOUT_IN_MILLISECONDS_40S);  }
+		
 		if (wait_res == WAIT_TIMEOUT)  break;
 		if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
 
@@ -140,4 +143,5 @@ DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam)
 			&previous_count);
 		if (release_res == FALSE) ReportErrorAndEndProgram();
 	}
+	return 0;
 }

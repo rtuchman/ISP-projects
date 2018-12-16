@@ -40,7 +40,7 @@ void isNull(void* ptr)
 	if (ptr == NULL)
 	{
 		printf("failed to allocate memory\n");
-	//	exitGracefully();
+		exitGracefully();
 	}
 }
 
@@ -107,8 +107,11 @@ DWORD WINAPI ComputePytagoreanTriplets(LPVOID lpParam)
 	while (1) {
 		current_param = *p_param_index;
 		if (current_param == MAX_NUMBER) return 0;
-		wait_code = WaitForSingleObject(p_anchor_mutex_handles[current_param], TIMEOUT_IN_MILLISECONDS);
 
+		if      (MAX_NUMBER <= 500)  { wait_code = WaitForSingleObject(p_anchor_mutex_handles[current_param], TIMEOUT_IN_MILLISECONDS_10S); }
+		else if (MAX_NUMBER <= 900)  { wait_code = WaitForSingleObject(p_anchor_mutex_handles[current_param], TIMEOUT_IN_MILLISECONDS_30S); }
+		else if (MAX_NUMBER <= 1000) { wait_code = WaitForSingleObject(p_anchor_mutex_handles[current_param], TIMEOUT_IN_MILLISECONDS_40S); }
+		
 		if (WAIT_TIMEOUT == wait_code) { continue; } //mutex is locked by another thread
 
 		if (WAIT_OBJECT_0 != wait_code)
@@ -153,8 +156,6 @@ void ComputeTriplets(int n_index) {
 
 		//Add the triplet to the buffer:
 		WaitForAnEmptyPlaceAndWriteToBuffer(current_triplet);
-
-		//***************need to add a check if fail
 	}
 }
 
