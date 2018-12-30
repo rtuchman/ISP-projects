@@ -20,7 +20,6 @@ static HANDLE usersSemaphore;  // no user login in 5 minutes.
 static HANDLE serverIsBusySemaphore; // one client is connected to the server and server is busy.
 static HANDLE printGameStartSemaphore; // 
 static HANDLE FailedSemaphore;
-static HANDLE fiveMinutesThread;
 int numberOfPlayres = 0; // this intger hold the number of current users on server.
 char *returnString = NULL; // this is the string that the server will sent to the client. 
 static int Player1, Player2;		//for player ID in order to know which turn it is.
@@ -326,7 +325,6 @@ static DWORD ServiceThread(SOCKET *t_socket)
 
 			fprintf(log_file, "Player Disconnected. Exiting.\n");
 			CleanupWorkerThreads();
-			TerminateThread(fiveMinutesThread, 0);
 			closesocket(ThreadInputs[0]);
 			closesocket(ThreadInputs[1]);
 			ReleaseSemaphore(FailedSemaphore, 1, NULL);
@@ -339,7 +337,6 @@ static DWORD ServiceThread(SOCKET *t_socket)
 
 			fprintf(log_file, "Custom message: Service socket error while reading, closing thread.\n");
 			CleanupWorkerThreads();
-			TerminateThread(fiveMinutesThread, 0);
 			closesocket(ThreadInputs[0]);
 			closesocket(ThreadInputs[1]);
 			ReleaseSemaphore(FailedSemaphore, 1, NULL);
@@ -473,7 +470,6 @@ static DWORD ServiceThread(SOCKET *t_socket)
 			{
 				fprintf(log_file, "Player disconnected. Exiting\n");
 				CleanupWorkerThreads();
-				TerminateThread(fiveMinutesThread, 0);
 				closesocket(ThreadInputs[0]);
 				closesocket(ThreadInputs[1]);
 				ReleaseSemaphore(FailedSemaphore, 1, NULL);
@@ -518,7 +514,6 @@ static DWORD ServiceThread(SOCKET *t_socket)
 				}
 
 				CleanupWorkerThreads();
-				TerminateThread(fiveMinutesThread, 0);
 				closesocket(ThreadInputs[0]);
 				closesocket(ThreadInputs[1]);
 				ReleaseSemaphore(FailedSemaphore, 1, NULL);
