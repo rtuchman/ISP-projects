@@ -1,0 +1,33 @@
+﻿  SocketServer.c
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.h(49): warning C4042: 'usersSemaphore': has bad storage class
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.h(49): warning C4042: 'serverIsBusySemaphore': has bad storage class
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.h(49): warning C4042: 'printGameStartSemaphore': has bad storage class
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(102): warning C4013: 'ListenThreadFunction' undefined; assuming extern returning int
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(112): warning C4102: 'server_cleanup_3': unreferenced label
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(610): warning C4042: 'usersSemaphore': has bad storage class
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(610): warning C4042: 'serverIsBusySemaphore': has bad storage class
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(610): warning C4042: 'printGameStartSemaphore': has bad storage class
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(728): warning C4102: 'server_cleanup_2': unreferenced label
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(733): warning C4102: 'server_cleanup_1': unreferenced label
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(740): warning C4142: 'ListenThreadFunction': benign redefinition of type
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(309): warning C4715: 'ServerClientMassegeControl': not all control paths return a value
+c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(748): warning C4716: 'ListenThreadFunction': must return a value
+SocketServer.obj : error LNK2005: _numberOfPlayres already defined in main.obj
+SocketServer.obj : error LNK2005: _returnString already defined in main.obj
+SocketServer.obj : error LNK2005: _FlagSendFirstView already defined in main.obj
+SocketServer.obj : error LNK2005: _MainSocket already defined in main.obj
+SocketServer.obj : error LNK2005: _Loop already defined in main.obj
+SocketServer.obj : error LNK2005: _Failed_Code already defined in main.obj
+SocketServer.obj : error LNK2005: _SameNameFlag already defined in main.obj
+SocketServer.obj : error LNK2019: unresolved external symbol _NewUserRequest referenced in function _ServerClientMassegeControl
+SocketServer.obj : error LNK2019: unresolved external symbol _PlayRequest referenced in function _ServerClientMassegeControl
+SocketServer.obj : error LNK2019: unresolved external symbol _GameEnded referenced in function _ServiceThread
+SocketServer.obj : error LNK2019: unresolved external symbol _UserListQuery referenced in function _ServerClientMassegeControl
+SocketServer.obj : error LNK2019: unresolved external symbol _GameStateQuery referenced in function _ServerClientMassegeControl
+SocketServer.obj : error LNK2019: unresolved external symbol _BoardViewQuery referenced in function _ServerClientMassegeControl
+SocketServer.obj : error LNK2019: unresolved external symbol _TurnSwitch referenced in function _ServiceThread
+SocketServer.obj : error LNK2001: unresolved external symbol _userNameArray
+SocketServer.obj : error LNK2001: unresolved external symbol _gameBoardMatrixArray
+SocketServer.obj : error LNK2001: unresolved external symbol _userListReplay
+SocketServer.obj : error LNK2001: unresolved external symbol _boardViewQueryReplyString
+C:\Users\rtuchman\Documents\Studies\Year E\Semester A\מבוא לתכנות מערכות\ISP-projects\4\ex4\Debug\ex4.exe : fatal error LNK1120: 11 unresolved externals
