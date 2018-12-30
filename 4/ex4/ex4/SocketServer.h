@@ -2,7 +2,7 @@
 #define SOCKET_SERVER_H
 
 #define NUM_OF_WORKER_THREADS 2
-#define MAX_LOOPS 10
+#define MAX_LOOPS 2
 #define FIRST_PLAYER_WIN 0
 #define SECOND_PLAYER_WIN 1
 #define	RESTART_SERVER -1

@@ -196,8 +196,8 @@ static void CleanupWorkerThreads()
 
 	// clean up game board :
 
-	for (i = 0; i < 3; i++)
-		for (j = 0; j < 3; j++)
+	for (i = 0; i < 7; i++)
+		for (j = 0; j < 6; j++)
 		{
 			gameBoardMatrixArray[i][j] = -1;
 		}
@@ -625,8 +625,7 @@ void ServerInit()
 
 		if (Ind == NUM_OF_WORKER_THREADS) //no slot is available
 		{
-			// 3 users
-
+			
 			CleanupWorkerThreads();
 			numberOfPlayres--; // user left the server.
 			WaitForSingleObject(usersSemaphore, INFINITE);

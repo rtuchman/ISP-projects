@@ -9,7 +9,7 @@
 #include "ServerClientMassegeControl.h"
 
 
-char * userNameArray[NUMBER_OF_USERS] = { NULL }; // holds two players user names. first user name play with 'X'. second user name play with 'O'.
+char * userNameArray[NUMBER_OF_USERS] = { NULL }; // holds two players user names.
 int gameBoardMatrixArray[BOARD_ROWS][BOARD_COLS] = { {-1 , -1 , -1, -1, -1, -1, -1}, {-1 , -1 , -1, -1, -1, -1, -1}, {-1 , -1 , -1, -1, -1, -1, -1}, 
 													 {-1 , -1 , -1, -1, -1, -1, -1}, {-1 , -1 , -1, -1, -1, -1, -1}, {-1 , -1 , -1, -1, -1, -1, -1}, };
 char *userListReplay = NULL;
