@@ -215,6 +215,7 @@ static void CleanupWorkerThreads()
 char * ServerClientMassegeControl(char *massegeType, char **parametersArray, SOCKET *t_socket) {
 	int PlayRequest_result;
 	char Buffer[4] = { 0 };
+
 	if (STRINGS_ARE_EQUAL(massegeType, "NEW_USER_REQUEST")) {
 
 		// check if first user is empty
@@ -222,8 +223,8 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, SOC
 		if (userNameArray[0] == NULL) {
 			Player1 = (int)t_socket;
 			NewUserRequest(parametersArray[0]);
-			returnString = (char*)malloc(strlen("NEW_USER_ACCEPTED:X;N") + 1); //allocate memory for string. 
-			strcpy(returnString, "NEW_USER_ACCEPTED:X;"); // building string. 
+			returnString = (char*)malloc(strlen("NEW_USER_ACCEPTED:N") + 1); //allocate memory for string. 
+			strcpy(returnString, "NEW_USER_ACCEPTED:"); // building string. 
 			_itoa(numberOfPlayres, Buffer, 10);
 			strcat(returnString, Buffer);
 			return returnString;
@@ -233,8 +234,8 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, SOC
 
 			Player2 = (int)t_socket;
 			NewUserRequest(parametersArray[0]);
-			returnString = (char*)malloc(strlen("NEW_USER_ACCEPTED:O;") + 1); //allocate memory for string. 
-			strcpy(returnString, "NEW_USER_ACCEPTED:O;"); // building string. 
+			returnString = (char*)malloc(strlen("NEW_USER_ACCEPTED:N") + 1); //allocate memory for string. 
+			strcpy(returnString, "NEW_USER_ACCEPTED:"); // building string. 
 			_itoa(numberOfPlayres, Buffer, 10);
 			strcat(returnString, Buffer);
 			GameStarted = TRUE;
@@ -261,17 +262,16 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, SOC
 	else if (STRINGS_ARE_EQUAL(massegeType, "PLAY_REQUEST"))
 	{
 
-		PlayRequest_result = PlayRequest(parametersArray[0], parametersArray[1], Player1, Player2, GameStarted, Turn, (int)t_socket);
-		if (PlayRequest_result == PLAY_ACCEPTED)//Coo row,Coo Col, playerId, gameStarted, playerTurn
+		PlayRequest_result = PlayRequest(); // this function need to be implemented
+		if (PlayRequest_result == PLAY_ACCEPTED)
 		{
-
 			returnString = (char*)malloc(strlen("PLAY_ACCEPTED") + 1); //allocate memory for string. 
 			strcpy(returnString, "PLAY_ACCEPTED"); // building string. 
-			Turn = ~Turn;
+			Turn = ~Turn; // turn switch
 			return returnString;
 
 		}
-		else if (PlayRequest_result == PLAY_DECLINED_GAME_HAS_NOT_STARTED)
+		else if (PlayRequest_result == PLAY_DECLINED_GAME_HAS_NOT_STARTED) // if only one player is in the game
 		{
 
 			returnString = (char*)malloc(strlen("PLAY_DECLINED:Game has not started") + 1); //allocate memory for string. 
