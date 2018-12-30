@@ -93,8 +93,7 @@ TransferResult_t ReceiveString(char** OutputStrPtr, SOCKET sd) {
 			return TRNS_DISCONNECTED;
 		} // recv() returns zero if connection was gracefully disconnected.
 
-		if (*CurPlacePtr == '\n') {
-			*CurPlacePtr = '\0';
+		if (*CurPlacePtr = '\0') {
 			break;
 		}
 		len++;
