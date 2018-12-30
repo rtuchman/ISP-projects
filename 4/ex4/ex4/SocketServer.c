@@ -11,8 +11,28 @@
 #include "ServerClientMassegeControl.h"
 #include "SocketServer.h"
 
+//Global Veribales : 
 
-
+static FILE *log_file; // TODO : Handle this file. fprintf write comments to it.
+HANDLE ThreadHandles[NUM_OF_WORKER_THREADS];
+SOCKET ThreadInputs[NUM_OF_WORKER_THREADS];
+static HANDLE usersSemaphore;  // no user login in 5 minutes. 
+static HANDLE serverIsBusySemaphore; // one client is connected to the server and server is busy.
+static HANDLE printGameStartSemaphore; // 
+static HANDLE FailedSemaphore;
+static HANDLE fiveMinutesThread;
+int numberOfPlayres = 0; // this intger hold the number of current users on server.
+char *returnString = NULL; // this is the string that the server will sent to the client. 
+static int Player1, Player2;		//for player ID in order to know which turn it is.
+static int Turn = 0;
+static GameStarted = FALSE;
+int FlagGameStarted;
+int FlagSendFirstView = FALSE;
+SOCKET MainSocket = INVALID_SOCKET;
+int Loop = 0; // loop in trhead creation for.
+int Failed_Code = 1;
+int SameNameFlag = FALSE;
+/*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
 
 void MainServer(char **argv)
 {
@@ -24,8 +44,8 @@ void MainServer(char **argv)
 	//open file :
 
 	errno_t Err;
-	Err = fopen_s(&WP_Loger, argv[1], "w");								//Open parameters.txt to read
-	if (!WP_Loger)
+	Err = fopen_s(&log_file, argv[1], "w");
+	if (!log_file)
 	{
 		printf("Error: Failed to open report.txt\n");
 		exit(7);
@@ -38,7 +58,7 @@ void MainServer(char **argv)
 
 	if (StartupRes != NO_ERROR)
 	{
-		fprintf(WP_Loger, "Custom message: error %ld at WSAStartup(), ending program.\n", WSAGetLastError());
+		fprintf(log_file, "Custom message: error %ld at WSAStartup(), ending program.\n", WSAGetLastError());
 		// Tell the user that we could not find a usable WinSock DLL.                                  
 		return;
 	}
@@ -51,7 +71,7 @@ void MainServer(char **argv)
 
 	if (MainSocket == INVALID_SOCKET)
 	{
-		fprintf(WP_Loger, "Custom message: Error at socket( ): %ld\n", WSAGetLastError());
+		fprintf(log_file, "Custom message: Error at socket( ): %ld\n", WSAGetLastError());
 		goto server_cleanup_1;
 	}
 
@@ -60,7 +80,7 @@ void MainServer(char **argv)
 	Address = inet_addr(SERVER_ADDRESS_STR);
 	if (Address == INADDR_NONE)
 	{
-		fprintf(WP_Loger, "Custom message: The string \"%s\" cannot be converted into an ip address. ending program.\n", SERVER_ADDRESS_STR);
+		fprintf(log_file, "Custom message: The string \"%s\" cannot be converted into an ip address. ending program.\n", SERVER_ADDRESS_STR);
 		goto server_cleanup_2;
 	}
 
@@ -72,7 +92,7 @@ void MainServer(char **argv)
 	bindRes = bind(MainSocket, (SOCKADDR*)&service, sizeof(service));
 	if (bindRes == SOCKET_ERROR)
 	{
-		fprintf(WP_Loger, "Custom message: bind() failed with error %ld.Ending program\n", WSAGetLastError());
+		fprintf(log_file, "Custom message: bind() failed with error %ld.Ending program\n", WSAGetLastError());
 		goto server_cleanup_2;
 	}
 
@@ -81,7 +101,7 @@ void MainServer(char **argv)
 	ListenRes = listen(MainSocket, SOMAXCONN);
 	if (ListenRes == SOCKET_ERROR)
 	{
-		fprintf(WP_Loger, "Custom message: Failed listening on socket, error %ld.\n", WSAGetLastError());
+		fprintf(log_file, "Custom message: Failed listening on socket, error %ld.\n", WSAGetLastError());
 		goto server_cleanup_2;
 	}
 
@@ -93,7 +113,7 @@ void MainServer(char **argv)
 
 	if (!FailedSemaphore)
 	{
-		fprintf(WP_Loger, "Custom message: Error: Create semaphore printGameStartSemaphore is failed\n");
+		fprintf(log_file, "Custom message: Error: Create semaphore printGameStartSemaphore is failed\n");
 		exit(1);
 	}
 
@@ -116,12 +136,12 @@ server_cleanup_3:
 
 server_cleanup_2:
 	if (closesocket(MainSocket) == SOCKET_ERROR)
-		fprintf(WP_Loger, "Custom message: Error: Failed to close MainSocket, error %ld. Ending program\n", WSAGetLastError());
+		fprintf(log_file, "Custom message: Error: Failed to close MainSocket, error %ld. Ending program\n", WSAGetLastError());
 
 
 server_cleanup_1:
 	if (WSACleanup() == SOCKET_ERROR)
-		fprintf(WP_Loger, "Custom message: Error: Failed to close MainSocket, error %ld. Ending program\n", WSAGetLastError());
+		fprintf(log_file, "Custom message: Error: Failed to close MainSocket, error %ld. Ending program\n", WSAGetLastError());
 
 }
 
@@ -280,33 +300,6 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, SOC
 
 	}
 
-	else if (STRINGS_ARE_EQUAL(massegeType, "USER_LIST_QUERY"))
-	{
-		userListReplay = UserListQuery();
-
-		returnString = (char*)malloc(strlen(userListReplay) + 1); //allocate memory for string. 
-		strcpy(returnString, userListReplay); // building string. 
-		return returnString;
-
-	}
-
-	else if (STRINGS_ARE_EQUAL(massegeType, "GAME_STATE_QUERY"))
-	{
-
-		boardViewQueryReplyString = GameStateQuery(1, 0);
-		returnString = (char*)malloc(strlen(boardViewQueryReplyString) + 1); //allocate memory for string. 
-		strcpy(returnString, boardViewQueryReplyString); // building string. 
-		return returnString;
-
-	}
-
-	else if (STRINGS_ARE_EQUAL(massegeType, "BOARD_VIEW_QUERY"))
-	{
-		returnString = (char*)malloc(strlen(BoardViewQuery()) + 1); //allocate memory for string. 
-		strcpy(returnString, BoardViewQuery()); // building string. 
-		return returnString;
-	}
-
 }
 
 /*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
@@ -331,7 +324,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 
 			// User Disconnected: 
 
-			fprintf(WP_Loger, "Player Disconnected. Exiting.\n");
+			fprintf(log_file, "Player Disconnected. Exiting.\n");
 			CleanupWorkerThreads();
 			TerminateThread(fiveMinutesThread, 0);
 			closesocket(ThreadInputs[0]);
@@ -344,7 +337,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 		else if (RecvRes == TRNS_DISCONNECTED)
 		{
 
-			fprintf(WP_Loger, "Custom message: Service socket error while reading, closing thread.\n");
+			fprintf(log_file, "Custom message: Service socket error while reading, closing thread.\n");
 			CleanupWorkerThreads();
 			TerminateThread(fiveMinutesThread, 0);
 			closesocket(ThreadInputs[0]);
@@ -357,7 +350,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 		else
 		{
 
-			fprintf(WP_Loger, "Custom message: Got string : %s\n", AcceptedStr);
+			fprintf(log_file, "Custom message: Got string : %s\n", AcceptedStr);
 
 			// Massege from client in this format : massege_type:param1;param2\n. Now we will parse them into differnet strings :
 
@@ -447,12 +440,8 @@ static DWORD ServiceThread(SOCKET *t_socket)
 				memcpy(FunctionResult, "GAME_STARTED\0", strlen("GAME_STARTED") + 1);
 				SendRes = SendString(FunctionResult, ThreadInputs[0]);//Send GAME_STARTED to Player1.
 				SendRes = SendString(FunctionResult, ThreadInputs[1]);//Send GAME_STARTED to Player2.
-				FunctionResult = BoardViewQuery();
-				SendRes = SendString(FunctionResult, ThreadInputs[0]);//Send BOARD_VIEW to Player1.
 				ReleaseSemaphore(printGameStartSemaphore, 1, NULL);
 				WaitForSingleObject(printGameStartSemaphore, INFINITE);
-				FunctionResult = BoardViewQuery();
-				SendRes = SendString(FunctionResult, ThreadInputs[1]);//Send BOARD_VIEW to Player2.
 				ReleaseSemaphore(printGameStartSemaphore, 1, NULL);
 				FunctionResult = TurnSwitch(0); //Player 2 Turn.
 				WaitForSingleObject(printGameStartSemaphore, INFINITE);
@@ -463,11 +452,8 @@ static DWORD ServiceThread(SOCKET *t_socket)
 			}
 			if (PrevTurn != Turn && GameEnded() == GAME_HAS_NOT_ENDED)
 			{
-				FunctionResult = BoardViewQuery();
 				WaitForSingleObject(printGameStartSemaphore, INFINITE);
-				SendRes = SendString(FunctionResult, ThreadInputs[0]);//Send BOARD_VIEW to Player1.
 				ReleaseSemaphore(printGameStartSemaphore, 1, NULL);
-				SendRes = SendString(FunctionResult, ThreadInputs[1]);//Send BOARD_VIEW to Player2.
 				//free(FunctionResult);
 				if (Turn == 0)
 				{
@@ -478,16 +464,14 @@ static DWORD ServiceThread(SOCKET *t_socket)
 					FunctionResult = TurnSwitch(1); //Player 2 Turn.
 				}
 				WaitForSingleObject(printGameStartSemaphore, INFINITE);
-				SendRes = SendString(FunctionResult, ThreadInputs[0]);//Send BOARD_VIEW to Player1.
 				ReleaseSemaphore(printGameStartSemaphore, 1, NULL);
-				SendRes = SendString(FunctionResult, ThreadInputs[1]);//Send BOARD_VIEW to Player2.
 			}
 
 			// Check if string sending from server to client failed : 
 
 			if (SendRes == TRNS_FAILED)
 			{
-				fprintf(WP_Loger, "Player disconnected. Exiting\n");
+				fprintf(log_file, "Player disconnected. Exiting\n");
 				CleanupWorkerThreads();
 				TerminateThread(fiveMinutesThread, 0);
 				closesocket(ThreadInputs[0]);
@@ -503,13 +487,9 @@ static DWORD ServiceThread(SOCKET *t_socket)
 			if (gameEndedInt == FIRST_PLAYER_WIN || gameEndedInt == SECOND_PLAYER_WIN || gameEndedInt == GAME_HAS_ENDED_TIE)
 			{ // check if game ended.
 				char Buffer[50] = { 0 };
-				char *Board;
 				if (gameEndedInt == FIRST_PLAYER_WIN)
 				{
 
-					Board = BoardViewQuery();
-					SendRes = SendString(Board, ThreadInputs[0]);
-					SendRes = SendString(Board, ThreadInputs[1]);
 					strcpy(Buffer, "GAME_ENDED:");
 					strcat(Buffer, userNameArray[0]);
 					SendRes = SendString(Buffer, ThreadInputs[0]);
@@ -523,24 +503,18 @@ static DWORD ServiceThread(SOCKET *t_socket)
 					strcat(Buffer, userNameArray[1]);
 					SendRes = SendString(Buffer, ThreadInputs[0]);
 					SendRes = SendString(Buffer, ThreadInputs[1]);
-					Board = BoardViewQuery();
-					SendRes = SendString(Board, ThreadInputs[0]);
-					SendRes = SendString(Board, ThreadInputs[1]);
 
 				}
 				if (gameEndedInt == GAME_HAS_ENDED_TIE)
 				{
 					SendRes = SendString("GAME_ENDED:TIE", *t_socket);
-					Board = BoardViewQuery();
-					SendRes = SendString(Board, ThreadInputs[0]);
-					SendRes = SendString(Board, ThreadInputs[1]);
 				}
 
 				if (SendRes == TRNS_FAILED) {
-					fprintf(WP_Loger, "Player disconnected. Exiting.\n");
+					fprintf(log_file, "Player disconnected. Exiting.\n");
 				}
 				else {
-					fprintf(WP_Loger, "Custom message:Game Ended\n");
+					fprintf(log_file, "Custom message:Game Ended\n");
 				}
 
 				CleanupWorkerThreads();
@@ -570,43 +544,6 @@ static DWORD ServiceThread(SOCKET *t_socket)
 
 }
 
-static DWORD FiveMinutesThreadFunction(SOCKET *MainSocket) {
-
-	while (1) {
-
-		if (numberOfPlayres == 0) { // if no users are at the server : 
-
-			WaitForSingleObject(usersSemaphore, 300000); // reset timer. if for five minutes users not logged in or if new user logged in ->
-
-			if (numberOfPlayres == 0) { // this rule is true only if five minutes past since last user logged on to the server..
-
-
-				if (closesocket(*MainSocket) == SOCKET_ERROR)
-					fprintf(WP_Loger, "Custom message: Error: Failed to close MainSocket, error %ld. Ending program\n", WSAGetLastError());
-
-				// cleanup
-
-				if (WSACleanup() == SOCKET_ERROR)
-					fprintf(WP_Loger, "Custom message: Error: Failed to close MainSocket, error %ld. Ending program\n", WSAGetLastError());
-
-				exit(5);
-
-				return 0;
-			}
-		}
-	}
-
-	return 1;
-
-}
-
-
-// Close Functions : 
-
-// Game Ended Close function : this function close client threads, shut down and close sockets.
-
-// 
-
 
 int InitSemaphore(static HANDLE * usersSemaphore, static HANDLE * serverIsBusySemaphore, static HANDLE * printGameStartSemaphore) {
 
@@ -620,7 +557,7 @@ int InitSemaphore(static HANDLE * usersSemaphore, static HANDLE * serverIsBusySe
 
 	if (!*usersSemaphore) {
 
-		fprintf(WP_Loger, "Custom message: Error: Create semaphore usersSemaphore is failed\n");
+		fprintf(log_file, "Custom message: Error: Create semaphore usersSemaphore is failed\n");
 		exit(2);
 	}
 
@@ -635,7 +572,7 @@ int InitSemaphore(static HANDLE * usersSemaphore, static HANDLE * serverIsBusySe
 	if (!*usersSemaphore)
 
 	{
-		fprintf(WP_Loger, "Custom message: Error: Create semaphore usersSemaphore is failed\n");
+		fprintf(log_file, "Custom message: Error: Create semaphore usersSemaphore is failed\n");
 		exit(3);
 	}
 
@@ -649,7 +586,7 @@ int InitSemaphore(static HANDLE * usersSemaphore, static HANDLE * serverIsBusySe
 
 	if (!*printGameStartSemaphore)
 	{
-		fprintf(WP_Loger, "Custom message: Error: Create semaphore printGameStartSemaphore is failed\n");
+		fprintf(log_file, "Custom message: Error: Create semaphore printGameStartSemaphore is failed\n");
 		exit(4);
 	}
 
@@ -659,17 +596,6 @@ int InitSemaphore(static HANDLE * usersSemaphore, static HANDLE * serverIsBusySe
 void ServerInit()
 {
 	int Ind; // id of thread in threads array.
-
-
-
-	fiveMinutesThread = CreateThread(
-		NULL,
-		0,
-		(LPTHREAD_START_ROUTINE)FiveMinutesThreadFunction,
-		&MainSocket,
-		0,
-		NULL
-	);
 
 
 	InitSemaphore(&usersSemaphore, &serverIsBusySemaphore, &printGameStartSemaphore);
@@ -728,12 +654,12 @@ server_cleanup_3:
 
 server_cleanup_2:
 	if (closesocket(MainSocket) == SOCKET_ERROR)
-		fprintf(WP_Loger, "Custom message: Error: Failed to close MainSocket, error %ld. Ending program\n", WSAGetLastError());
+		fprintf(log_file, "Custom message: Error: Failed to close MainSocket, error %ld. Ending program\n", WSAGetLastError());
 
 
 server_cleanup_1:
 	if (WSACleanup() == SOCKET_ERROR)
-		fprintf(WP_Loger, "Custom message: Error: Failed to close Winsocket, error %ld. Ending program.\n", WSAGetLastError());
+		fprintf(log_file, "Custom message: Error: Failed to close Winsocket, error %ld. Ending program.\n", WSAGetLastError());
 }
 
 

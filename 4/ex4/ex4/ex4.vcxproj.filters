@@ -30,6 +30,9 @@
     <ClCompile Include="SocketServer.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ServerClientMassegeControl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SocketClient.h">

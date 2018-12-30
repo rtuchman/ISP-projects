@@ -117,6 +117,7 @@
   <ItemGroup>
     <ClCompile Include="main.c" />
     <ClCompile Include="PrintBoard.c" />
+    <ClCompile Include="ServerClientMassegeControl.c" />
     <ClCompile Include="SocketClient.c" />
     <ClCompile Include="SocketSendRecvTools.c" />
     <ClCompile Include="SocketServer.c" />

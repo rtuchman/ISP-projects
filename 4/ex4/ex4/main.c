@@ -31,20 +31,4 @@ int main(int argc, char *argv[])
 		MainServer(argv);
 	}
 
-	
-	
-	
-
-
-	int serverPortNumber;
-	serverPortNumber = atoi(argv[2]); // Save port number as integer.
-
-	// Finish Read port number.
-
-
-	//MainServer(argv);
-
-
-
-
 }
