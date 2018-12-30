@@ -28,7 +28,7 @@
 //global varibles declaratin. 
 
 extern char * userNameArray[NUMBER_OF_USERS];
-extern int gameBoardMatrixArray[BORAD_SIZE][BORAD_SIZE];
+extern int gameBoardMatrixArray[BOARD_ROWS][BOARD_COLS];
 extern char *userListReplay;
 extern char *boardViewQueryReplyString;
 extern char *gameStateQueryReplyString;
@@ -37,9 +37,6 @@ extern char *gameStateQueryReplyString;
 //Function decelration : 
 
 int NewUserRequest(char *newUserName);
-int PlayRequest(char *CoordinateA, char *CoordinateB, int Player1, int Player2, int gameStarted, int playerTurn, int t_socket);
+int PlayRequest();
 int GameEnded();
-char * UserListQuery();
-char * GameStateQuery(int gameStarted, int playerTurn);
-char * BoardViewQuery();
 char* TurnSwitch(int PlayerID);
