@@ -343,7 +343,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 
 			fprintf(log_file, "Custom message: Got string : %s\n", AcceptedStr);
 
-			// Massege from client in this format : massege_type:param1;param2\n. Now we will parse them into differnet strings :
+			// Massege from client in this format : massege_type:param1;param2\0. Now we will parse them into differnet strings :
 
 			const char delimiterMassegeType[2] = ":";
 			const char delimiterParameters[2] = ";";
@@ -386,7 +386,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 				while (tokenParam != NULL) {
 
 					// If token is equal to AcceptedStr it means that we don't have parameters in client massege 
-					//(becuase we take all the massege until '\n') so we don't need to deal with parasing parameters. 
+					//(becuase we take all the massege until '\0') so we don't need to deal with parasing parameters. 
 					//we would also want to run until token == NULL (which means no more parameters).
 
 					parametersNumber++; // Increase size of parameters counter 
@@ -639,7 +639,6 @@ server_cleanup_1:
 	if (WSACleanup() == SOCKET_ERROR)
 		fprintf(log_file, "Custom message: Error: Failed to close Winsocket, error %ld. Ending program.\n", WSAGetLastError());
 }
-
 
 
 static DWORD ListenThreadFunction() {
