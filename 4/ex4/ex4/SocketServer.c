@@ -124,14 +124,8 @@ void MainServer(char **argv)
 		0,
 		NULL
 	);
+	   	 
 
-
-
-
-
-server_cleanup_3:
-
-	//CleanupWorkerThreads(t_socket);
 
 server_cleanup_2:
 	if (closesocket(MainSocket) == SOCKET_ERROR)
@@ -384,9 +378,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 				if (tokenParam != NULL)
 				{
 					parametersArray = realloc(parametersArray, (parametersNumber + 1) * sizeof(char*)); // Allocate memory for one more place in array that holod pointers to parameters. 
-
 					parametersArray[parametersNumber] = (char*)malloc((strlen(tokenParam) + 1) * sizeof(char)); // Allocate memory for strings of parameters.  
-
 					strcpy(parametersArray[parametersNumber], tokenParam); // put token in array.
 				}
 				// Other Parameters : 
@@ -398,30 +390,22 @@ static DWORD ServiceThread(SOCKET *t_socket)
 					//we would also want to run until token == NULL (which means no more parameters).
 
 					parametersNumber++; // Increase size of parameters counter 
-
 					tokenParam = strtok(NULL, delimiterParameters); // holds parameters. 
-
 					if (tokenParam == NULL)
 						break;
 
 					parametersArray = realloc(parametersArray, (parametersNumber + 1) * sizeof(char*)); // Allocate memory for one more place in array that holod pointers to parameters. 
-
 					parametersArray[parametersNumber] = (char*)malloc((strlen(tokenParam) + 1) * sizeof(char)); // Allocate memory for strings of parameters.  
-
 					strcpy(parametersArray[parametersNumber], tokenParam); // put token in array. 
 
 				}
 			}
-
-
+			
 			PrevTurn = Turn; // 
-
 			FlagGameStarted = GameStarted;
 
 			// This handle the client massege , update relevant parts in the server and return string that being send to the client via SendString function: 
-
 			FunctionResult = ServerClientMassegeControl(massegeType, parametersArray, t_socket);
-
 			SendRes = SendString(FunctionResult, *t_socket);
 			if (SameNameFlag)
 			{
@@ -608,8 +592,8 @@ void ServerInit()
 		if (AcceptSocket == INVALID_SOCKET)
 		{
 			printf("Accepting connection with client failed, error %ld\n", WSAGetLastError());
-			CleanupWorkerThreads();
-			goto server_cleanup_3;
+			CleanupWorkerThreads();		
+			goto server_cleanup_2;
 		}
 
 		// new user log in. update counter and semaphore :
@@ -644,7 +628,7 @@ void ServerInit()
 		}
 	}
 
-server_cleanup_3:
+
 
 server_cleanup_2:
 	if (closesocket(MainSocket) == SOCKET_ERROR)
