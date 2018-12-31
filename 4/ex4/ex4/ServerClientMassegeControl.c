@@ -82,15 +82,13 @@ char* TurnSwitch(int PlayerID)
 
 	if (PlayerID == 0)
 	{
-		result = (char*)malloc(strlen("TURN_SWITCH:X;") + strlen(userNameArray[0]) + 1);
+		result = (char*)malloc(strlen("TURN_SWITCH:") + strlen(userNameArray[0]) + 1);
 		strcpy(result, "TURN_SWITCH:");
 		strcat(result, userNameArray[0]);
-		strcat(result, ";X");
 		return result;
 	}
-	result = (char*)malloc(strlen("TURN_SWITCH:O;") + strlen(userNameArray[0]) + 1);
+	result = (char*)malloc(strlen("TURN_SWITCH:") + strlen(userNameArray[0]) + 1);
 	strcpy(result, "TURN_SWITCH:");
 	strcat(result, userNameArray[1]);
-	strcat(result, ";O");
 	return result;
 }

@@ -85,7 +85,7 @@ void MainServer(char **argv)
 
 	service.sin_family = AF_INET;
 	service.sin_addr.s_addr = Address;
-	service.sin_port = htons(SERVER_PORT); //The htons function converts a u_short from host to TCP/IP network byte order 
+	service.sin_port = htons(argv[3]); //The htons function converts a u_short from host to TCP/IP network byte order 
 										   //( which is big-endian ).
 
 	bindRes = bind(MainSocket, (SOCKADDR*)&service, sizeof(service));
@@ -189,8 +189,8 @@ static void CleanupWorkerThreads()
 
 	// clean up game board :
 
-	for (i = 0; i < 7; i++)
-		for (j = 0; j < 6; j++)
+	for (i = 0; i < 6; i++)
+		for (j = 0; j < 7; j++)
 		{
 			gameBoardMatrixArray[i][j] = -1;
 		}
@@ -212,15 +212,18 @@ static void CleanupWorkerThreads()
 
 //serverClientMassegeControl gets masseges from client - check the kind of the massege and deal transfer it to relevant function to handle it. 
 
-char * ServerClientMassegeControl(char *massegeType, char **parametersArray, SOCKET *t_socket) {
+char * ServerClientMassegeControl(char *massegeType, char **parametersArray, int *player_index, SOCKET *t_socket) {
 	int PlayRequest_result;
 	char Buffer[4] = { 0 };
+	char TempStr[100] = { 0 };
+
 
 	if (STRINGS_ARE_EQUAL(massegeType, "NEW_USER_REQUEST")) {
 
 		// check if first user is empty
 
 		if (userNameArray[0] == NULL) {
+			*player_index = 0; // save players index to later use in send_message
 			Player1 = (int)t_socket;
 			NewUserRequest(parametersArray[0]);
 			returnString = (char*)malloc(strlen("NEW_USER_ACCEPTED:N") + 1); //allocate memory for string. 
@@ -231,7 +234,7 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, SOC
 
 		}
 		else if ((userNameArray[1] == NULL) && (strcmp(userNameArray[0], parametersArray[0]) != NAMES_ARE_THE_SAME)) { // check if second user is empty 
-
+			*player_index = 1;
 			Player2 = (int)t_socket;
 			NewUserRequest(parametersArray[0]);
 			returnString = (char*)malloc(strlen("NEW_USER_ACCEPTED:N") + 1); //allocate memory for string. 
@@ -243,7 +246,6 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, SOC
 
 		}
 
-		// TODO : the for loop deosn't go in the ServerClientMassegeControl function if more then 2 users try to connect. need to move this part to connetion loop in socketserver.
 		else if ((userNameArray[1] == NULL) && (strcmp(userNameArray[0], parametersArray[0]) == NAMES_ARE_THE_SAME)) { // check if second user name is the same and there is still place
 			SameNameFlag = TRUE;
 			returnString = (char*)malloc(strlen("NEW_USER_DECLINED") + 1); //allocate memory for string. 
@@ -262,7 +264,7 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, SOC
 	else if (STRINGS_ARE_EQUAL(massegeType, "PLAY_REQUEST"))
 	{
 
-		PlayRequest_result = PlayRequest(); // this function need to be implemented
+		PlayRequest_result = PlayRequest(); // TODO: this function need to be implemented
 		if (PlayRequest_result == PLAY_ACCEPTED)
 		{
 			returnString = (char*)malloc(strlen("PLAY_ACCEPTED") + 1); //allocate memory for string. 
@@ -273,7 +275,6 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, SOC
 		}
 		else if (PlayRequest_result == PLAY_DECLINED_GAME_HAS_NOT_STARTED) // if only one player is in the game
 		{
-
 			returnString = (char*)malloc(strlen("PLAY_DECLINED:Game has not started") + 1); //allocate memory for string. 
 			strcpy(returnString, "PLAY_DECLINED:Game has not started"); // building string. 
 			return returnString;
@@ -293,6 +294,22 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, SOC
 
 	}
 
+	else if (STRINGS_ARE_EQUAL(massegeType, "SEND_MESSAGE"))
+	{	
+		int j = 0;
+		int idx = 0;
+		while (parametersArray[j] != NULL) {
+			sprintf(TempStr + idx, "%s;", parametersArray[j++]); // message params
+			idx = strlen(TempStr);
+		}
+		returnString = (char*)malloc(strlen("RECEIVE_MESSAGE:") + strlen(TempStr) + 1);
+		strcpy(returnString, "RECEIVE_MESSAGE:");
+		strcat(returnString, TempStr);
+		memset(TempStr, 0, 100);
+		return returnString;
+
+	}
+
 }
 
 /*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
@@ -304,6 +321,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 	TransferResult_t SendRes;
 	TransferResult_t RecvRes;
 	int gameEndedInt;
+	int *player_index;
 
 
 	while (!Done)
@@ -405,8 +423,14 @@ static DWORD ServiceThread(SOCKET *t_socket)
 			FlagGameStarted = GameStarted;
 
 			// This handle the client massege , update relevant parts in the server and return string that being send to the client via SendString function: 
-			FunctionResult = ServerClientMassegeControl(massegeType, parametersArray, t_socket);
-			SendRes = SendString(FunctionResult, *t_socket);
+			FunctionResult = ServerClientMassegeControl(massegeType, parametersArray, player_index, t_socket);
+			if (STRINGS_ARE_EQUAL(massegeType, "SEND_MESSAGE"))
+			{
+				if (*player_index == 0) { SendRes = SendString(FunctionResult, ThreadInputs[1]); } //send message to other user
+				else { SendRes = SendString(FunctionResult, ThreadInputs[0]); }				
+			}
+			else { SendRes = SendString(FunctionResult, *t_socket); } //if not message
+
 			if (SameNameFlag)
 			{
 				closesocket(ThreadInputs[1]);
@@ -489,7 +513,6 @@ static DWORD ServiceThread(SOCKET *t_socket)
 				{
 					SendRes = SendString("GAME_ENDED:TIE", *t_socket);
 				}
-
 				if (SendRes == TRNS_FAILED) {
 					fprintf(log_file, "Player disconnected. Exiting.\n");
 				}

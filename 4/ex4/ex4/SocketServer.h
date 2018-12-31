@@ -15,7 +15,7 @@ void MainServer(char **argv);
 static int FindFirstUnusedThreadSlot();
 static void CleanupWorkerThreads();
 static DWORD ServiceThread(SOCKET *t_socket);
-char * ServerClientMassegeControl(char *massegeType, char **parametersArray, SOCKET *t_socket);
+char * ServerClientMassegeControl(char *massegeType, char **parametersArray, int *player_index, SOCKET *t_socket);
 int InitSemaphore(static HANDLE * usersSemaphore, static HANDLE * serverIsBusySemaphore, static HANDLE * printGameStartSemaphore);
 void ServerInit();
 

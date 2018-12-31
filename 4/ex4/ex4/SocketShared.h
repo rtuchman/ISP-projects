@@ -4,7 +4,7 @@
 
 
 #define SERVER_ADDRESS_STR "127.0.0.1"
-#define SERVER_PORT 8888
+#define SERVER_PORT 4444
 
 #define STRINGS_ARE_EQUAL( Str1, Str2 ) ( strcmp( (Str1), (Str2) ) == 0 )
 
