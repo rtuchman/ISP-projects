@@ -1,14 +1,15 @@
 // Includes --------------------------------------------------------------------
 #include "Log.h"
 
+// defines ---------------------------------------------------------------------
 
-// Function Definitions --------------------------------------------------------
-
-#define FIND_A_PLACE_ACCORDING_TO_FIELD(field) {\
-	if (NULL == index_triplet || index_triplet->field > triplet_to_add->field) { break; }\
+#define FIND_A_PLACE_ACCORDING_TO_FIELD(index_field, to_add_field) {\
+	if (NULL == index_triplet || index_field >= to_add_field) { break; }\
 	prev_triplet  = index_triplet;\
 	index_triplet = index_triplet->next;\
 }
+
+// Function Definitions --------------------------------------------------------
 
 //////////////////////////////////////////////////////////////////////
 // Function: AddToSortedList 
@@ -18,12 +19,7 @@
 //               and insert it in the right place
 ////////////////////////////////////////////////////////////////////////
 
-void AddToSortedList() {
-
-	PythagoreanTriple* triplet_to_add = (PythagoreanTriple*)malloc(sizeof(PythagoreanTriple));
-	isNull(triplet_to_add);
-
-
+void AddToList() {
 	if (NULL == first_of_sorted_list) {
 		first_of_sorted_list = (PythagoreanTriple*)malloc(sizeof(PythagoreanTriple));
 		isNull(first_of_sorted_list);
@@ -31,30 +27,26 @@ void AddToSortedList() {
 		for (i = 0; i < OUTPUT_BUFFER_SIZE; i++) { if (output_buffer[i].n) break; }
 		if (!output_buffer[i].n) { return; }
 		*first_of_sorted_list = output_buffer[i];
+		first_of_sorted_list->next = NULL;
 		output_buffer[i].n = 0; // to indicate that we cleared this cell
+		return;
 	}
-	
-	else
-	{
-		int i;
-		for (i = 0; i < OUTPUT_BUFFER_SIZE; i++) { if (output_buffer[i].n) break; }
-		if (!output_buffer[i].n) { return; }
-		*triplet_to_add = output_buffer[i];
-		output_buffer[i].n = 0;
-	}
-
-
+	PythagoreanTriple* triplet_to_add = (PythagoreanTriple*)malloc(sizeof(PythagoreanTriple));
+	isNull(triplet_to_add);
+	int i;
+	for (i = 0; i < OUTPUT_BUFFER_SIZE; i++) { if (output_buffer[i].n) break; }
+	if (!output_buffer[i].n) { return; }
+	*triplet_to_add = output_buffer[i];
+	output_buffer[i].n = 0; // to indicate that we cleared this cell
 	PythagoreanTriple* index_triplet = first_of_sorted_list;
-	PythagoreanTriple* prev_triplet = first_of_sorted_list;
-	while (index_triplet) {
-		FIND_A_PLACE_ACCORDING_TO_FIELD(n);
-	}
-	while (index_triplet) {
-		FIND_A_PLACE_ACCORDING_TO_FIELD(m);
+	PythagoreanTriple* prev_triplet  = first_of_sorted_list;
+	while (1) { FIND_A_PLACE_ACCORDING_TO_FIELD(index_triplet->n, triplet_to_add->n); }
+	while (1) {
+		if (index_triplet && (index_triplet->n != triplet_to_add->n)) break;
+		FIND_A_PLACE_ACCORDING_TO_FIELD(index_triplet->m, triplet_to_add->m); 
 	}
 	triplet_to_add->next = index_triplet;
-	if (index_triplet == prev_triplet) { first_of_sorted_list = triplet_to_add; }
-	else { prev_triplet->next = triplet_to_add; }
+	prev_triplet->next = triplet_to_add;
 }
 
 void WriteToLogFile(char* triplets_file_path) {
@@ -66,9 +58,9 @@ void WriteToLogFile(char* triplets_file_path) {
 		exitGracefully();
 	}
 	PythagoreanTriple* current_triplet = first_of_sorted_list;
-	do {
-		fprintf(fp, "%d,%d,%d/n", current_triplet->a, current_triplet->b, current_triplet->c);
+	while (current_triplet) {
+		fprintf(fp, "%d,%d,%d\n", current_triplet->a, current_triplet->b, current_triplet->c);
 		current_triplet = current_triplet->next;
-	} while (current_triplet);
+	} 
 	fclose(fp);
 }

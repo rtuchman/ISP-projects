@@ -1,9 +1,6 @@
 // Includes --------------------------------------------------------------------
 #define _CRT_SECURE_NO_WARNING
 #include "utils.h"
-#include "system_functions.h"
-#include "Log.h"
-
 
 // Function Definitions --------------------------------------------------------
 
@@ -43,7 +40,7 @@ void isNull(void* ptr)
 	if (ptr == NULL)
 	{
 		printf("failed to allocate memory\n");
-	//	exitGracefully();
+		exitGracefully();
 	}
 }
 
@@ -54,29 +51,13 @@ void isNull(void* ptr)
 // Funtionality: Close handles and free pointers
 ////////////////////////////////////////////////////////////////////////
 
-//void freeAll()
-//{
-//	for (int i = 0; i < MAX_NUMBER; ++i) {
-//		free(anchors_array);
-//		CloseHandle(p_anchor_mutex_handles );
-//	}
-//	for (int j = 0; j < NUM_OF_COMPUTATION_THREADS; ++j) {
-//		free(*(p_thread_ids + j));
-//		CloseHandle(*(p_thread_handles + j));
-//	}
-//	for (int k = 0; k < OUTPUT_BUFFER_SIZE; ++k) {
-//		free((output_buffer+k));
-//	}
-//	ClearPythagoreanList(first_of_list);
-//}
-
 void freeAll()
 {
 	free(anchors_array);
 	CloseHandle(p_anchor_mutex_handles);
 
-	free(*p_thread_ids);
-	CloseHandle(*p_thread_handles);
+	free(p_thread_ids);
+	CloseHandle(p_thread_handles);
 	
 	free(output_buffer);
 	ClearPythagoreanList(first_of_sorted_list);
@@ -101,8 +82,8 @@ void ClearPythagoreanList(PythagoreanTriple* pythagorean_list) {
 
 void exitGracefully() 
 {
-//	freeAll();
-	return ERROR_CODE;
+	freeAll();
+	exit(ERROR_CODE);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -117,14 +98,20 @@ DWORD WINAPI ComputePytagoreanTriplets(LPVOID lpParam)
 {
 	int *p_param_index;
 	DWORD wait_code;
+	int current_param;
 	if (NULL == lpParam)
 	{
 		exitGracefully;
 	}
 	p_param_index = (int*)lpParam;
 	while (1) {
-		wait_code = WaitForSingleObject(p_anchor_mutex_handles[*p_param_index], TIMEOUT_IN_MILLISECONDS);
+		current_param = *p_param_index;
+		if (current_param == MAX_NUMBER) return 0;
 
+		if      (MAX_NUMBER <= 500)  { wait_code = WaitForSingleObject(p_anchor_mutex_handles[current_param], TIMEOUT_IN_MILLISECONDS_10S); }
+		else if (MAX_NUMBER <= 900)  { wait_code = WaitForSingleObject(p_anchor_mutex_handles[current_param], TIMEOUT_IN_MILLISECONDS_30S); }
+		else if (MAX_NUMBER <= 1000) { wait_code = WaitForSingleObject(p_anchor_mutex_handles[current_param], TIMEOUT_IN_MILLISECONDS_40S); }
+		
 		if (WAIT_TIMEOUT == wait_code) { continue; } //mutex is locked by another thread
 
 		if (WAIT_OBJECT_0 != wait_code)
@@ -132,20 +119,19 @@ DWORD WINAPI ComputePytagoreanTriplets(LPVOID lpParam)
 			printf("Error when waiting for mutex %d\n", *p_param_index);
 			exitGracefully();
 		}
-		if (*p_param_index >= MAX_NUMBER) { return 0; }
+		if (current_param >= MAX_NUMBER) { return 0; }
+		if (anchors_array[current_param]) continue;
 		//start critical region:
-		//while (anchors_array[anchor_index] && anchor_index < MAX_NUMBER) {anchor_index++;}
-		anchors_array[*p_param_index] = TRUE;
-		int current_index = *p_param_index;
+		anchors_array[current_param] = TRUE;
 		*p_param_index +=1;
 		if (*p_param_index >= MAX_NUMBER) { return 0; }
 		//end critical region
-		if (FALSE == ReleaseMutex(p_anchor_mutex_handles[*p_param_index-1]))
+		if (FALSE == ReleaseMutex(p_anchor_mutex_handles[current_param]))
 		{
 			printf("Error when releasing\n");
 			exitGracefully();
 		}
-		ComputeTriplets(current_index+1);
+		ComputeTriplets(current_param+1);
 	}
 }
 
@@ -170,8 +156,6 @@ void ComputeTriplets(int n_index) {
 
 		//Add the triplet to the buffer:
 		WaitForAnEmptyPlaceAndWriteToBuffer(current_triplet);
-
-		//***************need to add a check if fail
 	}
 }
 

@@ -5,7 +5,12 @@
 #include <windows.h>
 #include <stdbool.h>
 
-
+#define TIMEOUT_IN_MILLISECONDS_10S 10000
+#define TIMEOUT_IN_MILLISECONDS_30S 30000
+#define TIMEOUT_IN_MILLISECONDS_40S 40000
+#define BRUTAL_TERMINATION_CODE 0x55
+#define ERROR_CODE ((int)(-1))
+#define SUCCESS_CODE ((int)(0))
 
 // Macros and Defenitions ------------------------------------------------------
 typedef struct _PythagoreanTriple {
@@ -26,6 +31,9 @@ PythagoreanTriple *output_buffer;
 int MAX_NUMBER;
 int NUM_OF_COMPUTATION_THREADS;
 int OUTPUT_BUFFER_SIZE;
+extern PythagoreanTriple *first_of_sorted_list;
+extern PythagoreanTriple *last_of_list;
+
 
 // Function Declarations -------------------------------------------------------
 int gcd(int a, int b);
