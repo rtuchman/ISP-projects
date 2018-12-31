@@ -93,7 +93,7 @@ static DWORD RecvDataThread(char **argv)
 				}
 				// Other Parameters : 
 
-				while (tokenParam != NULL && tokenParam[0] != -3) {
+				while (tokenParam != NULL) {
 
 					// If token is equal to AcceptedStr it means that we don't have parameters in client massege 
 					//(becuase we take all the massege until '\n') so we don't need to deal with parasing parameters. 

@@ -1,15 +1,1 @@
-﻿  SocketServer.c
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.h(19): warning C4042: 'usersSemaphore': has bad storage class
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.h(19): warning C4042: 'serverIsBusySemaphore': has bad storage class
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.h(19): warning C4042: 'printGameStartSemaphore': has bad storage class
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(88): warning C4047: 'function': 'u_short' differs in levels of indirection from 'char *'
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(88): warning C4024: 'htons': different types for formal and actual parameter 1
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(122): warning C4013: 'ListenThreadFunction' undefined; assuming extern returning int
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(550): warning C4042: 'usersSemaphore': has bad storage class
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(550): warning C4042: 'serverIsBusySemaphore': has bad storage class
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(550): warning C4042: 'printGameStartSemaphore': has bad storage class
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(661): warning C4102: 'server_cleanup_1': unreferenced label
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(667): warning C4142: 'ListenThreadFunction': benign redefinition of type
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(675): warning C4716: 'ListenThreadFunction': must return a value
-c:\users\rtuchman\documents\studies\year e\semester a\מבוא לתכנות מערכות\isp-projects\4\ex4\ex4\socketserver.c(313): warning C4715: 'ServerClientMassegeControl': not all control paths return a value
-  ex4.vcxproj -> C:\Users\rtuchman\Documents\Studies\Year E\Semester A\מבוא לתכנות מערכות\ISP-projects\4\ex4\Debug\ex4.exe
+﻿
