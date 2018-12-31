@@ -240,6 +240,10 @@ static DWORD SendDataThread(char **argv)
 			}
 			memset(UserInput, 0, 100);
 		}
+		else if (STRINGS_ARE_EQUAL(UserInput, "exit"))
+		{
+			//TODO: implement exit
+		}
 		else
 		{
 			i = 0;
