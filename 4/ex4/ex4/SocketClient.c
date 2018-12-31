@@ -253,7 +253,7 @@ static DWORD SendDataThread(char **argv)
 				if (UserInput[i] == ' ' &&   col[0] >= '0' && col[0] <= '6' && UserInput[i + 2] == '\0')
 				{
 					
-					col[0]--;
+					col[0]--; //play 5 will go to col[4]
 					strcpy_s(SendStr, 20, "PLAY_REQUEST:");
 					strcat_s(SendStr, 20, ";");
 					strcat_s(SendStr, 20, col);
