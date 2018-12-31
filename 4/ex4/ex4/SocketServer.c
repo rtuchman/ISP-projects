@@ -321,7 +321,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 	TransferResult_t SendRes;
 	TransferResult_t RecvRes;
 	int gameEndedInt;
-	int *player_index;
+	int *player_index = NULL;
 
 
 	while (!Done)
