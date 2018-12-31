@@ -87,7 +87,7 @@ char* TurnSwitch(int PlayerID)
 		strcat(result, userNameArray[0]);
 		return result;
 	}
-	result = (char*)malloc(strlen("TURN_SWITCH:") + strlen(userNameArray[0]) + 1);
+	result = (char*)malloc(strlen("TURN_SWITCH:") + strlen(userNameArray[1]) + 1);
 	strcpy(result, "TURN_SWITCH:");
 	strcat(result, userNameArray[1]);
 	return result;

@@ -1,3 +1,6 @@
+//Authors- Adi Ben-Avraham (204058697) & Ran Tuchman (201631678)
+//Project- ex4
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

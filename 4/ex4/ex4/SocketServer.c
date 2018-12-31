@@ -448,18 +448,17 @@ static DWORD ServiceThread(SOCKET *t_socket)
 				ReleaseSemaphore(printGameStartSemaphore, 1, NULL);
 				WaitForSingleObject(printGameStartSemaphore, INFINITE);
 				ReleaseSemaphore(printGameStartSemaphore, 1, NULL);
-				FunctionResult = TurnSwitch(0); //Player 2 Turn.
+				FunctionResult = TurnSwitch(0); //Player 1 Turn.
 				WaitForSingleObject(printGameStartSemaphore, INFINITE);
 				SendRes = SendString(FunctionResult, ThreadInputs[0]);//Send TURN_SWITCH to Player 1.
 				ReleaseSemaphore(printGameStartSemaphore, 1, NULL);
 				SendRes = SendString(FunctionResult, ThreadInputs[1]);//Send TURN_SWITCH to Player 2.
 				FlagSendFirstView = TRUE;
 			}
-			if (PrevTurn != Turn && GameEnded() == GAME_HAS_NOT_ENDED)
+			if (PrevTurn != Turn && GameEnded() == GAME_HAS_NOT_ENDED)  // TODO: game ended need to be implemented
 			{
 				WaitForSingleObject(printGameStartSemaphore, INFINITE);
-				ReleaseSemaphore(printGameStartSemaphore, 1, NULL);
-				//free(FunctionResult);
+				ReleaseSemaphore(printGameStartSemaphore, 1, NULL);				
 				if (Turn == 0)
 				{
 					FunctionResult = TurnSwitch(0);//Player 1 Turn.
