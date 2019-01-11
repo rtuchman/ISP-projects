@@ -81,11 +81,9 @@ TransferResult_t ReceiveString(char** OutputStrPtr, SOCKET sd) {
 	char* CurPlacePtr = StrBuffer;
 	int BytesJustTransferred;
 
-	int len = 0;
-
 	while (1) {
 		/* send does not guarantee that the entire message is sent */
-		BytesJustTransferred = recv(sd, CurPlacePtr, 1, 0);
+		BytesJustTransferred = recv(sd, CurPlacePtr, 100 - (CurPlacePtr - StrBuffer), 0);
 		if (BytesJustTransferred == SOCKET_ERROR) {
 			return TRNS_FAILED;
 		}
@@ -93,12 +91,11 @@ TransferResult_t ReceiveString(char** OutputStrPtr, SOCKET sd) {
 			return TRNS_DISCONNECTED;
 		} // recv() returns zero if connection was gracefully disconnected.
 
-		if (*CurPlacePtr = '\0') {
+		CurPlacePtr += BytesJustTransferred; // <ISP> pointer s
+		
+		if (*(CurPlacePtr - 1) == '\0') {
 			break;
 		}
-		len++;
-
-		CurPlacePtr += BytesJustTransferred; // <ISP> pointer s
 	}
 
 

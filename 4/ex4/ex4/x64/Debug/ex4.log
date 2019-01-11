@@ -1,0 +1,9 @@
+﻿  SocketClient.c
+c:\users\adi\desktop\git_last_proj\isp-projects\4\ex4\ex4\socketclient.c(179): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\adi\desktop\git_last_proj\isp-projects\4\ex4\ex4\socketclient.c(182): warning C4133: 'function': incompatible types - from 'char [8]' to 'FILE *const '
+c:\users\adi\desktop\git_last_proj\isp-projects\4\ex4\ex4\socketclient.c(26): warning C4101: 'SendRes': unreferenced local variable
+c:\users\adi\desktop\git_last_proj\isp-projects\4\ex4\ex4\socketclient.c(212): warning C4101: 'i': unreferenced local variable
+c:\users\adi\desktop\git_last_proj\isp-projects\4\ex4\ex4\socketclient.c(206): warning C4101: 'valid_word': unreferenced local variable
+c:\users\adi\desktop\git_last_proj\isp-projects\4\ex4\ex4\socketclient.c(319): warning C4033: 'UserInputThread' must return a value
+c:\users\adi\desktop\git_last_proj\isp-projects\4\ex4\ex4\socketclient.c(330): warning C4715: 'UserInputThread': not all control paths return a value
+  ex4.vcxproj -> C:\Users\Adi\Desktop\Git_last_proj\ISP-projects\4\ex4\x64\Debug\ex4.exe

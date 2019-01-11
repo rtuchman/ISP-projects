@@ -21,6 +21,8 @@
 
 //gameEnded: 
 
+#define FIRST_PLAYER_WIN 0
+#define SECOND_PLAYER_WIN 1
 #define GAME_HAS_NOT_ENDED -1
 #define GAME_HAS_ENDED_TIE 2
 
@@ -33,10 +35,15 @@ extern char *userListReplay;
 extern char *boardViewQueryReplyString;
 extern char *gameStateQueryReplyString;
 
+//global varaibles:
+extern int Turn;
+extern BOOL GameStarted;
 
 //Function decelration : 
 
 int NewUserRequest(char *newUserName);
-int PlayRequest();
+int PlayRequest(int column_player_picked, int player_index);
 int GameEnded();
+BOOL CheckIfPlayerWon(int player_index);
+BOOL HighestRowIsFull();
 char* TurnSwitch(int PlayerID);

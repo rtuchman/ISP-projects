@@ -1,0 +1,9 @@
+Connected to server on 127.0.0.1:4444
+recieved from server: NEW_USER_ACCEPTED:1
+4444 accepted, number of players is 1
+recieved from server: GAME_STARTED
+Game is on!
+recieved from server: TURN_SWITCH:adi
+adi's turn
+Sent to server: SEND_MESSAGE:lala;lala;
+Server disconnected. Exiting.

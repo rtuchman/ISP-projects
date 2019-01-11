@@ -11,10 +11,11 @@
 
 char * userNameArray[NUMBER_OF_USERS] = { NULL }; // holds two players user names.
 int gameBoardMatrixArray[BOARD_ROWS][BOARD_COLS] = { {-1 , -1 , -1, -1, -1, -1, -1}, {-1 , -1 , -1, -1, -1, -1, -1}, {-1 , -1 , -1, -1, -1, -1, -1}, 
-													 {-1 , -1 , -1, -1, -1, -1, -1}, {-1 , -1 , -1, -1, -1, -1, -1}, {-1 , -1 , -1, -1, -1, -1, -1}, };
+													 {-1 , -1 , -1, -1, -1, -1, -1}, {-1 , -1 , -1, -1, -1, -1, -1}, {-1 , -1 , -1, -1, -1, -1, -1} };
 char *userListReplay = NULL;
 char *boardViewQueryReplyString = NULL;
 char *gameStateQueryReplyString = NULL;
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Function : int NewUserRequest(char *newUserName)
@@ -48,30 +49,106 @@ int NewUserRequest(char *newUserName) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// function : PlayRequest()
-// input : 
-// output : 
-// descripation : check if current plat is valid , if so , save it in gameBoardMatrixArray.
+// function : PlayRequest(char column_player_picked, int player_index)
+// input : char column_player_picked - player's next move, int player_index
+// output : integer that indicates whether or not the player's move was accepted and if not why
+// descripation : check if current play is valid , if so , save it in gameBoardMatrixArray.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int PlayRequest() {
-
-//TODO: ckeck if play ys valid and perform play request
-
-
+int PlayRequest(int column_player_picked, int player_index) {
+	if (column_player_picked <= 0 || column_player_picked >= 6 || //not in columns range
+	    (gameBoardMatrixArray[5][column_player_picked] != (-1)) ) //column full
+	                          { return PLAY_DECLINED_ILLEGAL_MOVE;  }
+	if (Turn != player_index) { return PLAY_DECLINED_NOT_YOUR_TURN; }
+	if (!GameStarted)         { return PLAY_DECLINED_GAME_HAS_NOT_STARTED; }
+	int available_row = 0; //lowest row is 0, highest is 5
+	while (gameBoardMatrixArray[available_row][column_player_picked] != (-1)) available_row++;
+	gameBoardMatrixArray[available_row][column_player_picked] = player_index;
+	return PLAY_ACCEPTED;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // function : GameEnded()
 // input : none. 
-// output : 
+// output : integer indicates the game current situation.
 // descripation : check all possible option and return relevant value. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int GameEnded() {
+	BOOL first_player_won  = FALSE;
+	BOOL second_player_won = FALSE;
+	if (CheckIfPlayerWon(0))  return FIRST_PLAYER_WIN;
+	if (CheckIfPlayerWon(1))  return SECOND_PLAYER_WIN; //second player won
+	if (HighestRowIsFull())   return GAME_HAS_ENDED_TIE;
+	return GAME_HAS_NOT_ENDED;                         //game is not finished
+}
 
-//TODO: check if game ended or not. check who won or tie
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// function : CheckIfPlayerWon(int player_index)
+// input : int player_index - player we want to check if won
+// output : return boolean output indicates whether or not player_index won
+// descripation : check if a certain player won
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+BOOL CheckIfPlayerWon(int player_index) {
+	//check rows:
+	for (int row_index = 0; row_index <= 5; row_index++) {
+		for (int column_index = 0; column_index <= 4; column_index++) {
+			if ((gameBoardMatrixArray[row_index][column_index] == player_index) && 
+				(gameBoardMatrixArray[row_index][column_index + 1] == player_index) &&
+				(gameBoardMatrixArray[row_index][column_index + 2] == player_index) &&
+				(gameBoardMatrixArray[row_index][column_index + 3] == player_index)) {
+				return TRUE;
+			}
+		}
+	}	
+	//check columns:
+	for (int column_index = 0; column_index <= 6; column_index++) {
+		for (int row_index = 0; row_index <= 3; row_index++) {
+			if ((gameBoardMatrixArray[row_index][column_index] == player_index) && 
+				(gameBoardMatrixArray[row_index + 1][column_index] == player_index) &&
+				(gameBoardMatrixArray[row_index + 2][column_index] == player_index) &&
+				(gameBoardMatrixArray[row_index + 3][column_index] == player_index)) {
+				return TRUE;
+			}
+		}
+	}	
+	//check first diagonal:
+	for (int column_index = 0; column_index <= 3; column_index++) {
+		for (int row_index = 5; row_index >= 3; row_index--) {
+			if ((gameBoardMatrixArray[row_index][column_index] == player_index) && 
+				(gameBoardMatrixArray[row_index - 1][column_index + 1] == player_index) &&
+				(gameBoardMatrixArray[row_index - 2][column_index + 2] == player_index) &&
+				(gameBoardMatrixArray[row_index - 3][column_index + 3] == player_index)) {
+				return TRUE;
+			}
+		}
+	}
+	//check first diagonal:
+	for (int column_index = 6; column_index >= 3; column_index--) {
+		for (int row_index = 5; row_index >=3; row_index--) {
+			if ((gameBoardMatrixArray[row_index][column_index] == player_index) && 
+				(gameBoardMatrixArray[row_index - 1][column_index - 1] == player_index) &&
+				(gameBoardMatrixArray[row_index - 2][column_index - 2] == player_index) &&
+				(gameBoardMatrixArray[row_index - 3][column_index - 3] == player_index)) {
+				return TRUE;
+			}
+		}
+	}
+	return FALSE;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// function : HighestRowIsFull()
+// input : none. 
+// output : return boolean output indicates whether or not highest row is full
+// descripation : check if the highest row is full
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+BOOL HighestRowIsFull() {
+	for (int column_index = 0; column_index <= 6; column_index++) {
+		if (gameBoardMatrixArray[5][column_index] == (-1)) { return FALSE; }
+	}
+	return TRUE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
