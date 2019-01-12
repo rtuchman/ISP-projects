@@ -1,0 +1,12 @@
+Custom message: Got string : NEW_USER_REQUEST:adiben
+Custom message: Got string : NEW_USER_REQUEST:oriol
+Custom message: Got string : PLAY_REQUEST:1
+Custom message: Got string : SEND_MESSAGE:what's;up;
+Custom message: Got string : PLAY_REQUEST:2
+Custom message: Got string : PLAY_REQUEST:1
+Custom message: Got string : PLAY_REQUEST:3
+Custom message: Got string : PLAY_REQUEST:1
+Custom message: Got string : PLAY_REQUEST:4
+Custom message: Got string : PLAY_REQUEST:1
+Custom message:Game Ended
+Player Disconnected. Exiting.

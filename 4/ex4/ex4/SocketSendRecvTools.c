@@ -72,7 +72,7 @@ TransferResult_t ReceiveString(char** OutputStrPtr, SOCKET sd) {
 	if ((OutputStrPtr == NULL) || (*OutputStrPtr != NULL)) {
 		return TRNS_FAILED;
 	}
-	StrBuffer = (char*)malloc(100 * sizeof(char));
+	StrBuffer = (char*)malloc(200 * sizeof(char));
 
 	if (StrBuffer == NULL) {
 		return TRNS_FAILED;
@@ -83,7 +83,7 @@ TransferResult_t ReceiveString(char** OutputStrPtr, SOCKET sd) {
 
 	while (1) {
 		/* send does not guarantee that the entire message is sent */
-		BytesJustTransferred = recv(sd, CurPlacePtr, 100 - (CurPlacePtr - StrBuffer), 0);
+		BytesJustTransferred = recv(sd, CurPlacePtr, 200 - (CurPlacePtr - StrBuffer), 0);
 		if (BytesJustTransferred == SOCKET_ERROR) {
 			return TRNS_FAILED;
 		}

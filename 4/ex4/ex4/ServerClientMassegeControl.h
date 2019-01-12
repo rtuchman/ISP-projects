@@ -47,3 +47,4 @@ int GameEnded();
 BOOL CheckIfPlayerWon(int player_index);
 BOOL HighestRowIsFull();
 char* TurnSwitch(int PlayerID);
+char* GetBoardView();

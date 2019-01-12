@@ -85,6 +85,9 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -115,14 +118,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ClientControl.c" />
     <ClCompile Include="main.c" />
-    <ClCompile Include="PrintBoard.c" />
     <ClCompile Include="ServerClientMassegeControl.c" />
     <ClCompile Include="SocketClient.c" />
     <ClCompile Include="SocketSendRecvTools.c" />
     <ClCompile Include="SocketServer.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ClientControl.h" />
     <ClInclude Include="ServerClientMassegeControl.h" />
     <ClInclude Include="SocketClient.h" />
     <ClInclude Include="SocketSendRecvTools.h" />

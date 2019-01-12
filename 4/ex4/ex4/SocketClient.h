@@ -3,7 +3,7 @@
 
 #define MAX_LINE_LENGTH 100
 
-int MainClient(char **argv);
+int MainClient(char **argv); 
 
 
 #endif

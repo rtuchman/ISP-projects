@@ -24,13 +24,13 @@
     <ClCompile Include="SocketSendRecvTools.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PrintBoard.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SocketServer.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ServerClientMassegeControl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientControl.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -48,6 +48,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SocketServer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientControl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

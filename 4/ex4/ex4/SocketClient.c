@@ -8,6 +8,7 @@
 #include "SocketShared.h"
 #include "SocketSendRecvTools.h"
 #include "SocketClient.h"
+#include "ClientControl.h"
 
 
 SOCKET m_socket;
@@ -16,7 +17,9 @@ int Game_Started = TRUE;
 HANDLE FREE_FOR_COMMANDS;
 HANDLE NEW_COMMAND_AVAILABLE;
 HANDLE USERNAME_NEEDED;
+HANDLE YOUR_TURN;
 static char UserInput[MAX_LINE_LENGTH] = { 0 };
+char* myUserName = NULL;
 
 
 //Reading data coming from the server
@@ -88,9 +91,7 @@ static DWORD RecvDataThread(char **argv)
 				if (tokenParam != NULL)
 				{
 					ParametersArray = realloc(ParametersArray, (ParametersNumber + 1) * sizeof(char*)); // Allocate memory for one more place in array that holod pointers to parameters. 
-
 					ParametersArray[ParametersNumber] = (char*)malloc((strlen(tokenParam) + 1) * sizeof(char)); // Allocate memory for strings of parameters.  
-
 					strcpy(ParametersArray[ParametersNumber], tokenParam); // put token in array.
 				}
 				// Other Parameters : 
@@ -102,19 +103,18 @@ static DWORD RecvDataThread(char **argv)
 					//we would also want to run until token == NULL (which means no more parameters).
 
 					ParametersNumber++; // Increase size of parameters counter 
-
 					tokenParam = strtok(NULL, delimiterParameters); // holds parameters. 
 
 					if (tokenParam == NULL)
 						break;
 
 					ParametersArray = realloc(ParametersArray, (ParametersNumber + 1) * sizeof(char*)); // Allocate memory for one more place in array that holod pointers to parameters. 
-
 					ParametersArray[ParametersNumber] = (char*)malloc((strlen(tokenParam) + 1) * sizeof(char)); // Allocate memory for strings of parameters.  
-
 					strcpy(ParametersArray[ParametersNumber], tokenParam); // put token in array. 
 
 				}
+				ParametersArray = realloc(ParametersArray, (ParametersNumber + 1) * sizeof(char*));
+				ParametersArray[ParametersNumber] = NULL;
 			}
 
 		}
@@ -133,16 +133,17 @@ static DWORD RecvDataThread(char **argv)
 			printf("Game is on!\n");
 			fprintf(log_file, "Game is on!\n");
 			Game_Started = TRUE;
-			ReleaseSemaphore(FREE_FOR_COMMANDS, 1, NULL); //ADIBEN messages just in game?
+			ReleaseSemaphore(FREE_FOR_COMMANDS, 1, NULL);
 		}
 		else if (STRINGS_ARE_EQUAL(MsgType, "BOARD_VIEW"))
 		{
-			// TODO: print board	
+			MainPrintBoard(ParametersArray);
 		}
 		else if (STRINGS_ARE_EQUAL(MsgType, "TURN_SWITCH"))
 		{
 			printf("%s's turn\n", ParametersArray[0]);
 			fprintf(log_file, "%s's turn\n", ParametersArray[0]);
+			if (STRINGS_ARE_EQUAL(myUserName, ParametersArray[0])) { ReleaseSemaphore(YOUR_TURN, 1, NULL); }
 		}
 		else if (STRINGS_ARE_EQUAL(MsgType, "PLAY_ACCEPTED"))
 		{
@@ -153,7 +154,6 @@ static DWORD RecvDataThread(char **argv)
 		{
 			printf("Error: %s\n", ParametersArray[0]);
 			fprintf(log_file, "Error: %s\n", ParametersArray[0]);
-			//ADIBEN need to end game or try again
 		}
 		else if (STRINGS_ARE_EQUAL(MsgType, "GAME_ENDED"))
 		{
@@ -179,7 +179,7 @@ static DWORD RecvDataThread(char **argv)
 				idx = strlen(RecvStr);
 			}
 			printf("%s: %s\n", ParametersArray[0], RecvStr);
-			fprintf("%s: %s\n", ParametersArray[0], RecvStr);
+//			fprintf("%s: %s\n", ParametersArray[0], RecvStr);
 			memset(RecvStr, 0, 100);
 		}
 //		memset(UserInput, 0, 100);
@@ -205,8 +205,8 @@ static DWORD SendDataThread(char **argv)
 {
 	char valid_word[15];
 	char SendStr[100] = { 0 };
-	char col[2] = { 0 };
-	char *token;
+	char* col   = NULL;
+	char *token = NULL;
 	TransferResult_t SendRes;
 
 	int i;
@@ -214,6 +214,8 @@ static DWORD SendDataThread(char **argv)
 	strcpy_s(SendStr, 18, "NEW_USER_REQUEST:");
 	WaitForSingleObject(USERNAME_NEEDED, INFINITE);
 	strcat(SendStr, UserInput);
+	myUserName = (char*)malloc((strlen(UserInput) + 1) * sizeof(char));
+	strcpy(myUserName, UserInput);
 
 	//Sending username with connecting request
 	SendRes = SendString(SendStr, m_socket);
@@ -231,7 +233,11 @@ static DWORD SendDataThread(char **argv)
 		//find the command from the user:
 		char* after_command = NULL;
 		after_command       = strstr(UserInput, " ");
-//		if (!after_command) { strstr(UserInput, '\0'); }
+		if (after_command == NULL) {
+			if (strstr(UserInput, "exit")) { after_command = UserInput + 4; }
+			else                           { after_command = UserInput + strlen(UserInput); }
+		}
+//		if (!after_command) { strstr(UserInput, '\0'); } 
 		char* command       = (char*)malloc(MAX_LINE_LENGTH);
 		if (command) {
 			strncpy(command, UserInput, after_command - UserInput);
@@ -243,9 +249,7 @@ static DWORD SendDataThread(char **argv)
 		{
 			fprintf(log_file, "Exiting Game.\n");
 			return 0x555; //"quit" signals an exit from the client side
-		}
-		else if (STRINGS_ARE_EQUAL(command, "message"))
-		{
+		} else if (STRINGS_ARE_EQUAL(command, "message")) {
 			token = strtok(UserInput+8, " ");
 			strcpy_s(SendStr, 14, "SEND_MESSAGE:");
 			while (token != NULL) {
@@ -254,29 +258,18 @@ static DWORD SendDataThread(char **argv)
 				token = strtok(NULL, " ");
 			}
 			memset(UserInput, 0, 100);
-		}
-		else if (STRINGS_ARE_EQUAL(command, "play"))
-		{
-			col[0] = *(after_command + 1);
-			if (*(after_command) == ' ' &&   col[0] >= '0' && col[0] <= '6' && *(after_command + 2) == '\0')
-			{
-				strcpy_s(SendStr, 20, "PLAY_REQUEST:");
-				strcat_s(SendStr, 20, col);
-				memset(UserInput, 0, 100);
-			}
-			else
-			{
-				printf("Error: Illigal command\n");
-				fprintf(log_file, "Error: Illigal command\n");
-				memset(UserInput, 0, 100);
-				continue;
-			}
-		}
-		else
-		{
+		} else if (STRINGS_ARE_EQUAL(command, "play")) {
+			col = (char*)malloc(strlen(UserInput));
+			strcpy(col, after_command + 1);
+			strcpy_s(SendStr, 20, "PLAY_REQUEST:");
+			strcat_s(SendStr, 20, col);
+			free(col);
+			memset(UserInput, 0, 100);
+		} else {
 			printf("Error: Illigal command\n");
 			fprintf(log_file, "Error: Illigal command\n");
 			memset(UserInput, 0, 100);
+			ReleaseSemaphore(FREE_FOR_COMMANDS, 1, NULL);
 			continue;
 		}
 		SendRes = SendString(SendStr, m_socket);
@@ -307,26 +300,28 @@ static DWORD UserInputThread(char **argv)
 			gets_s(UserInput, 100); //Reading a string from the keyboard
 			ReleaseSemaphore(NEW_COMMAND_AVAILABLE, 1, NULL);
 		}
-	}
-	else {
+	} else {
 		FILE* fp = NULL;
 		int retval = fopen_s(&fp, argv[5], "r");
-		int print_index = 1;
 		if (0 != retval) {
 			printf("Failed to open file.\n");
 			return -1;
 		}
-		if (NULL == fgets(UserInput, MAX_LINE_LENGTH, fp))     { return; }
+		char tmpUserInput[MAX_LINE_LENGTH];
+		fgets(UserInput, MAX_LINE_LENGTH, fp);
+		if (NULL == UserInput)     { return; }
 		*(strstr(UserInput, "\n")) = 0;
 		ReleaseSemaphore(USERNAME_NEEDED, 1, NULL);
 		while (1) {
 			WaitForSingleObject(FREE_FOR_COMMANDS, INFINITE);
-			if (NULL == fgets(UserInput, MAX_LINE_LENGTH, fp)) { break; }
-			*(strstr(UserInput, "\n")) = 0;
+			fgets(tmpUserInput, MAX_LINE_LENGTH, fp);
+			if (NULL == tmpUserInput) { return; }
+			*(strstr(tmpUserInput, "\n")) = 0;
+			if (NULL != strstr(tmpUserInput, "play")) { WaitForSingleObject(YOUR_TURN, INFINITE); }
+			strcpy(UserInput, tmpUserInput);
 			ReleaseSemaphore(NEW_COMMAND_AVAILABLE, 1, NULL);
 		}
 	}
-
 }
 
 
@@ -379,11 +374,6 @@ int MainClient(char **argv)
 	clientService.sin_addr.s_addr = inet_addr(SERVER_ADDRESS_STR); //Setting the IP address to connect to
 	clientService.sin_port = htons(atoi(argv[3])); //Setting the port to connect to.
 
-	/*
-		AF_INET is the Internet address family.
-	*/
-
-
 	// Call the connect function, passing the created socket and the sockaddr_in structure as parameters. 
 	// Check for general errors.
 	if (connect(m_socket, (SOCKADDR*)&clientService, sizeof(clientService)) == SOCKET_ERROR) {
@@ -399,7 +389,8 @@ int MainClient(char **argv)
 	NEW_COMMAND_AVAILABLE = CreateSemaphore(NULL, 0, 1, NULL);
 	FREE_FOR_COMMANDS     = CreateSemaphore(NULL, 0, 1, NULL);
 	USERNAME_NEEDED       = CreateSemaphore(NULL, 0, 1, NULL);
-	if (!NEW_COMMAND_AVAILABLE || !FREE_FOR_COMMANDS)
+	YOUR_TURN             = CreateSemaphore(NULL, 0, 1, NULL);
+	if (!NEW_COMMAND_AVAILABLE || !FREE_FOR_COMMANDS || !USERNAME_NEEDED || !YOUR_TURN)
 	{
 		fprintf(log_file, "Error: C	reate mutex \"Mutex\" is failed\n");
 		printf("Error: Create mutex \"Mutex\" is failed\n");
@@ -414,7 +405,9 @@ int MainClient(char **argv)
 		printf("Error: Create Thread is failed\n");
 		exit(-1);
 	}
-	WaitForMultipleObjects(3, hThread, FALSE, INFINITE);
+	WaitForMultipleObjects(2, hThread, FALSE, INFINITE);
+	
+	closesocket(m_socket);
 
 	TerminateThread(hThread[0], 0x555);
 	TerminateThread(hThread[1], 0x555);
@@ -422,8 +415,6 @@ int MainClient(char **argv)
 	CloseHandle(hThread[0]);
 	CloseHandle(hThread[1]);
 	CloseHandle(hThread[2]);
-
-	closesocket(m_socket);
 
 	WSACleanup();
 	fclose(log_file);

@@ -56,7 +56,7 @@ int NewUserRequest(char *newUserName) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int PlayRequest(int column_player_picked, int player_index) {
-	if (column_player_picked <= 0 || column_player_picked >= 6 || //not in columns range
+	if (column_player_picked < 0 || column_player_picked > 6 || //not in columns range
 	    (gameBoardMatrixArray[5][column_player_picked] != (-1)) ) //column full
 	                          { return PLAY_DECLINED_ILLEGAL_MOVE;  }
 	if (Turn != player_index) { return PLAY_DECLINED_NOT_YOUR_TURN; }
@@ -66,7 +66,26 @@ int PlayRequest(int column_player_picked, int player_index) {
 	gameBoardMatrixArray[available_row][column_player_picked] = player_index;
 	return PLAY_ACCEPTED;
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function : char* GetBoardView()
+// Input : None
+// Output : boardViewString- pointer to a BOARD_VIEW message with the board view as parameters
+// Descripation : create a board_view message by concatinating all gameBoardMatrixArray value so -1 is empty, 0 is red, and 1 is yellow
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+char* GetBoardView() {
+	char* boardViewString = (char*)malloc(150*sizeof(char));//ADIBEN free to that string
+	strcpy(boardViewString, "BOARD_VIEW:");
+	for (int row = 0; row < 6; row++) {
+		for (int col = 0; col < 7; col++) {
+			if (gameBoardMatrixArray[row][col] == -1) strcat(boardViewString, "-1;");
+			if (gameBoardMatrixArray[row][col] == 0) strcat(boardViewString, "0;");
+			if (gameBoardMatrixArray[row][col] == 1) strcat(boardViewString, "1;");
+		}
+	}
+	*(boardViewString + strlen(boardViewString) - 1) = 0;
+	return boardViewString;
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // function : GameEnded()
 // input : none. 

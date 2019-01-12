@@ -1,6 +1,0 @@
-Connected to server on 127.0.0.1:4444
-recieved from server: NEW_USER_ACCEPTED:2
-4444 accepted, number of players is 2
-recieved from server: GAME_STARTED
-Game is on!
-Server disconnected. Exiting.

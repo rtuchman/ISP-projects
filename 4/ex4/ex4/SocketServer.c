@@ -17,8 +17,8 @@ static FILE *log_file = NULL; //ADIBEN TODO : Handle this file. fprintf write co
 HANDLE ThreadHandles[NUM_OF_WORKER_THREADS];
 SOCKET ThreadInputs[NUM_OF_WORKER_THREADS];
 static HANDLE usersSemaphore;  // no user login in 5 minutes.      //ADIBEN check who to delete
-static HANDLE serverIsBusySemaphore; // one client is connected to the server and server is busy.
-static HANDLE printGameStartSemaphore; 
+static HANDLE delaySemaphore; // ADIBEN check what happens for third player
+static HANDLE gameStartSemaphore; 
 static HANDLE FailedSemaphore;
 int numberOfPlayres = 0; // this intger hold the number of current users on server.
 char *returnString = NULL; // this is the string that the server will sent to the client. 
@@ -113,7 +113,7 @@ void MainServer(char **argv)
 
 	if (!FailedSemaphore)
 	{
-		fprintf(log_file, "Custom message: Error: Create semaphore printGameStartSemaphore is failed\n");
+		fprintf(log_file, "Custom message: Error: Create semaphore gameStartSemaphore is failed\n");
 		exit(1);
 	}
 
@@ -259,7 +259,7 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, int
 			Player2 = 0;
 			free(userNameArray[1]);
 			userNameArray[1] = NULL;
-			ReleaseSemaphore(FailedSemaphore, 1, NULL);
+//			ReleaseSemaphore(FailedSemaphore, 1, NULL);
 			return returnString;
 		}
 
@@ -272,29 +272,29 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, int
 		//end mutex here
 		if (PlayRequest_result == PLAY_ACCEPTED)
 		{
-			returnString = (char*)malloc(strlen("PLAY_ACCEPTED") + 1); //allocate memory for string. 
+			returnString = (char*)malloc((strlen("PLAY_ACCEPTED") + 1) * sizeof(char)); //allocate memory for string. 
 			strcpy(returnString, "PLAY_ACCEPTED"); // building string. 
-			WaitForSingleObject(printGameStartSemaphore, INFINITE);
+			WaitForSingleObject(gameStartSemaphore, INFINITE);
 			Turn = (Turn == 0)? 1 : 0; // turn switch 
-			ReleaseSemaphore(printGameStartSemaphore, 1, NULL);
+			ReleaseSemaphore(gameStartSemaphore, 1, NULL);
 			return returnString;
 
 		}
 		else if (PlayRequest_result == PLAY_DECLINED_GAME_HAS_NOT_STARTED) // if only one player is in the game
 		{
-			returnString = (char*)malloc(strlen("PLAY_DECLINED:Game has not started") + 1); //allocate memory for string. 
+			returnString = (char*)malloc((strlen("PLAY_DECLINED:Game has not started") + 1) * sizeof(char)); //allocate memory for string. 
 			strcpy(returnString, "PLAY_DECLINED:Game has not started"); // building string. 
 			return returnString;
 		}
 		else if (PlayRequest_result == PLAY_DECLINED_NOT_YOUR_TURN)
 		{
-			returnString = (char*)malloc(strlen("PLAY_DECLINED:Not your turn") + 1); //allocate memory for string. 
+			returnString = (char*)malloc((strlen("PLAY_DECLINED:Not your turn") + 1) * sizeof(char)); //allocate memory for string. 
 			strcpy(returnString, "PLAY_DECLINED:Not your turn"); // building string. 
 			return returnString;
 		}
 		else if (PlayRequest_result == PLAY_DECLINED_ILLEGAL_MOVE)
 		{
-			returnString = (char*)malloc(strlen("PLAY_DECLINED:Illegal move") + 1); //allocate memory for string. 
+			returnString = (char*)malloc(strlen(("PLAY_DECLINED:Illegal move") + 1) * sizeof(char)); //allocate memory for string. 
 			strcpy(returnString, "PLAY_DECLINED:Illegal move"); // building string. 
 			return returnString;
 		}
@@ -309,8 +309,11 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, int
 			sprintf(TempStr + idx, "%s;", parametersArray[j++]); // message params
 			idx = strlen(TempStr);
 		}
-		returnString = (char*)malloc(strlen("RECEIVE_MESSAGE:") + strlen(TempStr) + 1);
+		TempStr[idx - 1] = 0;
+		returnString     = (char*)malloc((strlen("RECEIVE_MESSAGE:") + strlen(TempStr) + strlen(userNameArray[*player_index]) + 20) * sizeof(char));
 		strcpy(returnString, "RECEIVE_MESSAGE:");
+		strcat(returnString, userNameArray[*player_index]);
+		strcat(returnString, ";");
 		strcat(returnString, TempStr);
 		memset(TempStr, 0, 100);
 		return returnString;
@@ -335,34 +338,29 @@ static DWORD ServiceThread(SOCKET *t_socket)
 	{
 		char *AcceptedStr = NULL;
 		if (GameStarted) {
-			WaitForSingleObject(printGameStartSemaphore, INFINITE);
-			ReleaseSemaphore(printGameStartSemaphore, 1, NULL);
+			WaitForSingleObject(gameStartSemaphore, INFINITE);
+			ReleaseSemaphore(gameStartSemaphore, 1, NULL);
 		}
 		RecvRes = ReceiveString(&AcceptedStr, *t_socket);
 
 		if (RecvRes == TRNS_FAILED)
 		{
-
 			// User Disconnected: 
-
 			fprintf(log_file, "Player Disconnected. Exiting.\n");
 			CleanupWorkerThreads();
 			closesocket(ThreadInputs[0]);
 			closesocket(ThreadInputs[1]);
 //			ReleaseSemaphore(FailedSemaphore, 1, NULL);
-
 			return 1;
 		}
 
 		else if (RecvRes == TRNS_DISCONNECTED)
 		{
-
 			fprintf(log_file, "Custom message: Service socket error while reading, closing thread.\n");
 			CleanupWorkerThreads();
 			closesocket(ThreadInputs[0]);
 			closesocket(ThreadInputs[1]);
-			ReleaseSemaphore(FailedSemaphore, 1, NULL);
-
+//			ReleaseSemaphore(FailedSemaphore, 1, NULL);
 			return 1;
 		}
 
@@ -427,8 +425,9 @@ static DWORD ServiceThread(SOCKET *t_socket)
 					strcpy(parametersArray[parametersNumber], tokenParam); // put token in array. 
 
 				}
+			parametersArray = realloc(parametersArray, (parametersNumber + 1) * sizeof(char*));
+			parametersArray[parametersNumber] = NULL;
 			}
-			
 			PrevTurn = Turn; 
 			FlagGameStarted = GameStarted;
 
@@ -437,8 +436,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 			//send message to other user:
 			if (STRINGS_ARE_EQUAL(massegeType, "SEND_MESSAGE")) 
 			{
-				if (player_index == 0) { SendRes = SendString(FunctionResult, ThreadInputs[1]); } 
-				else { SendRes = SendString(FunctionResult, ThreadInputs[0]); }				
+				SendRes = SendString(FunctionResult, ThreadInputs[abs(player_index - 1)]);
 			}
 			//if not message:
 			else { SendRes = SendString(FunctionResult, *t_socket); } 
@@ -455,26 +453,47 @@ static DWORD ServiceThread(SOCKET *t_socket)
 				memcpy(FunctionResult, "GAME_STARTED\0", strlen("GAME_STARTED") + 1);
 				SendRes = SendString(FunctionResult, ThreadInputs[0]);//Send GAME_STARTED to Player1.
 				SendRes = SendString(FunctionResult, ThreadInputs[1]);//Send GAME_STARTED to Player2. ADIBEN board_view
-//				ReleaseSemaphore(printGameStartSemaphore, 1, NULL);
-//				WaitForSingleObject(printGameStartSemaphore, INFINITE); //ADIBEN why those two lines?
-//				ReleaseSemaphore(printGameStartSemaphore, 1, NULL);
+				WaitForSingleObject(delaySemaphore, 500);
+				FunctionResult = GetBoardView();
+				SendRes = SendString(FunctionResult, ThreadInputs[0]);
+				SendRes = SendString(FunctionResult, ThreadInputs[1]);
+				WaitForSingleObject(delaySemaphore, 1000);
+//				ReleaseSemaphore(gameStartSemaphore, 1, NULL);
+//				WaitForSingleObject(gameStartSemaphore, INFINITE); //ADIBEN Board
+//				ReleaseSemaphore(gameStartSemaphore, 1, NULL);
 				FunctionResult = TurnSwitch(0); //Player 1 Turn.
-//				WaitForSingleObject(printGameStartSemaphore, INFINITE);
+//				WaitForSingleObject(gameStartSemaphore, INFINITE);
 				SendRes = SendString(FunctionResult, ThreadInputs[0]);//Send TURN_SWITCH to Player 1.
 				SendRes = SendString(FunctionResult, ThreadInputs[1]);//Send TURN_SWITCH to Player 2.
-				ReleaseSemaphore(printGameStartSemaphore, 1, NULL);
+				ReleaseSemaphore(gameStartSemaphore, 1, NULL);
 				FlagSendFirstView = TRUE;
 			}
+			//check if new_user was declined:
+			if (STRINGS_ARE_EQUAL(FunctionResult, "NEW_USER_DECLINED"))
+			{
+				closesocket(ThreadInputs[player_index]);
+				ThreadInputs[player_index] = NULL;
+				break;
+			}
+			//check if board_view needed:
+			if (STRINGS_ARE_EQUAL(FunctionResult, "PLAY_ACCEPTED")) 
+			{
+				FunctionResult = GetBoardView();
+				SendRes = SendString(FunctionResult, ThreadInputs[0]);
+				SendRes = SendString(FunctionResult, ThreadInputs[1]);
+			}
+
 			if (PrevTurn != Turn && GameEnded() == GAME_HAS_NOT_ENDED)  
 			{
-//				WaitForSingleObject(printGameStartSemaphore, INFINITE);
-//				ReleaseSemaphore(printGameStartSemaphore, 1, NULL);				
+//				WaitForSingleObject(gameStartSemaphore, INFINITE);
+//				ReleaseSemaphore(gameStartSemaphore, 1, NULL);		
+				WaitForSingleObject(delaySemaphore, 500);
 				if (Turn == 0) { FunctionResult = TurnSwitch(0); }//Player 1 Turn.
 				else           { FunctionResult = TurnSwitch(1); }//Player 2 Turn.
 				SendRes = SendString(FunctionResult, ThreadInputs[0]);//Send TURN_SWITCH to Player 1.
 				SendRes = SendString(FunctionResult, ThreadInputs[1]);//Send TURN_SWITCH to Player 2.
-//				WaitForSingleObject(printGameStartSemaphore, INFINITE);
-//				ReleaseSemaphore(printGameStartSemaphore, 1, NULL);
+//				WaitForSingleObject(gameStartSemaphore, INFINITE);
+//				ReleaseSemaphore(gameStartSemaphore, 1, NULL);
 			}
 
 			// Check if string sending from server to client failed : 
@@ -532,23 +551,21 @@ static DWORD ServiceThread(SOCKET *t_socket)
 
 			free(AcceptedStr);
 
-//			ReleaseSemaphore(serverIsBusySemaphore, 1, NULL); // Server is no longer busy and can handle another client. 
+//			ReleaseSemaphore(delaySemaphore, 1, NULL); // Server is no longer busy and can handle another client. 
 		}
 	}
 
 	CleanupWorkerThreads(t_socket);
 	numberOfPlayres--; // user left the server.
-	WaitForSingleObject(usersSemaphore, INFINITE);
+//	WaitForSingleObject(usersSemaphore, INFINITE);
 
-//	ReleaseSemaphore(serverIsBusySemaphore, 1, NULL); // Server is no longer busy and can handle another client. 
+//	ReleaseSemaphore(delaySemaphore, 1, NULL); // Server is no longer busy and can handle another client. 
 
 	return 0;
 }
 
 
-int InitSemaphore(static HANDLE * usersSemaphore, static HANDLE * serverIsBusySemaphore, static HANDLE * printGameStartSemaphore) {
-
-	// Create semaphore that check if at list one user in log on.
+int InitSemaphore(static HANDLE * usersSemaphore, static HANDLE * delaySemaphore, static HANDLE * gameStartSemaphore) {
 
 	*usersSemaphore = CreateSemaphore(
 		NULL,	/* Default security attributes */
@@ -562,32 +579,28 @@ int InitSemaphore(static HANDLE * usersSemaphore, static HANDLE * serverIsBusySe
 		exit(2);
 	}
 
-	// Create semaphore that check if server is busy while handling request from a client.  
-
-	*serverIsBusySemaphore = CreateSemaphore(
-		NULL,	/* Default security attributes */
-		1,		/* Initial Count - all slots are empty */
-		1,		/* Maximum Count */
-		NULL);  /* un-named */
-
-	if (!*usersSemaphore)
-
-	{
-		fprintf(log_file, "Custom message: Error: Create semaphore usersSemaphore is failed\n");
-		exit(3);
-	}
-
-	// Create semaphore that check if printing of game start masseges occur in player 1 screen. 
-
-	*printGameStartSemaphore = CreateSemaphore(
+	*delaySemaphore = CreateSemaphore(
 		NULL,	/* Default security attributes */
 		0,		/* Initial Count - all slots are empty */
 		1,		/* Maximum Count */
 		NULL);  /* un-named */
 
-	if (!*printGameStartSemaphore)
+	if (!*delaySemaphore)
+
 	{
-		fprintf(log_file, "Custom message: Error: Create semaphore printGameStartSemaphore is failed\n");
+		fprintf(log_file, "Custom message: Error: Create semaphore delaySemaphore is failed\n");
+		exit(3);
+	}
+
+	*gameStartSemaphore = CreateSemaphore(
+		NULL,	/* Default security attributes */
+		0,		/* Initial Count - all slots are empty */
+		1,		/* Maximum Count */
+		NULL);  /* un-named */
+
+	if (!*gameStartSemaphore)
+	{
+		fprintf(log_file, "Custom message: Error: Create semaphore gameStartSemaphore is failed\n");
 		exit(4);
 	}
 
@@ -599,7 +612,7 @@ void ServerInit()
 	int Ind; // id of thread in threads array.
 	DWORD wait_status;
 
-	InitSemaphore(&usersSemaphore, &serverIsBusySemaphore, &printGameStartSemaphore);
+	InitSemaphore(&usersSemaphore, &delaySemaphore, &gameStartSemaphore);
 
 	// Initialize all thread handles to NULL, to mark that they have not been initialized
 	for (Ind = 0; Ind < NUM_OF_WORKER_THREADS; Ind++)
@@ -607,65 +620,40 @@ void ServerInit()
 
 	for (Loop = 0; Loop < MAX_LOOPS; Loop++)
 	{
-
-//		WaitForSingleObject(serverIsBusySemaphore, INFINITE); // Client is connected to the server. server is busy and another client cannot connect to the server. 
+//		WaitForSingleObject(delaySemaphore, INFINITE); // Client is connected to the server. server is busy and another client cannot connect to the server. 
 		SOCKET AcceptSocket = accept(MainSocket, NULL, NULL);
 
-		/*if (AcceptSocket == INVALID_SOCKET)
+		if (AcceptSocket == INVALID_SOCKET)
 		{
 			printf("Accepting connection with client failed, error %ld\n", WSAGetLastError());
 			CleanupWorkerThreads();		
-			goto server_cleanup_2;
-		}*/
+			if (closesocket(MainSocket) == SOCKET_ERROR)
+				fprintf(log_file, "Custom message: Error: Failed to close MainSocket, error %ld. Ending program\n", WSAGetLastError());
+		}
 
 		// new user log in. update counter and semaphore :
 
-//		numberOfPlayres++;
-		ReleaseSemaphore(usersSemaphore, 1, NULL); //ADIBEN figure out where to put the semaphores
-		Ind = FindFirstUnusedThreadSlot();         //ADIBEN problem when user declined, need to null the thread
+//		ReleaseSemaphore(usersSemaphore, 1, NULL);
+		Ind = FindFirstUnusedThreadSlot();
 
-		if (Ind == NUM_OF_WORKER_THREADS) //no slot is available - ADIBEN check this condition
-		{	
-			CleanupWorkerThreads();
-//			numberOfPlayres--; // user left the server.
-			WaitForSingleObject(usersSemaphore, INFINITE);
-		}
-
-		else
+		if (Ind == NUM_OF_WORKER_THREADS) //no slot is available
 		{
-			ThreadInputs[Ind] = AcceptSocket; // shallow copy: don't close 
-											  // AcceptSocket, instead close 
-											  // ThreadInputs[Ind] when the
-											  // time comes.
-			ThreadHandles[Ind] = CreateThread(
-				NULL,
-				0,
-				(LPTHREAD_START_ROUTINE)ServiceThread,
-				&(ThreadInputs[Ind]),
-				0,
-				NULL
-			);
+			WaitForSingleObject(delaySemaphore, INFINITE);
+			CleanupWorkerThreads();
+			WaitForSingleObject(usersSemaphore, INFINITE);
+		} else {
+			ThreadInputs[Ind]  = AcceptSocket;
+			ThreadHandles[Ind] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ServiceThread, &(ThreadInputs[Ind]),	0, NULL);
 		}
 	}
-
 
 	wait_status = WaitForMultipleObjects((DWORD)MAX_LOOPS, ThreadHandles, 1, INFINITE); // Waits for all threads to finish thier work. 
 	if (WAIT_OBJECT_0 != wait_status) {
 		printf("Error While waiting for threads\n");
 	}
 
-server_cleanup_2:
-	if (closesocket(MainSocket) == SOCKET_ERROR)
-		fprintf(log_file, "Custom message: Error: Failed to close MainSocket, error %ld. Ending program\n", WSAGetLastError());
-
-
-server_cleanup_1:
-	if (WSACleanup() == SOCKET_ERROR)
-		fprintf(log_file, "Custom message: Error: Failed to close Winsocket, error %ld. Ending program.\n", WSAGetLastError());
 }
 
-
-//tatic DWORD ListenThreadFunction() {
 void ListenFunction() {
 
 	ServerInit();
@@ -674,7 +662,16 @@ void ListenFunction() {
 //		WaitForSingleObject(FailedSemaphore, INFINITE);
 		ServerInit();
 	}
+server_cleanup_2:
+	if (closesocket(MainSocket) == SOCKET_ERROR)
+		fprintf(log_file, "Custom message: Error: Failed to close MainSocket, error %ld. Ending program\n", WSAGetLastError());
+
+server_cleanup_1:
+	if (WSACleanup() == SOCKET_ERROR)
+		fprintf(log_file, "Custom message: Error: Failed to close Winsocket, error %ld. Ending program.\n", WSAGetLastError());
 }
+
+//ADIBEN- log in with third player (or more), log files
 
 
 
