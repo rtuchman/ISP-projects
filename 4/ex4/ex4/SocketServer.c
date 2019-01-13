@@ -514,7 +514,8 @@ static DWORD ServiceThread(SOCKET *t_socket)
 				}
 				if (gameEndedInt == GAME_HAS_ENDED_TIE)
 				{
-					SendRes = SendString("GAME_ENDED:TIE", *t_socket);
+					SendRes = SendString("GAME_ENDED:TIE", ThreadInputs[0]);
+					SendRes = SendString("GAME_ENDED:TIE", ThreadInputs[1]);
 				}
 				if (SendRes == TRNS_FAILED) {
 					fprintf(log_file, "Player disconnected. Exiting.\n");
