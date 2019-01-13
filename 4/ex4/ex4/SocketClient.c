@@ -60,7 +60,7 @@ static DWORD RecvDataThread(char **argv)
 		}
 		else
 		{
-			fprintf(log_file, "recieved from server: %s\n", AcceptedStr);
+			fprintf(log_file, "Recieved from server: %s\n", AcceptedStr);
 
 
 			//Allocate memory to ParametersArray:
@@ -120,18 +120,18 @@ static DWORD RecvDataThread(char **argv)
 		}
 		if (STRINGS_ARE_EQUAL(MsgType, "NEW_USER_ACCEPTED"))
 		{
-			printf("%s accepted, number of players is %s\n", argv[3], ParametersArray[0]);
-			fprintf(log_file, "%s accepted, number of players is %s\n", argv[3], ParametersArray[0]);
+			printf("Custom message: %s accepted, number of players is %s\n", argv[3], ParametersArray[0]);
+			fprintf(log_file, "Custom message: %s accepted, number of players is %s\n", argv[3], ParametersArray[0]);
 		}
 		else if (STRINGS_ARE_EQUAL(MsgType, "NEW_USER_DECLINED"))
 		{
 			printf("Request to join was refused\n");
 			fprintf(log_file, "Request to join was refused\n");
+			return 1;
 		}
 		else if (STRINGS_ARE_EQUAL(MsgType, "GAME_STARTED"))
 		{
 			printf("Game is on!\n");
-			fprintf(log_file, "Game is on!\n");
 			Game_Started = TRUE;
 			ReleaseSemaphore(FREE_FOR_COMMANDS, 1, NULL);
 		}
@@ -148,12 +148,12 @@ static DWORD RecvDataThread(char **argv)
 		else if (STRINGS_ARE_EQUAL(MsgType, "PLAY_ACCEPTED"))
 		{
 			printf("Well played\n");
-			fprintf(log_file, "Well played\n");
+			fprintf(log_file, "Custom message: Well played was printed to screen\n");
 		}
 		else if (STRINGS_ARE_EQUAL(MsgType, "PLAY_DECLINED"))
 		{
 			printf("Error: %s\n", ParametersArray[0]);
-			fprintf(log_file, "Error: %s\n", ParametersArray[0]);
+			fprintf(log_file, "Custom message: Error: %s was printed to screen\n", ParametersArray[0]);
 		}
 		else if (STRINGS_ARE_EQUAL(MsgType, "GAME_ENDED"))
 		{
@@ -174,15 +174,13 @@ static DWORD RecvDataThread(char **argv)
 		{
 			int j = 1;
 			int idx = 0;
-			while (ParametersArray[j] != NULL) {	
+			while (ParametersArray[j] != NULL) {
 				sprintf(RecvStr + idx, "%s ", ParametersArray[j++]); // message params
 				idx = strlen(RecvStr);
 			}
 			printf("%s: %s\n", ParametersArray[0], RecvStr);
-//			fprintf("%s: %s\n", ParametersArray[0], RecvStr);
 			memset(RecvStr, 0, 100);
 		}
-//		memset(UserInput, 0, 100);
 		free(AcceptedStr);
 		for (i = 0; i < ParametersNumber; i++)
 		{
@@ -193,7 +191,6 @@ static DWORD RecvDataThread(char **argv)
 	free(MsgType);
 	free(ParametersArray);
 	printf("Conversation ended.\n");
-//	closesocket(m_socket);
 	return 0;
 
 }
@@ -205,7 +202,7 @@ static DWORD SendDataThread(char **argv)
 {
 	char valid_word[15];
 	char SendStr[100] = { 0 };
-	char* col   = NULL;
+	char* col = NULL;
 	char *token = NULL;
 	TransferResult_t SendRes;
 
@@ -232,13 +229,11 @@ static DWORD SendDataThread(char **argv)
 
 		//find the command from the user:
 		char* after_command = NULL;
-		after_command       = strstr(UserInput, " ");
+		after_command = strstr(UserInput, " ");
 		if (after_command == NULL) {
-			if (strstr(UserInput, "exit")) { after_command = UserInput + 4; }
-			else                           { after_command = UserInput + strlen(UserInput); }
+			after_command = strstr(UserInput, "exit") ? (UserInput + 4) : (UserInput + strlen(UserInput));
 		}
-//		if (!after_command) { strstr(UserInput, '\0'); } 
-		char* command       = (char*)malloc(MAX_LINE_LENGTH);
+		char* command = (char*)malloc(MAX_LINE_LENGTH);
 		if (command) {
 			strncpy(command, UserInput, after_command - UserInput);
 			*(command + (after_command - UserInput)) = 0;
@@ -249,8 +244,9 @@ static DWORD SendDataThread(char **argv)
 		{
 			fprintf(log_file, "Exiting Game.\n");
 			return 0x555; //"quit" signals an exit from the client side
-		} else if (STRINGS_ARE_EQUAL(command, "message")) {
-			token = strtok(UserInput+8, " ");
+		}
+		else if (STRINGS_ARE_EQUAL(command, "message")) {
+			token = strtok(UserInput + 8, " ");
 			strcpy_s(SendStr, 14, "SEND_MESSAGE:");
 			while (token != NULL) {
 				strcat(SendStr, token);
@@ -258,14 +254,16 @@ static DWORD SendDataThread(char **argv)
 				token = strtok(NULL, " ");
 			}
 			memset(UserInput, 0, 100);
-		} else if (STRINGS_ARE_EQUAL(command, "play")) {
+		}
+		else if (STRINGS_ARE_EQUAL(command, "play")) {
 			col = (char*)malloc(strlen(UserInput));
 			strcpy(col, after_command + 1);
 			strcpy_s(SendStr, 20, "PLAY_REQUEST:");
 			strcat_s(SendStr, 20, col);
 			free(col);
 			memset(UserInput, 0, 100);
-		} else {
+		}
+		else {
 			printf("Error: Illigal command\n");
 			fprintf(log_file, "Error: Illigal command\n");
 			memset(UserInput, 0, 100);
@@ -289,7 +287,6 @@ static DWORD SendDataThread(char **argv)
 
 static DWORD UserInputThread(char **argv)
 {
-//	ReleaseSemaphore(SEND_MUTEX, 1, NULL);	//Lock mutex until input availabe.
 	if (STRINGS_ARE_EQUAL(argv[4], "human")) {
 		printf("please insert usename:\n");
 		gets_s(UserInput, 100);
@@ -300,7 +297,8 @@ static DWORD UserInputThread(char **argv)
 			gets_s(UserInput, 100); //Reading a string from the keyboard
 			ReleaseSemaphore(NEW_COMMAND_AVAILABLE, 1, NULL);
 		}
-	} else {
+	}
+	else {
 		FILE* fp = NULL;
 		int retval = fopen_s(&fp, argv[5], "r");
 		if (0 != retval) {
@@ -309,15 +307,14 @@ static DWORD UserInputThread(char **argv)
 		}
 		char tmpUserInput[MAX_LINE_LENGTH];
 		fgets(UserInput, MAX_LINE_LENGTH, fp);
-		if (NULL == UserInput)     { return; }
+		if (NULL == UserInput) { return; }
 		*(strstr(UserInput, "\n")) = 0;
 		ReleaseSemaphore(USERNAME_NEEDED, 1, NULL);
 		while (1) {
 			WaitForSingleObject(FREE_FOR_COMMANDS, INFINITE);
-			fgets(tmpUserInput, MAX_LINE_LENGTH, fp);
-			if (NULL == tmpUserInput) { return; }
+			if (EOF == fgets(tmpUserInput, MAX_LINE_LENGTH, fp)) { return; }
 			*(strstr(tmpUserInput, "\n")) = 0;
-			if (NULL != strstr(tmpUserInput, "play")) { WaitForSingleObject(YOUR_TURN, INFINITE); }
+			if ((NULL != strstr(tmpUserInput, "play")) || (NULL != strstr(tmpUserInput, "exit"))) { WaitForSingleObject(YOUR_TURN, INFINITE); }
 			strcpy(UserInput, tmpUserInput);
 			ReleaseSemaphore(NEW_COMMAND_AVAILABLE, 1, NULL);
 		}
@@ -366,10 +363,10 @@ int MainClient(char **argv)
 	}
 
 
-	 //For a client to communicate on a network, it must connect to a server.
-	 // Connect to a server.
+	//For a client to communicate on a network, it must connect to a server.
+	// Connect to a server.
 
-	 //Create a sockaddr_in object clientService and set  values.
+	//Create a sockaddr_in object clientService and set  values.
 	clientService.sin_family = AF_INET;
 	clientService.sin_addr.s_addr = inet_addr(SERVER_ADDRESS_STR); //Setting the IP address to connect to
 	clientService.sin_port = htons(atoi(argv[3])); //Setting the port to connect to.
@@ -387,12 +384,13 @@ int MainClient(char **argv)
 	fprintf(log_file, "Connected to server on 127.0.0.1:%s\n", argv[3]);
 	// Send and receive data.
 	NEW_COMMAND_AVAILABLE = CreateSemaphore(NULL, 0, 1, NULL);
-	FREE_FOR_COMMANDS     = CreateSemaphore(NULL, 0, 1, NULL);
-	USERNAME_NEEDED       = CreateSemaphore(NULL, 0, 1, NULL);
-	YOUR_TURN             = CreateSemaphore(NULL, 0, 1, NULL);
+	FREE_FOR_COMMANDS = CreateSemaphore(NULL, 0, 1, NULL);
+	USERNAME_NEEDED = CreateSemaphore(NULL, 0, 1, NULL);
+	YOUR_TURN = CreateSemaphore(NULL, 0, 1, NULL);
+
 	if (!NEW_COMMAND_AVAILABLE || !FREE_FOR_COMMANDS || !USERNAME_NEEDED || !YOUR_TURN)
 	{
-		fprintf(log_file, "Error: C	reate mutex \"Mutex\" is failed\n");
+		fprintf(log_file, "Error: Create mutex \"Mutex\" is failed\n");
 		printf("Error: Create mutex \"Mutex\" is failed\n");
 		exit(-1);
 	}
@@ -401,12 +399,12 @@ int MainClient(char **argv)
 	hThread[2] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)UserInputThread, argv, 0, NULL);
 	if (!hThread[0] || !hThread[1] || !hThread[2])
 	{
-		fprintf(log_file, "Error: Create Thread is failed\n");
-		printf("Error: Create Thread is failed\n");
+		fprintf(log_file, "Error: Create Thread failed\n");
+		printf("Error: Create Thread failed\n");
 		exit(-1);
 	}
 	WaitForMultipleObjects(2, hThread, FALSE, INFINITE);
-	
+
 	closesocket(m_socket);
 
 	TerminateThread(hThread[0], 0x555);
