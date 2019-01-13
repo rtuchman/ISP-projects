@@ -44,7 +44,6 @@ int NewUserRequest(char *newUserName) {
 		return SECOND_USER_LOGIN;
 
 	}
-
 	return CROSS_LIMIT_USER_LOGIN; // more than two user are logged in, or second user with first name as first user. replay with error. 
 }
 
@@ -74,7 +73,7 @@ int PlayRequest(int column_player_picked, int player_index) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 char* GetBoardView() {
-	char* boardViewString = (char*)malloc(150*sizeof(char));//ADIBEN free to that string
+	char* boardViewString = (char*)malloc(150*sizeof(char));
 	strcpy(boardViewString, "BOARD_VIEW:");
 	for (int row = 0; row < 6; row++) {
 		for (int col = 0; col < 7; col++) {
@@ -170,7 +169,12 @@ BOOL HighestRowIsFull() {
 	return TRUE;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// function : char* TurnSwitch(int PlayerID)
+// input : int PlayerID- player number 
+// output : string which is a message for the players of type "TURN_SWITCH" 
+// descripation : check who's turn it's supposed to be and create a command to inform the clients
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 char* TurnSwitch(int PlayerID)
 {

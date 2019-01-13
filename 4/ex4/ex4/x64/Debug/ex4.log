@@ -1,15 +1,14 @@
-﻿  SocketServer.c
-c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.h(18): warning C4042: 'usersSemaphore': has bad storage class
-c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.h(18): warning C4042: 'serverIsBusySemaphore': has bad storage class
-c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.h(18): warning C4042: 'printGameStartSemaphore': has bad storage class
-c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(219): warning C4311: 'type cast': pointer truncation from 'SOCKET *' to 'int'
-c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(230): warning C4311: 'type cast': pointer truncation from 'SOCKET *' to 'int'
-c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(298): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(464): warning C4047: '=': 'SOCKET' differs in levels of indirection from 'void *'
-c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(539): warning C4042: 'usersSemaphore': has bad storage class
-c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(539): warning C4042: 'delaySemaphore': has bad storage class
-c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(539): warning C4042: 'gameStartSemaphore': has bad storage class
-c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(634): warning C4102: 'server_cleanup_2': unreferenced label
-c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(638): warning C4102: 'server_cleanup_1': unreferenced label
-c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(311): warning C4715: 'ServerClientMassegeControl': not all control paths return a value
+﻿  ClientControl.c
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\clientcontrol.c(28): warning C4098: 'MainPrintBoard': 'void' function returning a value
+  SocketClient.c
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketclient.c(145): warning C4013: 'MainPrintBoard' undefined; assuming extern returning int
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketclient.c(184): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketclient.c(34): warning C4101: 'SendRes': unreferenced local variable
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketclient.c(218): warning C4101: 'i': unreferenced local variable
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketclient.c(212): warning C4101: 'valid_word': unreferenced local variable
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketclient.c(324): warning C4033: 'UserInputThread' must return a value
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketclient.c(329): warning C4047: '==': 'int' differs in levels of indirection from 'char *'
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketclient.c(329): warning C4033: 'UserInputThread' must return a value
+  Generating Code...
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketclient.c(336): warning C4715: 'UserInputThread': not all control paths return a value
   ex4.vcxproj -> C:\Users\Adi\Desktop\oldGit\ISP-projects\4\ex4\x64\Debug\ex4.exe

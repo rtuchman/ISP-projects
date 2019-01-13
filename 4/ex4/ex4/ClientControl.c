@@ -7,10 +7,10 @@
 #include "ClientControl.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-// function : 
-// input :  
-// output : 
-// descripation :
+// function : void MainPrintBoard(char** ParametersArray) {
+// input :  char** ParametersArray - the board view as a vector
+// output : print the board on the screen
+// descripation : print the board on the screen
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void MainPrintBoard(char** ParametersArray) {
@@ -22,10 +22,9 @@ void MainPrintBoard(char** ParametersArray) {
 		}
 	}
 	//This handle allows us to change the console's color
-	HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	PrintBoard(board, hConsole);
-//	CloseHandle(hConsole);
 	return 0;
 }
 

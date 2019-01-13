@@ -42,7 +42,13 @@ BOOL GameStarted = FALSE;
 	}\
 }
 
-/*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function : int MainServer(char **argv)
+// Input : char **argv - arguments that were recieved by tha main function
+// Output : integer which indecates the thread finished its job
+// Descripation : main function for the server operation - create the socket, listen, and call the function
+//                responsible for connecting to clients
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void MainServer(char **argv)
 {
@@ -71,8 +77,6 @@ void MainServer(char **argv)
 		// Tell the user that we could not find a usable WinSock DLL.                                  
 		return;
 	}
-
-	/* The WinSock DLL is acceptable. Proceed. */
 
 	// Create a socket :
 
@@ -128,11 +132,14 @@ server_cleanup_1:
 
 }
 
-/*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function : static int FindFirstUnusedThreadSlot()
+// Input : None
+// Output : num of unused slot in array or NUM_OF_WORKER_THREADS if array is full
+// Descripation : finds an empty place in array, polling thread situation to detact if it finished its job earlier
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 static int FindFirstUnusedThreadSlot()
 {
-
 	// Find open slut for new user :
 
 	int Ind;
@@ -158,14 +165,18 @@ static int FindFirstUnusedThreadSlot()
 	return Ind;
 }
 
-/*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function : CleanupWorkerThreads()
+// Input : None
+// Output : None
+// Descripation : Init all the resources and variables
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static void CleanupWorkerThreads()
 {
 	int Ind = 0, i, j;
 
 	//free user names string array :
-
 	if (userNameArray[0] != NULL)
 	{
 		free(userNameArray[0]);
@@ -178,7 +189,6 @@ static void CleanupWorkerThreads()
 	}
 
 	// clean up game board :
-
 	for (i = 0; i < 6; i++)
 		for (j = 0; j < 7; j++)
 		{
@@ -186,7 +196,6 @@ static void CleanupWorkerThreads()
 		}
 
 	//init varibles  :
-
 	numberOfPlayres = 0;
 	returnString = NULL;
 	Player1 = 0;
@@ -199,9 +208,12 @@ static void CleanupWorkerThreads()
 
 }
 
-/*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
-
-//serverClientMassegeControl gets masseges from client - check the kind of the massege and deal transfer it to relevant function to handle it. 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function : char * ServerClientMassegeControl
+// Input : char *massegeType - message from client type; char **parametersArray - message from client's parameters; int *player_index - initial value (-1), changes to player's index if player accepted; SOCKET *t_socket - socket of that client
+// Output : message to return to client
+// Descripation : according to massegeType, check the kind of the massege and then deal transfer it to relevant function to handle it. and deal transfer it to relevant function to handle it. 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 char * ServerClientMassegeControl(char *massegeType, char **parametersArray, int *player_index, SOCKET *t_socket) {
 	int PlayRequest_result;
@@ -215,7 +227,7 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, int
 
 		if (userNameArray[0] == NULL) {
 			*player_index = 0; // save players index to later use in send_message
-			numberOfPlayres++; //ADIBEN mutex for that
+			numberOfPlayres++;
 			Player1 = (int)t_socket;
 			NewUserRequest(parametersArray[0]);
 			returnString = (char*)malloc(strlen("NEW_USER_ACCEPTED:N") + 1); //allocate memory for string. 
@@ -228,7 +240,7 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, int
 		else if ((userNameArray[1] == NULL) && (strcmp(userNameArray[0], parametersArray[0]) != NAMES_ARE_THE_SAME)) { // check if second user is empty 
 			*player_index = 1;
 			Player2 = (int)t_socket;
-			numberOfPlayres++; //ADIBEN mutex for that
+			numberOfPlayres++;
 			NewUserRequest(parametersArray[0]); 
 			returnString = (char*)malloc(strlen("NEW_USER_ACCEPTED:N") + 1); //allocate memory for string. 
 			strcpy(returnString, "NEW_USER_ACCEPTED:"); // building string. 
@@ -250,14 +262,11 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, int
 			userNameArray[1] = NULL;
 			return returnString;
 		}
-
 	}
 
 	else if (STRINGS_ARE_EQUAL(massegeType, "PLAY_REQUEST"))
 	{
-		//ADIBEN add mutex here
 		PlayRequest_result = PlayRequest(atoi(parametersArray[0]), *player_index); 
-		//end mutex here
 		if (PlayRequest_result == PLAY_ACCEPTED)
 		{
 			returnString = (char*)malloc((strlen("PLAY_ACCEPTED") + 1) * sizeof(char)); //allocate memory for string. 
@@ -310,8 +319,15 @@ char * ServerClientMassegeControl(char *massegeType, char **parametersArray, int
 
 }
 
-/*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
-//Service thread is the thread that opens for each successful client connection and "talks" to the client.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function : static DWORD ServiceThread(SOCKET *t_socket)
+// Input : SOCKET *t_socket - server and client socket
+// Output : integer indicates the thread success
+// Descripation : Service thread is the thread that opens for each successful client connection and "talks" to
+//                the client. The function handles the incoming and outcoming messages from the client,
+//                recieve the meesage, finds all its relevant parts, sends the server response to the client
+//                 and handle all the changes following the message.  
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static DWORD ServiceThread(SOCKET *t_socket)
 {
@@ -352,11 +368,9 @@ static DWORD ServiceThread(SOCKET *t_socket)
 
 		else
 		{
-
 			fprintf(log_file, "Custom message: Got string : %s\n", AcceptedStr);
 
 			// Massege from client in this format : massege_type:param1;param2\0. Now we will parse them into differnet strings :
-
 			const char delimiterMassegeType[2] = ":";
 			const char delimiterParameters[2] = ";";
 			char *massegeType = NULL; // string that holds the massege type. 
@@ -367,22 +381,19 @@ static DWORD ServiceThread(SOCKET *t_socket)
 			int PrevTurn;
 
 			//Allocate memory to parametersArray:
-
 			parametersArray = (char**)malloc(sizeof(char*));
 
 			// Parse massege_type from AcceptedStr :
-
 			char *token;
 			char *tokenParam;
 
 			token = strtok(AcceptedStr, delimiterMassegeType); // holds masege_type
 
 			if (token != NULL) {
-
 				massegeType = (char*)malloc((strlen(token) + 1) * sizeof(char)); // malloc memory that fits massege_type length 
 				strcpy(massegeType, token);
 
-				// walk through parameters :
+				// **walk through parameters :**
 
 				// First parameter :
 
@@ -428,6 +439,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 			else { SendRes = SendString(FunctionResult, *t_socket); } 
 			CHECK_IF_SEND_SECCEEDED();
 
+			//checks if second player signed in with the same username and terminates its connect to the server:
 			if (SameNameFlag)
 			{
 				if (0 == player_index) {
@@ -457,13 +469,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 				ReleaseSemaphore(gameStartSemaphore, 1, NULL);
 				FlagSendFirstView = TRUE;
 			}
-			//check if new_user was declined:
-			if (STRINGS_ARE_EQUAL(FunctionResult, "NEW_USER_DECLINED"))
-			{
-				closesocket(ThreadInputs[player_index]);
-				ThreadInputs[player_index] = NULL;
-				break;
-			}
+
 			//check if board_view needed:
 			if (STRINGS_ARE_EQUAL(FunctionResult, "PLAY_ACCEPTED")) 
 			{
@@ -472,6 +478,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 				SendRes = SendString(FunctionResult, ThreadInputs[1]);
 			}
 
+			//changes turn:
 			if (PrevTurn != Turn && GameEnded() == GAME_HAS_NOT_ENDED)  
 			{		
 				WaitForSingleObject(delaySemaphore, 500);
@@ -525,8 +532,6 @@ static DWORD ServiceThread(SOCKET *t_socket)
 			}
 
 			free(AcceptedStr);
-
-//			ReleaseSemaphore(delaySemaphore, 1, NULL); // Server is no longer busy and can handle another client. 
 		}
 	}
 
@@ -578,6 +583,13 @@ int InitSemaphore(static HANDLE * usersSemaphore, static HANDLE * delaySemaphore
 	return 0;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function : void ServerInit()
+// Input : None
+// Output : None
+// Descripation : accept two players for the play, waits to check that they were accepted and if not tries to connect a new player
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void ServerInit()
 {
 	int Ind; // id of thread in threads array.
@@ -602,7 +614,6 @@ void ServerInit()
 		}
 
 		// new user log in. update counter and semaphore :
-
 		Ind = FindFirstUnusedThreadSlot();
 
 		if (Ind == NUM_OF_WORKER_THREADS) //no slot is available
@@ -624,6 +635,14 @@ void ServerInit()
 
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function : ListenFunction()
+// Input : None
+// Output : None
+// Descripation : If ServerInit finished (for any reason), runs it again to start a new game.
+//                If server disconnected- Gracefully terminates the server.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void ListenFunction() {
 
 	ServerInit();
@@ -631,11 +650,9 @@ void ListenFunction() {
 	{
 		ServerInit();
 	}
-server_cleanup_2:
 	if (closesocket(MainSocket) == SOCKET_ERROR)
 		fprintf(log_file, "Custom message: Error: Failed to close MainSocket, error %ld. Ending program\n", WSAGetLastError());
 
-server_cleanup_1:
 	if (WSACleanup() == SOCKET_ERROR)
 		fprintf(log_file, "Custom message: Error: Failed to close Winsocket, error %ld. Ending program.\n", WSAGetLastError());
 }

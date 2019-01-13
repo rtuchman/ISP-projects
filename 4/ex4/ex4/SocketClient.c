@@ -21,8 +21,13 @@ HANDLE YOUR_TURN;
 static char UserInput[MAX_LINE_LENGTH] = { 0 };
 char* myUserName = NULL;
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function : static DWORD RecvDataThread(char **argv)
+// Input : char **argv - arfuments that were recieved by tha main function
+// Output : integer which indecates the thread finished its job
+// Descripation : Reading data coming from the server 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//Reading data coming from the server
 static DWORD RecvDataThread(char **argv)
 {
 	BOOL Done = FALSE;
@@ -195,9 +200,13 @@ static DWORD RecvDataThread(char **argv)
 
 }
 
-/*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function : static DWORD SendDataThreag(char **argv)
+// Input : char **argv - arguments that were recieved by tha main function
+// Output : integer which indecates the thread finished its job
+// Descripation : Sending data to the server 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//Sending data to the server
 static DWORD SendDataThread(char **argv)
 {
 	char valid_word[15];
@@ -283,7 +292,12 @@ static DWORD SendDataThread(char **argv)
 	}
 }
 
-/*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function : static DWORD UserInputThread(char **argv)
+// Input : char **argv - arguments that were recieved by tha main function
+// Output : integer which indecates the thread finished its job
+// Descripation : gets commands from user 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static DWORD UserInputThread(char **argv)
 {
@@ -321,8 +335,12 @@ static DWORD UserInputThread(char **argv)
 	}
 }
 
-
-/*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function : int MainClient(char **argv)
+// Input : char **argv - arguments that were recieved by tha main function
+// Output : integer which indecates the thread finished its job
+// Descripation : main function for the client operation - connect to the server, open the needed mutexs and threads 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int MainClient(char **argv)
 {
@@ -406,6 +424,7 @@ int MainClient(char **argv)
 	WaitForMultipleObjects(2, hThread, FALSE, INFINITE);
 
 	closesocket(m_socket);
+	CloseHandle(hConsole);
 
 	TerminateThread(hThread[0], 0x555);
 	TerminateThread(hThread[1], 0x555);

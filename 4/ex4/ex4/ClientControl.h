@@ -10,4 +10,6 @@
 #define RED    204
 #define YELLOW 238
 
+HANDLE  hConsole;
+
 void PrintBoard(int board[][BOARD_WIDTH], HANDLE consoleHandle);
