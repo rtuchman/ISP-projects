@@ -19,8 +19,6 @@ int InitSemaphore(static HANDLE * usersSemaphore, static HANDLE * serverIsBusySe
 void ServerInit();
 void ListenFunction();
 
-//HANDLE ListenThread;
-
 /*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
 
 

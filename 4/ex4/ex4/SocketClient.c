@@ -127,6 +127,7 @@ static DWORD RecvDataThread(char **argv)
 		{
 			printf("Custom message: %s accepted, number of players is %s\n", argv[3], ParametersArray[0]);
 			fprintf(log_file, "Custom message: %s accepted, number of players is %s\n", argv[3], ParametersArray[0]);
+			ReleaseSemaphore(FREE_FOR_COMMANDS, 1, NULL);
 		}
 		else if (STRINGS_ARE_EQUAL(MsgType, "NEW_USER_DECLINED"))
 		{
@@ -138,7 +139,6 @@ static DWORD RecvDataThread(char **argv)
 		{
 			printf("Game is on!\n");
 			Game_Started = TRUE;
-			ReleaseSemaphore(FREE_FOR_COMMANDS, 1, NULL);
 		}
 		else if (STRINGS_ARE_EQUAL(MsgType, "BOARD_VIEW"))
 		{
@@ -382,7 +382,6 @@ int MainClient(char **argv)
 
 
 	//For a client to communicate on a network, it must connect to a server.
-	// Connect to a server.
 
 	//Create a sockaddr_in object clientService and set  values.
 	clientService.sin_family = AF_INET;

@@ -626,7 +626,7 @@ void ServerInit()
 			ThreadHandles[Ind] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ServiceThread, &(ThreadInputs[Ind]),	0, NULL);
 			Loop++;
 		}
-		if (Loop == 2) WaitForSingleObject(delaySemaphore, 20000);
+		if (Loop == 2) WaitForSingleObject(delaySemaphore, 17000);
 	}
 
 	wait_status = WaitForMultipleObjects((DWORD)MAX_LOOPS, ThreadHandles, 1, INFINITE); // Waits for all threads to finish thier work. 
