@@ -2,7 +2,6 @@
 #define _CRT_SECURE_NO_WARNING
 #include "utils.h"
 
-
 // Function Definitions --------------------------------------------------------
 
 
@@ -40,7 +39,7 @@ void isNull(void* ptr)
 {
 	if (ptr == NULL)
 	{
-		printf("failed to allocate memory/n");
+		printf("failed to allocate memory\n");
 		exitGracefully();
 	}
 }
@@ -54,12 +53,24 @@ void isNull(void* ptr)
 
 void freeAll()
 {
-	free(p_thread_ids); 
-	free(p_thread_handles); 
-	free(p_anchor_mutex_handles);
 	free(anchors_array);
+	CloseHandle(p_anchor_mutex_handles);
+
+	free(p_thread_ids);
+	CloseHandle(p_thread_handles);
+	
 	free(output_buffer);
-	//*******free for the sorted list
+	ClearPythagoreanList(first_of_sorted_list);
+}
+
+void ClearPythagoreanList(PythagoreanTriple* pythagorean_list) {
+	PythagoreanTriple* pythagorean_to_delete = pythagorean_list->next;
+	PythagoreanTriple* curr_pythagorean = pythagorean_list->next;
+	while (curr_pythagorean != NULL) {
+		curr_pythagorean = curr_pythagorean->next;
+		free(pythagorean_to_delete);
+		pythagorean_to_delete = curr_pythagorean;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -72,7 +83,7 @@ void freeAll()
 void exitGracefully() 
 {
 	freeAll();
-	exit(1);
+	exit(ERROR_CODE);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -85,28 +96,42 @@ void exitGracefully()
 
 DWORD WINAPI ComputePytagoreanTriplets(LPVOID lpParam)
 {
+	int *p_param_index;
 	DWORD wait_code;
+	int current_param;
+	if (NULL == lpParam)
+	{
+		exitGracefully;
+	}
+	p_param_index = (int*)lpParam;
 	while (1) {
-		wait_code = WaitForSingleObject(pick_n_mutex, INFINITE);
+		current_param = *p_param_index;
+		if (current_param == MAX_NUMBER) return 0;
+
+		if      (MAX_NUMBER <= 500)  { wait_code = WaitForSingleObject(p_anchor_mutex_handles[current_param], TIMEOUT_IN_MILLISECONDS_10S); }
+		else if (MAX_NUMBER <= 900)  { wait_code = WaitForSingleObject(p_anchor_mutex_handles[current_param], TIMEOUT_IN_MILLISECONDS_30S); }
+		else if (MAX_NUMBER <= 1000) { wait_code = WaitForSingleObject(p_anchor_mutex_handles[current_param], TIMEOUT_IN_MILLISECONDS_40S); }
+		
+		if (WAIT_TIMEOUT == wait_code) { continue; } //mutex is locked by another thread
+
 		if (WAIT_OBJECT_0 != wait_code)
 		{
-			printf("Error when waiting for mutex\n");
+			printf("Error when waiting for mutex %d\n", *p_param_index);
 			exitGracefully();
 		}
+		if (current_param >= MAX_NUMBER) { return 0; }
+		if (anchors_array[current_param]) continue;
 		//start critical region:
-		int anchor_index = 0;
-		while (anchors_array[anchor_index] && anchor_index < MAX_NUMBER) {
-			anchors_array[anchor_index] = true;
-			anchor_index++;
-		}
+		anchors_array[current_param] = TRUE;
+		*p_param_index +=1;
+		if (*p_param_index >= MAX_NUMBER) { return 0; }
 		//end critical region
-		if (FALSE == ReleaseMutex(pick_n_mutex))
+		if (FALSE == ReleaseMutex(p_anchor_mutex_handles[current_param]))
 		{
 			printf("Error when releasing\n");
 			exitGracefully();
 		}
-		if (anchor_index != MAX_NUMBER) { ComputeTriplets(anchor_index + 1); }
-		else { return 0; }
+		ComputeTriplets(current_param+1);
 	}
 }
 
@@ -117,21 +142,20 @@ DWORD WINAPI ComputePytagoreanTriplets(LPVOID lpParam)
 // Funtionality: Find every primitive pytagorean triplets with n as n_index
 ////////////////////////////////////////////////////////////////////////
 
-void CopmuteTriplets(int n_index) {
+void ComputeTriplets(int n_index) {  
 	for (int m_index = n_index + 1; m_index <= MAX_NUMBER; m_index += 2) {
 		if (gcd(m_index, n_index) > 1) { continue; }
 		PythagoreanTriple current_triplet;
 		int m_index_square = m_index * m_index;
 		int n_index_square = n_index * n_index;
-		current_triplet.n, current_triplet.m = n_index, m_index;
+		current_triplet.n  = n_index;
+		current_triplet.m = m_index;
 		current_triplet.a = m_index_square - n_index_square;
 		current_triplet.b = 2 * m_index * n_index;
 		current_triplet.c = m_index_square + n_index_square;
 
 		//Add the triplet to the buffer:
 		WaitForAnEmptyPlaceAndWriteToBuffer(current_triplet);
-
-		//***************need to add a check if fail
 	}
 }
 
@@ -147,7 +171,7 @@ void AddToBuffer(PythagoreanTriple triplet) {
 	for (buffer_index = 0; buffer_index < OUTPUT_BUFFER_SIZE; buffer_index++) {
 		if (!output_buffer[buffer_index].n) { break; }
 	}
-	if ((buffer_index == OUTPUT_BUFFER_SIZE - 1) && output_buffer[buffer_index].n) {/*error*/ }
+	if ((buffer_index == OUTPUT_BUFFER_SIZE - 1) && output_buffer[buffer_index].n) { printf("No place in output buffer\n"); } //shouldn't happen cause of semaphores
 	output_buffer[buffer_index] = triplet;
 }
 

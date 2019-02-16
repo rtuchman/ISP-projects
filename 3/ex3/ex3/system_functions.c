@@ -76,8 +76,6 @@ void WaitForAnEmptyPlaceAndWriteToBuffer(PythagoreanTriple triplet_to_buffer)
 	BOOL release_res;
 	LONG previous_count;
 
-	Sleep(PRODUCER_WAIT_TIME_IN_MILISECONDS);
-
 	wait_res = WaitForSingleObject(empty, INFINITE);
 	if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
 
@@ -98,9 +96,6 @@ void WaitForAnEmptyPlaceAndWriteToBuffer(PythagoreanTriple triplet_to_buffer)
 		1,
 		&previous_count);
 	if (release_res == FALSE) ReportErrorAndEndProgram();
-	printf("Producer inserted one item. Previous count is: %ld\n", previous_count);
-
-	//	return 0;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -113,26 +108,33 @@ void WaitForAnEmptyPlaceAndWriteToBuffer(PythagoreanTriple triplet_to_buffer)
 
 DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam)
 {
+	HANDLE *p_param_producer_consumer_mutex;
+	if (NULL == lpParam)
+	{
+		exitGracefully();
+	}
+	p_param_producer_consumer_mutex = (HANDLE*)lpParam;
 	while (1) {
 		DWORD wait_res;
 		BOOL release_res;
 		LONG previous_count;
 
-		Sleep(CONSUMER_WAIT_TIME_IN_MILISECONDS);
-
-		wait_res = WaitForSingleObject(full, TIMEOUT_IN_MILLISECONDS);
+		if      (MAX_NUMBER <= 500)  { wait_res = WaitForSingleObject(full, TIMEOUT_IN_MILLISECONDS_10S); }
+		else if (MAX_NUMBER <= 900)  { wait_res = WaitForSingleObject(full, TIMEOUT_IN_MILLISECONDS_30S); }
+		else if (MAX_NUMBER <= 1000) { wait_res = WaitForSingleObject(full, TIMEOUT_IN_MILLISECONDS_40S);  }
+		
 		if (wait_res == WAIT_TIMEOUT)  break;
 		if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
 
-		wait_res = WaitForSingleObject(producer_consumer_mutex, INFINITE);
+		wait_res = WaitForSingleObject(p_param_producer_consumer_mutex, INFINITE);
 		if (wait_res != WAIT_OBJECT_0) ReportErrorAndEndProgram();
 
 		//critical area:
 
-		AddToSortedList();
+		AddToList();
 
 		//end of critical area
-		release_res = ReleaseMutex(producer_consumer_mutex);
+		release_res = ReleaseMutex(p_param_producer_consumer_mutex);
 		if (release_res == FALSE) ReportErrorAndEndProgram();
 
 		release_res = ReleaseSemaphore(
@@ -140,9 +142,6 @@ DWORD WINAPI ConsumeAnItemFromBuffer(LPVOID lpParam)
 			1,
 			&previous_count);
 		if (release_res == FALSE) ReportErrorAndEndProgram();
-
-		printf("Consumer used one item. Previous count is: %ld\n", previous_count);
-
-		//	return 0;
 	}
+	return 0;
 }

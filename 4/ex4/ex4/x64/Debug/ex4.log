@@ -1,0 +1,12 @@
+﻿  SocketServer.c
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.h(18): warning C4042: 'usersSemaphore': has bad storage class
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.h(18): warning C4042: 'serverIsBusySemaphore': has bad storage class
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.h(18): warning C4042: 'printGameStartSemaphore': has bad storage class
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(231): warning C4311: 'type cast': pointer truncation from 'SOCKET *' to 'int'
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(242): warning C4311: 'type cast': pointer truncation from 'SOCKET *' to 'int'
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(307): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(545): warning C4042: 'usersSemaphore': has bad storage class
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(545): warning C4042: 'delaySemaphore': has bad storage class
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(545): warning C4042: 'gameStartSemaphore': has bad storage class
+c:\users\adi\desktop\oldgit\isp-projects\4\ex4\ex4\socketserver.c(320): warning C4715: 'ServerClientMassegeControl': not all control paths return a value
+  ex4.vcxproj -> C:\Users\Adi\Desktop\oldGit\ISP-projects\4\ex4\x64\Debug\ex4.exe
